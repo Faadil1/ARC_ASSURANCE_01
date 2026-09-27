@@ -1,0 +1,135 @@
+project: ARC_ASSURANCE_01
+updated_at: "2026-09-27T17:10:00-04:00"
+source_of_truth: true
+phase: PRD_READY_CANDIDATE
+product_name:
+  status: OPEN
+  internal_identifier: ARC_ASSURANCE_01
+  rejected_working_names:
+    - CanaryGate
+
+repository:
+  full_name: Faadil1/ARC_ASSURANCE_01
+  default_branch: main
+  bootstrap_main_sha: b874462d3dac4970e5149198a631d9b4c034f7c7
+  prd_branch: docs/prd-v0.1
+
+program:
+  name: Arc Microgrants
+  submission_deadline: "2026-10-14T23:59:00-04:00"
+  requirement_boundary:
+    - "Project must be deployed and working on Arc mainnet at submission."
+    - "Public repo required."
+    - "No testnet-only or mockup-only final submission."
+
+concept_lock:
+  status: LOCKED
+  category: "continuous assurance for autonomous paid work"
+  north_star: "Every autonomous settlement should depend on an acceptance test committed before the work and hidden from the provider."
+  core_flow: "PRECOMMIT TEST -> REAL WORK -> HIDDEN CANARY -> DETERMINISTIC VERIFY -> PAY / BLOCK / CIRCUIT BREAKER"
+  vertical: "structured document extraction"
+  original_prooftender_procurement_layer: DEAD
+
+promoted_invariants:
+  - id: INV-01
+    rule: "The canary commitment must exist before provider output lock."
+  - id: INV-02
+    rule: "The provider must not know which work item is the canary before output commitment."
+  - id: INV-03
+    rule: "MVP PASS/FAIL is deterministic and does not use an LLM as primary judge."
+  - id: INV-04
+    rule: "Provider output must be cryptographically bound before canary reveal."
+  - id: INV-05
+    rule: "PASS/FAIL must have a real USDC financial consequence."
+  - id: INV-06
+    rule: "Configured repeated failures must be able to trigger a circuit breaker."
+  - id: INV-07
+    rule: "Revealed canaries are never reused as hidden canaries."
+  - id: INV-08
+    rule: "LOCAL_STUB/testnet/simulated payment evidence is never narrated as LIVE_MAINNET."
+  - id: INV-09
+    rule: "Claims remain bounded to what chain state and deterministic verification actually prove."
+  - id: INV-10
+    rule: "A clean third-party verification path is required before promotion."
+
+arc:
+  mainnet:
+    status: LIVE
+    chain_id: 5042
+    rpc: "https://rpc.mainnet.arc.io"
+    usdc_native_gas: true
+    usdc_erc20_interface: "0x3600000000000000000000000000000000000000"
+  agent_wallets:
+    status: NOT_REQUIRED
+    note: "Do not place Circle Agent Wallets on the MVP critical path."
+  nanopayments:
+    status: NOT_REQUIRED
+  x402:
+    status: OPTIONAL_AFTER_CORE_PROOF
+  erc_8183:
+    status: OPTIONAL_AFTER_CORE_PROOF
+    note: "Draft; design later evaluator/hook compatibility but do not depend on it for MVP."
+
+scope:
+  must:
+    - "Arc mainnet contract"
+    - "real USDC"
+    - "precommitted hidden canary"
+    - "signed provider output"
+    - "deterministic verification"
+    - "real payout/withhold"
+    - "circuit breaker"
+    - "refund/protected remainder"
+    - "independent verifier"
+  must_not:
+    - "provider marketplace"
+    - "bidding/negotiation"
+    - "LLM primary judge"
+    - "token"
+    - "ZK dependency"
+    - "generic reputation system"
+    - "subjective outcome-proven claims"
+
+current_gate:
+  id: G0_PRD_READY
+  status: IN_PROGRESS
+  exit_criteria:
+    - "PRD merged"
+    - "canonical state merged"
+    - "handover merged"
+    - "work split merged"
+    - "Opeyemi has sufficient repo write access"
+
+next_gate:
+  id: G1_T0_MAINNET_CUSTODY
+  owner: opeblow
+  required_proof:
+    - "real Arc mainnet USDC enters contract custody"
+    - "configured payout succeeds"
+    - "remaining balance refund succeeds"
+    - "transaction references captured"
+
+collaboration:
+  faadil:
+    role: "product / repo / integration lead"
+  opeblow:
+    role: "smart contract / execution technical lead"
+    observed_permission_2026_09_27: read
+    required_permission: write
+  assistant:
+    role: "PRD / architecture assurance / evidence / continuity"
+
+continuous_recording:
+  rule: >-
+    After every accepted product decision, meaningful merge, mainnet execution,
+    discovered material failure, changed invariant, or gate transition, update
+    docs/internal/CANONICAL-STATE.yaml and docs/internal/HANDOVER.md in the same workstream.
+  handover_goal: >-
+    A new conversation or contributor must be able to take the lead from repository
+    state without reconstructing hidden chat history.
+
+truth_boundary:
+  - "A transaction hash proves a transaction, not subjective quality."
+  - "A hash proves commitment/integrity, not that the underlying assertion is correct."
+  - "Controlled fault injection must be disclosed."
+  - "No LIVE_MAINNET claim without real chain evidence."
