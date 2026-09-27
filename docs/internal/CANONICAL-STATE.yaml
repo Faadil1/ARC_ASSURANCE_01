@@ -98,7 +98,7 @@ current_gate:
     - "canonical state merged"
     - "handover merged"
     - "work split merged"
-    - "Opeyemi has sufficient repo write access"
+    - "Opeyemi accepts the pending collaborator invitation and has repo write access"
 
 next_gate:
   id: G1_T0_MAINNET_CUSTODY
@@ -114,8 +114,9 @@ collaboration:
     role: "product / repo / integration lead"
   opeblow:
     role: "smart contract / execution technical lead"
-    observed_permission_2026_09_27: read
-    required_permission: write
+    invite_status_2026_09_27: INVITE_PENDING
+    invited_by_faadil: true
+    required_permission_after_acceptance: write
   assistant:
     role: "PRD / architecture assurance / evidence / continuity"
 
