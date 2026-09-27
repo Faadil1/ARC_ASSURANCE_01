@@ -70,12 +70,15 @@ No consequential product build should be treated as promoted until G0 is merged/
 
 ## 5. Immediate blocker
 
-GitHub permission check on 2026-09-27 shows:
+Faadil has already sent Opeyemi (`opeblow`) a collaborator invitation with the intended write access.
 
-- `opeblow`: **read**
-- required for planned workflow: **write**
+Current status:
 
-Faadil must upgrade Opeyemi's permission before Opeyemi can own feature branches/PRs directly.
+- collaborator invitation: **INVITE_PENDING**
+- next action: **Opeyemi accepts the existing GitHub invitation**
+- after acceptance, verify that `opeblow` can push a branch/open a PR and request him on PR #1.
+
+No new invitation is required unless the existing one expires or is declined.
 
 ## 6. Next gate
 
