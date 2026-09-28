@@ -2,7 +2,7 @@
 
 **Version:** 0.1  
 **Status:** PRD_READY_CANDIDATE  
-**Date:** 2026-09-27  
+**Date:** 2026-09-28  
 **Program:** Arc Microgrants 2026  
 **Submission deadline:** 2026-10-14 23:59 ET  
 **Product name:** OPEN — `ARC_ASSURANCE_01` is an internal identifier only.
@@ -602,3 +602,165 @@ MVP is DONE only when all are true:
 - Made Arc mainnet financial causality the core proof.
 - Established T0 custody proof as first build gate.
 - Product name remains OPEN.
+
+
+---
+
+## 23. Canonical Conditional Gateway Registry
+
+The project MUST maintain `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`.
+
+Every canonical gate is explicitly classified as exactly one of:
+
+- `ACTIVE`
+- `N/A`
+- `BLOCKED`
+- `PROVEN`
+
+Omission is never an acceptable state. `N/A` means the gate was evaluated and is not applicable; it never means forgotten.
+
+The registry must be re-evaluated after any material change to:
+
+- product scope;
+- architecture;
+- sponsor/platform integration;
+- payment/wallet/contract rails;
+- runtime/deployment;
+- evidence model;
+- submission requirements.
+
+The registry includes, at minimum:
+
+- `QUALIFY → DECIDE → DESIGN → DELIVER → AUDIT → EXPAND`;
+- `RUBRIC → PAIN → PROBLEM → NEGATIVE EVENT → DIFFERENTIATOR → EXECUTION → LIVE DEPTH → EVIDENCE → STORY → DEMO → Q&A`;
+- Pre-Build Reality;
+- Competitive Novelty / Kill;
+- Technical Reality;
+- Truth Boundary;
+- Negative Path;
+- Evidence Integrity;
+- Runtime / Commit Binding;
+- Deterministic Demo;
+- Judge Performance Assurance;
+- Submission Integrity;
+- Rules / Eligibility;
+- Sponsor-Native Advantage;
+- Data Provenance / Freshness;
+- External Dependency / Failure;
+- Human Action Boundary;
+- Security / Secrets;
+- Legal / Compliance Boundary;
+- IP / License / Originality;
+- Observability / Reproducibility;
+- Demo Environment;
+- Accessibility / Responsive;
+- Performance / Latency when material;
+- Distinctiveness Escalation;
+- Pre-Launch / Ship Assurance;
+- Post-Submission Freeze / Reopen;
+- Wallets;
+- Contracts;
+- Gateway / Nanopayments;
+- x402;
+- App Kit / external platform integration;
+- LIVE_GATEWAY;
+- Final Snapshot / CURRENT / HANDOVER / Post-mortem.
+
+### x402 rule if activated
+
+A successful-looking UI is not proof.
+
+The proof chain must establish:
+
+```
+requirements/payment
+→ verify
+→ settle
+→ HTTP 200/unlock
+```
+
+with the relevant payment references and available buyer/seller receipts.
+
+A `LOCAL_STUB`, `SIMULATED`, or `PARTIAL` rail may be used for development but never promoted as `LIVE_GATEWAY`.
+
+### Promotion rule
+
+If core product value depends on a real external gateway, that gateway must be proven before the build is promoted as live.
+
+---
+
+## 24. Product Depth & Live Reality v1.2.1
+
+This rule is canonically ACTIVE and does not replace any existing gate.
+
+### Required principles
+
+- Vertical Slice = entry point, not Definition of Done.
+- Technical Proof ≠ Live Product Integration.
+- Replay/static/captured evidence alone does not satisfy a Live Core Loop claim.
+- One external trial ≠ adoption.
+- Scripted activity created to inflate traction does not count as organic usage.
+- Depth ≠ feature count.
+- Polish never compensates for weak product reality.
+
+### Required depth checks
+
+When applicable, promotion must explicitly evaluate:
+
+- Live Core Loop;
+- Load-Bearing Integration;
+- Real Consequence;
+- representative success / negative / boundary / recovery scenarios;
+- failure / recovery;
+- real-user surface;
+- external-user / operator evidence;
+- Time to First Value;
+- Operational Economics when material;
+- Shared Product Core;
+- Reality Ledger;
+- observability / receipts;
+- judge/operator self-serve;
+- setup / reproducibility;
+- clean-room / external-dependency failure;
+- Post-Vertical-Slice Depth Gap Review.
+
+Preferred order:
+
+```
+REAL PROBLEM
+→ NATIVE MECHANISM
+→ LIVE INTEGRATION
+→ PRODUCT DEPTH
+→ REAL USER/OPERATOR LOOP
+→ REAL CONSEQUENCE
+→ EVIDENCE & OBSERVABILITY
+→ UX/DESIGN
+→ SUBMISSION PACKAGING
+```
+
+After every vertical slice, ask:
+
+> What separates this slice from something a real user could use tomorrow?
+
+Close material gaps before heavy polish.
+
+### Current project consequence
+
+The concept remains locked, but the Pre-Build Reality gate is **not falsely marked PROVEN**. External user/operator and concrete negative-event evidence remain open. T0 may proceed as a DESIGN technical spike, but DELIVER promotion remains blocked until that reality gap is closed.
+
+See:
+
+- `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`
+- `docs/internal/REALITY-LEDGER.md`
+
+---
+
+## 25. Version history — governance hardening
+
+### v0.1 governance delta — 2026-09-28
+
+- Added mandatory Conditional Gateway Registry.
+- Added full judged-build cycle with NEGATIVE EVENT and LIVE DEPTH.
+- Activated Product Depth & Live Reality v1.2.1.
+- Added Reality Ledger.
+- Explicitly surfaced the unproven external user/operator reality gap instead of silently passing it.
