@@ -206,3 +206,41 @@ The project must not stop at a vertical slice or a technical proof. Before submi
 - post-vertical-slice depth review.
 
 Heavy polish comes after material reality/depth gaps are closed.
+
+
+## 14. Canonical scorer workstream started
+
+Parallel branch:
+
+- `feat/canonical-scorer`
+
+Implemented:
+
+- deterministic invoice-v1 schema;
+- fixed-order canonical serialization;
+- integer minor-unit money representation;
+- exact-match scorer;
+- malformed-output negative path;
+- invalid-ground-truth configuration failure;
+- two public PRESEEDED test vectors;
+- canonical scorer specification.
+
+Local dependency-free Node verification:
+
+```
+tests: 8
+pass: 8
+fail: 0
+```
+
+### Important evidence boundary
+
+The public fixture vectors are **PRESEEDED** and cannot be used as hidden canaries in any live demo.
+
+The scorer code is **LOCAL_VERIFIED**, not mainnet/live evidence.
+
+The supplied keccak vectors must still be independently cross-checked with the Arc/EVM toolchain before the final contract commits to this hashing convention.
+
+### Negative-path decision
+
+If expected ground truth is malformed, the system must **abort/review** rather than classify the provider as failed and withhold payment. Ground-truth configuration error is not provider fault.

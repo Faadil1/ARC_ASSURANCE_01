@@ -98,10 +98,14 @@ core_gates:
     status: ACTIVE
     vocabulary: [REFUSE, ABSTAIN, REVIEW, UNKNOWN]
     condition: "Fail closed when proof is absent or ambiguous."
+    local_evidence: "Canonical scorer treats invalid ground truth as configuration error/review, not provider failure."
   Evidence_Integrity:
     status: ACTIVE
     labels: [LIVE, LOCAL, LOCAL_STUB, PRESEEDED, SIMULATED, PARTIAL, NOT_IMPLEMENTED]
     condition: "Every proof artifact is labeled by actual evidence class."
+    local_evidence:
+      - "Scorer tests are LOCAL."
+      - "Published canary vectors are PRESEEDED and explicitly barred from live hidden-canary use."
   Runtime_Commit_Binding:
     status: BLOCKED
     blocker: "No canonical runtime or deployed commit exists yet."

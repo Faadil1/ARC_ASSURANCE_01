@@ -1,0 +1,18 @@
+{
+  "fixture_id": "invoice-v1-canary-001",
+  "evidence_class": "PRESEEDED",
+  "warning": "Development test vector only. It is public and MUST NOT be used as a hidden canary in a live run.",
+  "input_text": "Invoice A-1042\nSubtotal: 184.20 CAD\nTax: 27.63 CAD\nTotal: 211.83 CAD",
+  "input_keccak256": "0x527926dffc7dfe1b82878c894b03cc5071c7c7ff810ff6a6d5bd492252286b6a",
+  "expected_output": {
+    "invoice_number": "A-1042",
+    "subtotal_minor": 18420,
+    "tax_minor": 2763,
+    "total_minor": 21183,
+    "currency": "CAD"
+  },
+  "expected_canonical": "ARC_ASSURANCE_INVOICE_V1\ninvoice_number:A-1042\nsubtotal_minor:18420\ntax_minor:2763\ntotal_minor:21183\ncurrency:CAD",
+  "expected_output_keccak256": "0xb63300949c090fd953089cb810d13d9034e3b0f039766109914131cd6d736f5f",
+  "scorer_id": "ARC_ASSURANCE_SCORER_V1:invoice-exact-v1",
+  "scorer_id_keccak256": "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+}
