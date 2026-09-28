@@ -265,8 +265,8 @@ Prepared and locally executed:
 Local execution result:
 
 ```
-tests: 9
-pass: 9
+tests: 10
+pass: 10
 fail: 0
 ```
 
@@ -282,3 +282,14 @@ However the canonical **REAL_WORK** promotion gate remains BLOCKED because:
 - no live request/response evidence exists.
 
 Controlled degradation may be used only when `ALLOW_DEMO_FAULTS=true`, and every such response marks `fault_injected: true`. It must never be narrated as an organic provider failure.
+
+
+### Signed negative-path refinement
+
+The preferred future signed hero failure is now:
+
+- `WRONG_AMOUNT_VALID`
+
+It changes tax and total together so the result remains schema-valid and canonicalizable while still being objectively wrong against the hidden known-answer canary.
+
+Malformed outputs remain boundary cases and should route to `REVIEW/ABSTAIN` until a signed raw-envelope protocol exists.
