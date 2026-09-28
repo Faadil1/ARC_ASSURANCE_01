@@ -54,3 +54,25 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Judge/Operator Self-Serve: **NOT_IMPLEMENTED**
 - Clean-Room Reproduction: **NOT_IMPLEMENTED**
 - Post-Vertical-Slice Depth Review: **NOT_IMPLEMENTED**
+
+
+## Canonical scorer reality delta — 2026-09-28
+
+### OBSERVED
+
+- `src/scorer/invoice-v1.mjs` implements a five-field deterministic invoice scorer.
+- Money is represented as integer minor units; no floating-point comparison is used.
+- Dependency-free Node tests were executed locally: 8 passed, 0 failed.
+- Public canary fixtures are labeled PRESEEDED and contain their expected canonical strings/hash vectors.
+- Malformed expected ground truth raises a configuration error rather than automatically failing the provider.
+
+### INFERRED
+
+- Fixed-order serialization plus integer minor units should reduce cross-runtime ambiguity for the MVP.
+- Exact-match scoring is appropriate for the narrow known-answer document-extraction canaries.
+
+### UNKNOWN
+
+- Independent Arc/EVM-tool verification of the supplied keccak vectors is still pending.
+- The final contract ABI/commit encoding has not yet been bound to this scorer.
+- Live providers may produce formatting/schema variation that requires product-level handling outside the scorer.
