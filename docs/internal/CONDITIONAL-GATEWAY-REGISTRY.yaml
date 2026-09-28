@@ -194,9 +194,9 @@ expanded_gates:
     activation: "All builds with a live core loop."
     condition: "Critical path must be proven independently of nonessential UI."
   Technical_Ownership:
-    status: BLOCKED
+    status: ACTIVE
     activation: "Multi-contributor build."
-    blocker: "Opeyemi collaborator invite remains pending acceptance."
+    evidence: "Opeyemi collaborator access is active with write permission; T0 technical review remains pending."
   Session_Continuity:
     status: N/A
     activation: "Only when session/browser continuity is material."
@@ -246,9 +246,11 @@ payment_and_platform_gateways:
   Wallets:
     status: ACTIVE
     condition: "Network, address, signer, chain ID, environment, and balance evidence must be coherent."
+    current: "Human-controlled mainnet signer/funding still pending protected execution."
   Contracts:
     status: ACTIVE
     condition: "Deployment network, address, calls, state transitions, and receipts must be verifiable."
+    current: "T0 contract source produced; compilation/runtime/mainnet receipts not yet verified."
   App_Kit_External_Platform_Integration:
     status: N/A
     rationale: "No sponsor App Kit is currently required."
@@ -345,3 +347,17 @@ promotion_rule:
   - "No LIVE claim while LIVE_GATEWAY, Live Core Loop, Load-Bearing Integration, and Real Consequence remain unproven."
   - "No submission-ready claim while Judge Performance Assurance, Deterministic Demo, Runtime/Commit Binding, and Submission Integrity are unresolved."
   - "Any ACTIVE/BLOCKED gate carried forward must remain visible in CURRENT/HANDOVER."
+
+
+t0_gate_detail:
+  status: ACTIVE
+  substate: CODE_READY_CANDIDATE
+  evidence_class: NOT_IMPLEMENTED
+  source_produced: true
+  tests_executed_with_arc_foundry: false
+  mainnet_deployed: false
+  real_funding: false
+  real_payout: false
+  real_refund: false
+  runtime_commit_bound: false
+  promotion_condition: "All above execution/evidence fields true with receipts bound to exact commit."
