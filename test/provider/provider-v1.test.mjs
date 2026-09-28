@@ -49,6 +49,22 @@ test("fault injection is disabled by default", () => {
   );
 });
 
+test("controlled schema-valid wrong amount remains canonicalizable", () => {
+  const result = extractInvoiceV1(invoice, {
+    faultMode: "WRONG_AMOUNT_VALID",
+    allowDemoFaults: true,
+  });
+
+  assert.equal(result.fault_injected, true);
+  assert.equal(result.fault_mode, "WRONG_AMOUNT_VALID");
+  assert.equal(result.result.tax_minor, 2764);
+  assert.equal(result.result.total_minor, 21184);
+  assert.match(
+    result.canonical_output,
+    /^ARC_ASSURANCE_INVOICE_V1\n/
+  );
+});
+
 test("controlled wrong-total fault is explicit", () => {
   const result = extractInvoiceV1(invoice, {
     faultMode: "WRONG_TOTAL",
