@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-27T17:10:00-04:00"
+updated_at: "2026-09-28T11:35:00-04:00"
 source_of_truth: true
 phase: PRD_READY_CANDIDATE
 product_name:
@@ -29,6 +29,8 @@ concept_lock:
   core_flow: "PRECOMMIT TEST -> REAL WORK -> HIDDEN CANARY -> DETERMINISTIC VERIFY -> PAY / BLOCK / CIRCUIT BREAKER"
   vertical: "structured document extraction"
   original_prooftender_procurement_layer: DEAD
+  revalidation_required_before_deliver: true
+  revalidation_reason: "Pre-Build Reality still lacks external user/operator + concrete negative-event evidence."
 
 promoted_invariants:
   - id: INV-01
@@ -134,3 +136,36 @@ truth_boundary:
   - "A hash proves commitment/integrity, not that the underlying assertion is correct."
   - "Controlled fault injection must be disclosed."
   - "No LIVE_MAINNET claim without real chain evidence."
+
+
+governance_registry:
+  canonical_file: docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml
+  reality_ledger: docs/internal/REALITY-LEDGER.md
+  status_vocabulary: [ACTIVE, N/A, BLOCKED, PROVEN]
+  omission_allowed: false
+  reevaluate_on:
+    - scope_change
+    - architecture_change
+    - runtime_change
+    - sponsor_integration_change
+    - gateway_change
+    - evidence_change
+    - submission_requirement_change
+
+product_depth_live_reality:
+  version: v1.2.1
+  status: ACTIVE
+  vertical_slice_is_definition_of_done: false
+  technical_proof_equals_live_product_integration: false
+  current_live_core_loop: BLOCKED
+  current_load_bearing_integration: BLOCKED
+  current_real_consequence: BLOCKED
+  current_external_user_operator_evidence: BLOCKED
+  current_post_vertical_slice_depth_review: BLOCKED
+
+prebuild_reality_gap:
+  status: BLOCKED
+  missing:
+    - "external real user/operator evidence"
+    - "concrete real negative event with observable impact"
+  promotion_rule: "T0 technical spike may proceed in DESIGN; DELIVER promotion may not."
