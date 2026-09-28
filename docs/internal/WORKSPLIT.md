@@ -85,14 +85,24 @@ Deliverables:
 - work split;
 - truth-boundary rules.
 
-#### P0.2 Collaborator write access
-**Owner:** Faadil  
+#### P0.2 Collaborator invite acceptance
+**Owner:** Opeyemi / Faadil  
 Deliverable:
+- Opeyemi accepts the already-sent collaborator invitation;
 - `opeblow` has write permission and can create branches/PRs.
 
-Current observed state on 2026-09-27: `opeblow` has read permission only.
+Current state: **INVITE_PENDING**.
 
-#### P0.3 T0 Arc mainnet custody spike
+#### P0.3 Pre-Build Reality evidence gap
+**Owner:** Faadil + Assistant  
+Deliver:
+- at least one external real operator/user signal;
+- at least one concrete negative-event pattern with observable impact;
+- update Reality Ledger and Conditional Gateway Registry.
+
+This gate blocks DELIVER promotion, but does not block T0 as a DESIGN technical spike.
+
+#### P0.4 T0 Arc mainnet custody spike
 **Owner:** Opeyemi  
 Branch: `feat/t0-mainnet-custody`
 
@@ -105,7 +115,7 @@ Prove:
 
 No product UI should block T0.
 
-#### P0.4 Canonical test vectors
+#### P0.5 Canonical test vectors
 **Owner:** Faadil  
 Branch: `feat/canonical-scorer`
 
@@ -262,8 +272,26 @@ Automation may prepare commands/evidence, but must not misrepresent these action
 
 ## 7. Immediate next actions
 
-1. Faadil upgrades `opeblow` from read to write.
+1. Opeyemi accepts the existing collaborator invitation.
 2. Merge PRD/state/work-split PR after review.
 3. Opeyemi begins `feat/t0-mainnet-custody`.
 4. Faadil begins `feat/canonical-scorer` in parallel.
 5. No evidence viewer or major visual design work until T0 is green.
+
+
+---
+
+## 8. Gateway ownership rule
+
+Every owner must update or explicitly preserve the relevant entries in:
+
+- `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`
+- `docs/internal/REALITY-LEDGER.md`
+
+A PR is incomplete if it materially changes scope/runtime/evidence but leaves the registry stale.
+
+Primary gateway accountability:
+
+- **Faadil:** Rules/Eligibility, Sponsor-Native Advantage, Pre-Build Reality, Distinctiveness, Judge Coverage, Submission Integrity, user/operator evidence.
+- **Opeyemi:** Technical Reality, Wallets, Contracts, LIVE_GATEWAY, Security/Secrets, Negative Path, External Dependency/Failure, Runtime/Commit Binding.
+- **Assistant:** registry completeness, Truth Boundary, Evidence Integrity, Product Depth v1.2.1, Judge Performance Assurance, Reality Ledger consistency.
