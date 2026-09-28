@@ -142,6 +142,7 @@ expanded_gates:
     status: ACTIVE
     activation: "External APIs/RPC/provider services."
     condition: "Define clean failure, retry, and fail-closed behavior for Arc RPC and provider HTTP."
+    local_evidence: "Provider rejects malformed input and disabled demo-fault requests fail closed; deployed dependency-failure behavior remains unproven."
   Human_Action_Boundary:
     status: ACTIVE
     activation: "Consequential/protected actions."
@@ -211,6 +212,9 @@ expanded_gates:
   Evidence_Per_Milestone:
     status: ACTIVE
     activation: "Every meaningful build milestone."
+    local_evidence:
+      - "Canonical scorer: 8/8 LOCAL tests."
+      - "Provider service: 9/9 LOCAL tests."
   Honest_Limitations:
     status: ACTIVE
     activation: "Always."
@@ -349,3 +353,14 @@ promotion_rule:
   - "No LIVE claim while LIVE_GATEWAY, Live Core Loop, Load-Bearing Integration, and Real Consequence remain unproven."
   - "No submission-ready claim while Judge Performance Assurance, Deterministic Demo, Runtime/Commit Binding, and Submission Integrity are unresolved."
   - "Any ACTIVE/BLOCKED gate carried forward must remain visible in CURRENT/HANDOVER."
+
+
+provider_service_gate_detail:
+  status: ACTIVE
+  local_state: LOCAL_VERIFIED
+  real_compute: true
+  deployed_runtime: false
+  runtime_commit_bound: false
+  eip712_signed_output: false
+  live_request_response_evidence: false
+  canonical_real_work_gate: BLOCKED
