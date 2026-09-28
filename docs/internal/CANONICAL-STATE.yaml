@@ -199,3 +199,32 @@ canonical_scorer:
   remaining_before_contract_binding:
     - "Independently cross-check keccak vectors with Arc/EVM toolchain."
     - "Opeyemi reviews scorer/commit interface."
+
+
+provider_service:
+  branch: feat/provider-service
+  status: LOCAL_VERIFIED
+  implementation:
+    parser: src/provider/extract-invoice.mjs
+    runtime: src/provider/http-server.mjs
+    tests: test/provider/provider-v1.test.mjs
+    spec: docs/PROVIDER-SERVICE-V1.md
+  local_test_result:
+    observed_at: "2026-09-28"
+    tests: 9
+    passed: 9
+    failed: 0
+  runtime_semantics:
+    execution_label: REAL_COMPUTE
+    provider_signature: NOT_IMPLEMENTED
+    deployed_runtime: NOT_IMPLEMENTED
+    fault_injection:
+      default: disabled
+      explicit_enable_flag: ALLOW_DEMO_FAULTS
+      disclosure_required: true
+  promotion_boundary:
+    real_work_gate: BLOCKED
+    blockers:
+      - "No deployed provider runtime yet."
+      - "Provider output is not yet EIP-712 signed."
+      - "No runtime/commit binding evidence yet."
