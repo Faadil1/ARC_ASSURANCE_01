@@ -211,8 +211,8 @@ provider_service:
     spec: docs/PROVIDER-SERVICE-V1.md
   local_test_result:
     observed_at: "2026-09-28"
-    tests: 9
-    passed: 9
+    tests: 10
+    passed: 10
     failed: 0
   runtime_semantics:
     execution_label: REAL_COMPUTE
@@ -222,6 +222,8 @@ provider_service:
       default: disabled
       explicit_enable_flag: ALLOW_DEMO_FAULTS
       disclosure_required: true
+      preferred_signed_hero_mode: WRONG_AMOUNT_VALID
+      malformed_faults_route: REVIEW_OR_ABSTAIN
   promotion_boundary:
     real_work_gate: BLOCKED
     blockers:
