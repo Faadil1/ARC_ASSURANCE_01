@@ -76,6 +76,7 @@ x-demo-fault: WRONG_TOTAL
 Supported demo modes:
 
 - NONE
+- WRONG_AMOUNT_VALID — **preferred hero negative path**; wrong result remains schema-valid/canonicalizable
 - WRONG_TOTAL
 - LOWERCASE_CURRENCY
 - DROP_FIELD
@@ -91,6 +92,10 @@ Every injected response declares:
 ```
 
 A controlled fault must never be described as an organic provider failure.
+
+For the final signed hero path, prefer `WRONG_AMOUNT_VALID`. It changes tax and total together, so the result remains structurally valid and can be canonically hashed/signed while still failing exact-match scoring.
+
+Malformed modes such as `WRONG_TOTAL`, `LOWERCASE_CURRENCY`, and `DROP_FIELD` are boundary tests. Until a signed raw-envelope protocol exists, they should route to REVIEW/ABSTAIN rather than being silently converted into a financially counted provider failure.
 
 ## Signature boundary
 
