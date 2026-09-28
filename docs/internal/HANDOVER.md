@@ -244,3 +244,52 @@ The supplied keccak vectors must still be independently cross-checked with the A
 ### Negative-path decision
 
 If expected ground truth is malformed, the system must **abort/review** rather than classify the provider as failed and withhold payment. Ground-truth configuration error is not provider fault.
+
+
+## 16. Provider service workstream — LOCAL_VERIFIED
+
+Branch:
+
+- `feat/provider-service`
+
+Prepared and locally executed:
+
+- real invoice parser;
+- HTTP `POST /v1/extract`;
+- explicit health endpoint;
+- controlled fault modes;
+- default fault injection disabled;
+- evidence metadata that distinguishes real compute from injected fault;
+- explicit `signature_status: NOT_IMPLEMENTED`.
+
+Local execution result:
+
+```
+tests: 10
+pass: 10
+fail: 0
+```
+
+### Important boundary
+
+The provider performs genuine local computation, so the implementation is `LOCAL_VERIFIED`.
+
+However the canonical **REAL_WORK** promotion gate remains BLOCKED because:
+
+- no deployed runtime exists;
+- no exact commit/runtime binding exists;
+- provider output is not yet signed with the EIP-712 scheme;
+- no live request/response evidence exists.
+
+Controlled degradation may be used only when `ALLOW_DEMO_FAULTS=true`, and every such response marks `fault_injected: true`. It must never be narrated as an organic provider failure.
+
+
+### Signed negative-path refinement
+
+The preferred future signed hero failure is now:
+
+- `WRONG_AMOUNT_VALID`
+
+It changes tax and total together so the result remains schema-valid and canonicalizable while still being objectively wrong against the hidden known-answer canary.
+
+Malformed outputs remain boundary cases and should route to `REVIEW/ABSTAIN` until a signed raw-envelope protocol exists.

@@ -76,3 +76,29 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Independent Arc/EVM-tool verification of the supplied keccak vectors is still pending.
 - The final contract ABI/commit encoding has not yet been bound to this scorer.
 - Live providers may produce formatting/schema variation that requires product-level handling outside the scorer.
+
+
+## Provider service reality delta — 2026-09-28
+
+### OBSERVED
+
+- `src/provider/extract-invoice.mjs` parses invoice text into the canonical invoice-v1 structure.
+- `src/provider/http-server.mjs` serves real HTTP extraction requests.
+- Provider tests were executed locally: 9 passed, 0 failed.
+- Fault injection is disabled by default.
+- Explicit fault mode is rejected unless demo faults are intentionally enabled.
+- Injected responses declare `fault_injected: true`.
+- Provider output explicitly reports `signature_status: NOT_IMPLEMENTED`.
+
+### INFERRED
+
+- A dependency-free deterministic provider reduces demo fragility and keeps the core product mechanism inspectable.
+- Controlled fault injection can exercise the negative path without falsely claiming an organic third-party incident.
+
+### UNKNOWN
+
+- Deployed provider runtime behavior.
+- Clean-room startup outside the authoring environment.
+- EIP-712 signing/interface compatibility.
+- Runtime/commit binding.
+- External provider behavior and hidden-canary detectability.
