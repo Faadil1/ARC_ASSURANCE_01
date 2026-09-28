@@ -107,6 +107,7 @@ export function parseInvoiceTextV1(inputText) {
 
 export const DEMO_FAULT_MODES = Object.freeze([
   "NONE",
+  "WRONG_AMOUNT_VALID",
   "WRONG_TOTAL",
   "LOWERCASE_CURRENCY",
   "DROP_FIELD",
@@ -123,6 +124,14 @@ export function applyDemoFault(output, faultMode = "NONE") {
 
   if (faultMode === "NONE") {
     return { ...output };
+  }
+
+  if (faultMode === "WRONG_AMOUNT_VALID") {
+    return {
+      ...output,
+      tax_minor: output.tax_minor + 1,
+      total_minor: output.total_minor + 1,
+    };
   }
 
   if (faultMode === "WRONG_TOTAL") {
