@@ -206,3 +206,36 @@ The project must not stop at a vertical slice or a technical proof. Before submi
 - post-vertical-slice depth review.
 
 Heavy polish comes after material reality/depth gaps are closed.
+
+
+## 15. Pre-Build Reality gate closed for problem reality
+
+Research branch:
+
+- `research/prebuild-reality`
+
+Evidence file:
+
+- `docs/research/PRE-BUILD-REALITY-EVIDENCE.md`
+
+The canonical Pre-Build Reality gate is now **PROVEN** on external problem evidence.
+
+Observed external signals include:
+
+- autonomous agent spend escaping an operator's intended boundary;
+- x402 payment success with wallet debit but no delivered data;
+- acknowledged production quality degradation with increased usage drain;
+- green configuration checks that did not exercise the actual paid path.
+
+Important boundary:
+
+This proves **problem reality**, not product demand or adoption.
+
+The following remain BLOCKED:
+
+- external user/operator product evidence;
+- live core loop;
+- load-bearing Arc integration;
+- real product consequence;
+- judge/operator self-serve;
+- organic usage/adoption.
