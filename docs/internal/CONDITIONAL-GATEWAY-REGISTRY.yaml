@@ -1,0 +1,347 @@
+project: ARC_ASSURANCE_01
+updated_at: "2026-09-28T11:35:00-04:00"
+source_of_truth: true
+
+status_vocabulary:
+  - ACTIVE
+  - N/A
+  - BLOCKED
+  - PROVEN
+
+registry_rules:
+  - "Every canonical gate must appear explicitly; omission is not a status."
+  - "N/A means evaluated and not applicable, never forgotten."
+  - "BLOCKED means a prerequisite/evidence gap prevents promotion."
+  - "PROVEN requires an evidence reference or a durable repository artifact."
+  - "Re-evaluate the full registry on any material scope, architecture, runtime, sponsor, or submission change."
+  - "LOCAL_STUB, SIMULATED, replay/static evidence, or testnet evidence cannot be promoted to LIVE_GATEWAY."
+  - "Technical Proof does not equal Live Product Integration."
+  - "A vertical slice is an entry point, never Definition of Done."
+
+macro_lifecycle:
+  QUALIFY:
+    status: PROVEN
+    evidence: "Arc Microgrants opportunity qualified; requirements and deadline captured in PRD."
+  DECIDE:
+    status: PROVEN
+    evidence: "Five-model council + competitive/technical analysis produced the locked continuous-assurance concept."
+  DESIGN:
+    status: ACTIVE
+    evidence: "PRD v0.1 and demo-first architecture are under review in PR #1."
+  DELIVER:
+    status: BLOCKED
+    blocker: "G0 PRD_READY, Pre-Build Reality external evidence gap, and T0 mainnet custody proof remain open."
+  AUDIT:
+    status: BLOCKED
+    blocker: "No live runtime/canonical mainnet run yet."
+  EXPAND:
+    status: N/A
+    rationale: "No expansion before the core live proof is promoted."
+
+judged_build_cycle:
+  RUBRIC:
+    status: PROVEN
+    evidence: "Arc Microgrants requirements and submission constraints are captured."
+  PAIN:
+    status: ACTIVE
+    gap: "Need external operator/user evidence beyond council/market reasoning."
+  PROBLEM:
+    status: PROVEN
+    evidence: "Autonomous paid work can continue paying after provider quality degradation; product scope is narrowly defined."
+  NEGATIVE_EVENT:
+    status: ACTIVE
+    gap: "Need at least one concrete external negative event / operator failure pattern with observable impact."
+  DIFFERENTIATOR:
+    status: PROVEN
+    evidence: "Precommitted hidden canary + deterministic financial consequence survived novelty review better than generic policy/payment/procurement layers."
+  EXECUTION:
+    status: ACTIVE
+    evidence: "T0 and canonical scorer workstreams defined; consequential build waits on G0."
+  LIVE_DEPTH:
+    status: BLOCKED
+    blocker: "No live core loop, real consequence, or external operator loop yet."
+  EVIDENCE:
+    status: ACTIVE
+    evidence: "Evidence model and promotion gates defined; live evidence pending."
+  STORY:
+    status: BLOCKED
+    blocker: "Hero narrative cannot be finalized until live proof exists."
+  DEMO:
+    status: BLOCKED
+    blocker: "No deterministic live canonical run yet."
+  Q&A:
+    status: BLOCKED
+    blocker: "Judge Performance Assurance activates after canonical demo behavior is proven."
+
+core_gates:
+  Pre_Build_Reality:
+    status: BLOCKED
+    activation: "All concepts before promotion."
+    condition: "Real problem, real user/operator, concrete negative event, observable impact."
+    gap: "Real user/operator and external negative-event evidence are not yet proven."
+    rule: "T0 may proceed as DESIGN technical spike, but DELIVER promotion is blocked until this closes."
+  Competitive_Novelty_Kill:
+    status: PROVEN
+    activation: "Before Concept Lock and when nearby products materially change."
+    evidence: "Competitive council/search eliminated generic procurement, mandate-vault-only, evidence-gate-only, and audit-log-only directions."
+    monitor: true
+  Technical_Reality_Check:
+    status: PROVEN
+    activation: "After Concept Lock."
+    evidence: "Arc mainnet feasibility, USDC path, draft ERC-8183 boundary, and non-dependence on unavailable Agent Wallets were checked."
+    caveat: "Live custody/payment behavior remains separately unproven until T0."
+  Truth_Boundary:
+    status: ACTIVE
+    vocabulary: [OBSERVED, INFERRED, UNKNOWN]
+    condition: "No false PASS or claim inflation."
+  Negative_Path:
+    status: ACTIVE
+    vocabulary: [REFUSE, ABSTAIN, REVIEW, UNKNOWN]
+    condition: "Fail closed when proof is absent or ambiguous."
+  Evidence_Integrity:
+    status: ACTIVE
+    labels: [LIVE, LOCAL, LOCAL_STUB, PRESEEDED, SIMULATED, PARTIAL, NOT_IMPLEMENTED]
+    condition: "Every proof artifact is labeled by actual evidence class."
+  Runtime_Commit_Binding:
+    status: BLOCKED
+    blocker: "No canonical runtime or deployed commit exists yet."
+    condition: "Runtime evidence must bind to the exact demonstrated commit."
+  Deterministic_Demo:
+    status: BLOCKED
+    blocker: "No canonical run yet."
+    condition: "Success, negative path, fallback, and no fragile dependency."
+  Judge_Performance_Assurance:
+    status: BLOCKED
+    blocker: "Canonical demo not yet proven."
+    condition: "Signature behavior, signature moment, Judge Memory Sentence, hostile Q&A."
+  Submission_Integrity:
+    status: ACTIVE
+    condition: "Repo, runtime, evidence, video, README, claims, license, eligibility, and official deliverables must agree."
+  Final_Snapshot_CURRENT_HANDOVER_Postmortem:
+    status: ACTIVE
+    condition: "Update real state, limitations, next steps, and post-mortem at cycle end."
+
+expanded_gates:
+  Rules_Eligibility:
+    status: PROVEN
+    activation: "Competitions/hackathons."
+    evidence: "Eligibility, deadline, mainnet/public-repo requirements, and submission constraints are captured."
+  Sponsor_Native_Advantage:
+    status: ACTIVE
+    activation: "Sponsor ecosystem is materially involved."
+    condition: "Arc must be load-bearing, not decorative sponsor mention."
+  Data_Provenance_Freshness:
+    status: ACTIVE
+    activation: "Live/time-sensitive external facts or chain data."
+    condition: "Re-check Arc/Circle/runtime facts before consequential claims."
+  External_Dependency_Failure:
+    status: ACTIVE
+    activation: "External APIs/RPC/provider services."
+    condition: "Define clean failure, retry, and fail-closed behavior for Arc RPC and provider HTTP."
+  Human_Action_Boundary:
+    status: ACTIVE
+    activation: "Consequential/protected actions."
+    condition: "Funding, private-key signing, collaborator permissions, and final submission remain explicit protected actions."
+  Security_Secrets:
+    status: ACTIVE
+    activation: "Credentials, wallets, private canaries, deployment secrets."
+  Legal_Compliance_Boundary:
+    status: ACTIVE
+    activation: "Competition/payment context."
+    condition: "Respect grant eligibility/sanctions constraints; do not claim compliance certification."
+  IP_License_Originality:
+    status: ACTIVE
+    activation: "Third-party code/assets/data or originality review."
+    condition: "Track licenses and avoid copied/substantially derivative submission material."
+  Observability_Reproducibility:
+    status: ACTIVE
+    activation: "Auditable runs."
+    condition: "Events, receipts, verifier, and reproducible evidence must reconstruct the canonical run."
+  Demo_Environment:
+    status: BLOCKED
+    activation: "Before judge/operator access."
+    blocker: "No deployed product runtime yet."
+  Accessibility_Responsive:
+    status: ACTIVE
+    activation: "UI materially matters."
+    condition: "Mobile/tablet/desktop plus reduced-motion acceptance before demo promotion."
+  Performance_Latency:
+    status: N/A
+    activation: "Only when latency/throughput is a material product or judging claim."
+    rationale: "No latency claim is required for MVP v0.1."
+  Pre_Launch_Ship_Assurance:
+    status: BLOCKED
+    activation: "Near release/deploy/handoff."
+    sequence: "PRE_LAUNCH_CODE_OK -> DEPLOY -> LIVE_RUNTIME_CHECK -> CRITICAL_PATH_PASS -> PROOF_CAPTURED"
+  Distinctiveness_Escalation:
+    status: ACTIVE
+    activation: "Judged build."
+    condition: "FUNCTIONAL != FINISHED; require agency, closed loop, second act/consequence, counter-case, signature moment, sponsor-native mechanism; avoid feature dump/read-only default."
+  Post_Submission_Freeze_Reopen:
+    status: N/A
+    activation: "After submission/freeze."
+    rationale: "Project is not submitted or frozen."
+  Concept_Compression_Validation:
+    status: PROVEN
+    activation: "Hackathon concept selection."
+    evidence: "Wide ideation -> council collision -> kill generic directions -> narrow hidden-canary mechanism -> Concept Lock."
+  Judge_Coverage:
+    status: ACTIVE
+    activation: "Judged build."
+    condition: "Every rubric requirement and likely judge question must map to product/evidence."
+  Critical_Path_Assurance:
+    status: ACTIVE
+    activation: "All builds with a live core loop."
+    condition: "Critical path must be proven independently of nonessential UI."
+  Technical_Ownership:
+    status: BLOCKED
+    activation: "Multi-contributor build."
+    blocker: "Opeyemi collaborator invite remains pending acceptance."
+  Session_Continuity:
+    status: N/A
+    activation: "Only when session/browser continuity is material."
+    rationale: "No user session continuity requirement in current MVP."
+  Freshness_Gate:
+    status: ACTIVE
+    activation: "Current APIs/docs/runtime availability."
+  Evidence_Per_Milestone:
+    status: ACTIVE
+    activation: "Every meaningful build milestone."
+  Honest_Limitations:
+    status: ACTIVE
+    activation: "Always."
+  Produced_Working_Verified_Separation:
+    status: ACTIVE
+    activation: "Always."
+    rule: "Produced != Working != Verified != Live."
+  External_Skill_Ingestion:
+    status: N/A
+    activation: "When importing external skills/agent code."
+    rationale: "No external skill ingestion is currently on the critical path."
+  Action_Preview_Approval_Receipt:
+    status: ACTIVE
+    activation: "Protected actions and value movement."
+  Credential_Least_Privilege:
+    status: ACTIVE
+    activation: "Wallets/API keys/deployment credentials."
+  Build_Validation_Readiness:
+    status: ACTIVE
+    activation: "Every executable milestone."
+  Cutline_Freeze:
+    status: BLOCKED
+    activation: "Submission endgame."
+    blocker: "Too early; no canonical live build yet."
+  Backend_Scale_On_Evidence:
+    status: ACTIVE
+    rule: "SCALE ON EVIDENCE, NOT ON POSSIBILITY."
+
+payment_and_platform_gateways:
+  Gateway_Nanopayments:
+    status: N/A
+    rationale: "Not required for MVP critical path."
+  x402:
+    status: N/A
+    rationale: "Not required for MVP critical path."
+    proof_rule_if_activated: "requirements/payment -> verify -> settle -> HTTP 200/unlock, with payment references and available buyer/seller receipts."
+  Wallets:
+    status: ACTIVE
+    condition: "Network, address, signer, chain ID, environment, and balance evidence must be coherent."
+  Contracts:
+    status: ACTIVE
+    condition: "Deployment network, address, calls, state transitions, and receipts must be verifiable."
+  App_Kit_External_Platform_Integration:
+    status: N/A
+    rationale: "No sponsor App Kit is currently required."
+  LIVE_GATEWAY:
+    status: ACTIVE
+    condition: "Core product value depends on real Arc mainnet USDC settlement; LOCAL_STUB/SIMULATED/PARTIAL cannot be promoted to live settlement."
+  ERC_8183:
+    status: N/A
+    rationale: "Optional post-core-proof compatibility; draft and not required for MVP."
+  ERC_8004:
+    status: N/A
+    rationale: "Identity/reputation layer not required for MVP."
+  Circle_Agent_Wallets:
+    status: N/A
+    rationale: "Explicitly removed from critical path."
+
+product_depth_live_reality_v1_2_1:
+  canonical_status: ACTIVE
+  rules:
+    Vertical_Slice_Not_DoD:
+      status: ACTIVE
+    Live_Core_Loop:
+      status: BLOCKED
+      blocker: "No live end-to-end mainnet core loop yet."
+    Load_Bearing_Integration:
+      status: BLOCKED
+      blocker: "Arc mainnet financial control has not yet been demonstrated as load-bearing."
+    Real_Consequence:
+      status: BLOCKED
+      blocker: "No real pass/pay, fail/no-pay, breaker/refund run yet."
+    Representative_Scenarios:
+      status: BLOCKED
+      required: [success, negative, boundary, recovery]
+    Failure_Recovery:
+      status: BLOCKED
+      blocker: "Failure/recovery behavior is specified but not live-proven."
+    Real_User_Surface:
+      status: BLOCKED
+      blocker: "No usable live operator surface yet."
+    External_User_Operator_Evidence:
+      status: BLOCKED
+      blocker: "No external operator/user trial evidence yet."
+    Time_to_First_Value:
+      status: BLOCKED
+      blocker: "No live operator journey exists yet."
+    Operational_Economics:
+      status: ACTIVE
+      condition: "Measure actual Arc mainnet cost/settlement economics; do not assume."
+    Shared_Product_Core:
+      status: ACTIVE
+      condition: "Demo, viewer, verifier, and runtime must use the same underlying core rather than separate fake paths."
+    Reality_Ledger:
+      status: ACTIVE
+      artifact: "docs/internal/REALITY-LEDGER.md"
+    Observability_Receipts:
+      status: ACTIVE
+    Judge_Operator_Self_Serve:
+      status: BLOCKED
+      blocker: "No deployed self-serve judge/operator path yet."
+    Setup_Reproducibility:
+      status: ACTIVE
+    Clean_Room_External_Dependency_Failure:
+      status: BLOCKED
+      blocker: "No build exists to clean-room reproduce or failure-test yet."
+    Post_Vertical_Slice_Depth_Gap_Review:
+      status: BLOCKED
+      blocker: "No vertical slice exists yet."
+    One_External_Trial_Not_Adoption:
+      status: ACTIVE
+    Organic_Usage_Integrity:
+      status: ACTIVE
+      rule: "Scripted activity used to inflate traction never counts as organic usage."
+    Depth_Not_Feature_Count:
+      status: ACTIVE
+    Polish_Cannot_Compensate_Reality:
+      status: ACTIVE
+    Preferred_Order:
+      status: ACTIVE
+      sequence: "REAL PROBLEM -> NATIVE MECHANISM -> LIVE INTEGRATION -> PRODUCT DEPTH -> REAL USER/OPERATOR LOOP -> REAL CONSEQUENCE -> EVIDENCE & OBSERVABILITY -> UX/DESIGN -> SUBMISSION PACKAGING"
+    Frozen_Submitted_No_Silent_Retrofit:
+      status: N/A
+      rationale: "Project not frozen/submitted."
+    Authority_Boundaries:
+      status: ACTIVE
+      rule: "HOI advisory pre-lock; PBPD production to BUILD_CANDIDATE_READY; Project Finisher terminal assurance; protected actions remain human."
+
+post_vertical_slice_question:
+  status: ACTIVE
+  prompt: "What separates this slice from something a real user could use tomorrow?"
+  rule: "Close material depth gaps before heavy polish."
+
+promotion_rule:
+  - "No DELIVER promotion while Pre-Build Reality remains BLOCKED."
+  - "No LIVE claim while LIVE_GATEWAY, Live Core Loop, Load-Bearing Integration, and Real Consequence remain unproven."
+  - "No submission-ready claim while Judge Performance Assurance, Deterministic Demo, Runtime/Commit Binding, and Submission Integrity are unresolved."
+  - "Any ACTIVE/BLOCKED gate carried forward must remain visible in CURRENT/HANDOVER."
