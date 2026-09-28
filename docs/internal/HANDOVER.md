@@ -206,3 +206,49 @@ The project must not stop at a vertical slice or a technical proof. Before submi
 - post-vertical-slice depth review.
 
 Heavy polish comes after material reality/depth gaps are closed.
+
+
+## 13. T0 code spike started
+
+Opeyemi's collaborator invitation is now accepted and GitHub reports **write** permission.
+
+No Opeyemi feature branch/commit/PR existed when checked immediately before starting T0, so the initial T0 implementation was started on:
+
+- `feat/t0-mainnet-custody`
+
+Prepared:
+
+- `src/T0NativeCustody.sol`
+- `test/T0NativeCustody.t.sol`
+- `foundry.toml`
+- `.env.example`
+- `docs/T0-MAINNET-RUNBOOK.md`
+- `docs/evidence/T0-MAINNET-CUSTODY.md`
+- `T0-README.md`
+
+### T0 design correction
+
+The initial PRD wording assumed an ERC-20 `approve/transferFrom` custody spike.
+
+Current Arc documentation makes a simpler load-bearing path preferable: Arc uses USDC as the native value/gas asset, so T0 now tests:
+
+```
+native USDC msg.value
+→ contract custody
+→ native USDC payout
+→ native USDC refund
+```
+
+This is a T0-only design refinement. It does not yet change the final assurance contract architecture.
+
+### Truth status
+
+- source: **PRODUCED**
+- local/Arc Foundry tests: **NOT VERIFIED**
+- mainnet deployment: **NOT IMPLEMENTED**
+- real custody/payout/refund: **NOT IMPLEMENTED**
+- T0 gate: **ACTIVE, NOT PROVEN**
+
+The current environment did not have Arc Foundry installed and no protected mainnet signing action was attempted.
+
+Opeyemi remains the technical/mainnet execution reviewer for Issue #3.
