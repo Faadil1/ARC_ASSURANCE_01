@@ -8,7 +8,9 @@ ARC_ASSURANCE_01 is being built for Arc Microgrants 2026. The scope is deliberat
 2. Read `docs/internal/HANDOVER.md`.
 3. Read `product/PRD.md`.
 4. Read `docs/internal/WORKSPLIT.md`.
-5. Do not change locked invariants, truth boundaries, financial semantics, or the hero proof contract without explicit product approval.
+5. Read `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`.
+6. Read `docs/internal/REALITY-LEDGER.md`.
+7. Do not change locked invariants, truth boundaries, financial semantics, or the hero proof contract without explicit product approval.
 
 ## Workflow
 
@@ -28,7 +30,10 @@ Every PR must explain:
 - financial/security impact;
 - tests added or changed;
 - whether Arc mainnet proof is still required;
-- whether truth-boundary language changed.
+- whether truth-boundary language changed;
+- which Conditional Gateway Registry entries changed status;
+- whether Product Depth & Live Reality v1.2.1 gained or lost evidence;
+- whether the Reality Ledger needs an OBSERVED / INFERRED / UNKNOWN update.
 
 After a meaningful merged milestone, update both:
 
@@ -36,6 +41,8 @@ After a meaningful merged milestone, update both:
 - `docs/internal/HANDOVER.md`
 
 so another contributor or conversation can immediately take over.
+
+If the PR changes scope, architecture, runtime, sponsor integration, gateway/payment rails, or evidence semantics, also re-evaluate the full `CONDITIONAL-GATEWAY-REGISTRY.yaml`.
 
 ## Scope discipline
 
