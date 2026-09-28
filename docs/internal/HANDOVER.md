@@ -157,3 +157,52 @@ update both:
 - `docs/internal/HANDOVER.md`
 
 before declaring that workstream complete.
+
+
+## 11. Conditional Gateway Registry — mandatory
+
+Canonical file:
+
+- `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`
+
+Reality ledger:
+
+- `docs/internal/REALITY-LEDGER.md`
+
+Every gate must remain explicitly `ACTIVE`, `N/A`, `BLOCKED`, or `PROVEN`.
+
+No contributor may remove a gate because it is currently irrelevant. Use `N/A` with a rationale.
+
+Every meaningful PR must state whether it changes any gateway status. Scope/architecture/runtime/payment/platform changes require a full registry re-evaluation.
+
+### Current material gap
+
+Pre-Build Reality is currently **BLOCKED**, not PROVEN:
+
+- real external user/operator evidence is still missing;
+- a concrete external negative event with observable impact is still missing.
+
+This does not undo the current Concept Lock, but it blocks promotion into DELIVER. T0 remains permitted as a DESIGN technical-risk spike.
+
+## 12. Product Depth & Live Reality v1.2.1
+
+Canonical status: **ACTIVE**.
+
+The project must not stop at a vertical slice or a technical proof. Before submission promotion it must close the relevant gaps around:
+
+- live core loop;
+- load-bearing Arc integration;
+- real financial consequence;
+- success/negative/boundary/recovery scenarios;
+- failure/recovery;
+- real user/operator surface and external evidence;
+- TTFV;
+- operational economics where material;
+- shared product core;
+- receipts/observability;
+- judge/operator self-serve;
+- clean-room reproducibility;
+- external-dependency failure;
+- post-vertical-slice depth review.
+
+Heavy polish comes after material reality/depth gaps are closed.
