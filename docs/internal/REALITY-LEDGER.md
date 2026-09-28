@@ -8,9 +8,11 @@ This ledger records what is **OBSERVED**, **INFERRED**, or **UNKNOWN**. It is no
 
 - The public repository `Faadil1/ARC_ASSURANCE_01` exists.
 - PR #1 contains the draft PRD, work split, canonical state, handover, and contribution rules.
-- Opeyemi has been invited as a collaborator; acceptance is still pending.
+- Opeyemi accepted the collaborator invitation; GitHub reports write permission.
 - The current product direction is a precommitted hidden-canary assurance mechanism for deterministic paid work.
 - The critical MVP path intentionally excludes Circle Agent Wallets, Nanopayments, x402, ERC-8004, and ERC-8183.
+- The T0 native-USDC custody source, tests, runbook, and evidence template have been produced on `feat/t0-mainnet-custody`.
+- No Arc Foundry test run has been verified yet.
 - No canonical Arc mainnet product run has been completed yet.
 - No live pass→pay / fail→no-pay / breaker→refund evidence exists yet.
 - No external user/operator trial has been recorded yet.
@@ -54,3 +56,24 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Judge/Operator Self-Serve: **NOT_IMPLEMENTED**
 - Clean-Room Reproduction: **NOT_IMPLEMENTED**
 - Post-Vertical-Slice Depth Review: **NOT_IMPLEMENTED**
+
+
+## T0 reality delta — 2026-09-28
+
+### OBSERVED
+
+- Arc docs describe USDC as Arc's native gas/value asset with an 18-decimal native interface.
+- `T0NativeCustody.sol` uses explicit payable funding, payout, and refund for the spike.
+- The branch contains negative-path test source and a protected mainnet execution runbook.
+- No mainnet private key was used by the assistant.
+- No real value movement has been executed by the assistant.
+
+### INFERRED
+
+- Native-value custody is a simpler T0 proof than adding an ERC-20 approval dependency.
+
+### UNKNOWN
+
+- Whether the current source compiles/runs successfully under the current Arc Foundry release.
+- Whether the mainnet contract behaves exactly as intended under Arc-specific runtime semantics.
+- Actual gas cost for the T0 lifecycle.
