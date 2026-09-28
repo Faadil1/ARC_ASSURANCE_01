@@ -1,7 +1,7 @@
 project: ARC_ASSURANCE_01
 updated_at: "2026-09-28T11:35:00-04:00"
 source_of_truth: true
-phase: PRD_READY_CANDIDATE
+phase: DESIGN_T0_CODE_READY_CANDIDATE
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -100,7 +100,7 @@ current_gate:
     - "canonical state merged"
     - "handover merged"
     - "work split merged"
-    - "Opeyemi accepts the pending collaborator invitation and has repo write access"
+    - "Opeyemi reviews PR #1 and PRD governance is merged"
 
 next_gate:
   id: G1_T0_MAINNET_CUSTODY
@@ -116,9 +116,9 @@ collaboration:
     role: "product / repo / integration lead"
   opeblow:
     role: "smart contract / execution technical lead"
-    invite_status_2026_09_27: INVITE_PENDING
+    collaborator_status_2026_09_28: ACTIVE
+    permission: write
     invited_by_faadil: true
-    required_permission_after_acceptance: write
   assistant:
     role: "PRD / architecture assurance / evidence / continuity"
 
@@ -169,3 +169,26 @@ prebuild_reality_gap:
     - "external real user/operator evidence"
     - "concrete real negative event with observable impact"
   promotion_rule: "T0 technical spike may proceed in DESIGN; DELIVER promotion may not."
+
+
+t0_mainnet_custody:
+  branch: feat/t0-mainnet-custody
+  status: CODE_READY_CANDIDATE
+  evidence_class: NOT_IMPLEMENTED
+  implementation:
+    contract: src/T0NativeCustody.sol
+    tests: test/T0NativeCustody.t.sol
+    runbook: docs/T0-MAINNET-RUNBOOK.md
+    evidence_template: docs/evidence/T0-MAINNET-CUSTODY.md
+  design_change:
+    from: "ERC-20 approve/transferFrom custody assumption"
+    to: "Arc-native USDC msg.value custody/payout/refund"
+    reason: "Arc uses USDC as native gas/value; T0 should minimize non-load-bearing dependencies."
+  unverified:
+    - "Arc Foundry compilation/test execution"
+    - "Arc mainnet deployment"
+    - "real mainnet funding"
+    - "real payout"
+    - "real refund"
+    - "runtime/commit binding"
+  protected_action: "Human-controlled mainnet signing/funding required."
