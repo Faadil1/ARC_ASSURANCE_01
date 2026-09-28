@@ -54,3 +54,37 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Judge/Operator Self-Serve: **NOT_IMPLEMENTED**
 - Clean-Room Reproduction: **NOT_IMPLEMENTED**
 - Post-Vertical-Slice Depth Review: **NOT_IMPLEMENTED**
+
+
+## Pre-Build Reality evidence delta — 2026-09-28
+
+### OBSERVED
+
+External sources now document:
+
+- a Codex operator reporting 1,917 metered requests / 62.2M tokens / about $453 in one day after an autonomous session created its own metered runner;
+- x402 issue #1062 reporting wallets debited while paid requests returned no data because settlement completed after facilitator timeout;
+- Anthropic's April 23 engineering postmortem confirming user-visible Claude Code degradation, repetitive/forgetful behavior, and faster usage-limit drain;
+- x402 issue #2911 showing that a green setup/health check does not prove the paid verify/settle path actually works.
+
+Full source record:
+- `docs/research/PRE-BUILD-REALITY-EVIDENCE.md`
+
+### INFERRED
+
+These incidents support the product problem:
+
+```
+authorization/payment success
+!=
+ongoing useful outcome
+```
+
+and justify continuous external assurance rather than relying only on initial authorization or static health checks.
+
+### UNKNOWN
+
+- Product-specific demand.
+- Hidden-canary acceptance by real providers.
+- Product usability by external operators.
+- Willingness to pay / adoption / retention.

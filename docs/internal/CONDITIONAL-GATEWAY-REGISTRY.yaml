@@ -30,7 +30,7 @@ macro_lifecycle:
     evidence: "PRD v0.1 and demo-first architecture are under review in PR #1."
   DELIVER:
     status: BLOCKED
-    blocker: "G0 PRD_READY, Pre-Build Reality external evidence gap, and T0 mainnet custody proof remain open."
+    blocker: "G0 PRD_READY and T0 mainnet custody proof remain open; live product-depth gates are still unproven."
   AUDIT:
     status: BLOCKED
     blocker: "No live runtime/canonical mainnet run yet."
@@ -43,14 +43,14 @@ judged_build_cycle:
     status: PROVEN
     evidence: "Arc Microgrants requirements and submission constraints are captured."
   PAIN:
-    status: ACTIVE
-    gap: "Need external operator/user evidence beyond council/market reasoning."
+    status: PROVEN
+    evidence: "External operator incidents document runaway agent spend, paid-service failure, and production quality degradation; see docs/research/PRE-BUILD-REALITY-EVIDENCE.md."
   PROBLEM:
     status: PROVEN
     evidence: "Autonomous paid work can continue paying after provider quality degradation; product scope is narrowly defined."
   NEGATIVE_EVENT:
-    status: ACTIVE
-    gap: "Need at least one concrete external negative event / operator failure pattern with observable impact."
+    status: PROVEN
+    evidence: "Observed external incidents include $453 one-day metered agent spend, x402 wallet debit with no delivered data, and acknowledged Claude Code production degradation."
   DIFFERENTIATOR:
     status: PROVEN
     evidence: "Precommitted hidden canary + deterministic financial consequence survived novelty review better than generic policy/payment/procurement layers."
@@ -75,11 +75,11 @@ judged_build_cycle:
 
 core_gates:
   Pre_Build_Reality:
-    status: BLOCKED
+    status: PROVEN
     activation: "All concepts before promotion."
     condition: "Real problem, real user/operator, concrete negative event, observable impact."
-    gap: "Real user/operator and external negative-event evidence are not yet proven."
-    rule: "T0 may proceed as DESIGN technical spike, but DELIVER promotion is blocked until this closes."
+    evidence: "docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+    boundary: "Problem reality proven; product demand/adoption and external-user product evidence remain unproven."
   Competitive_Novelty_Kill:
     status: PROVEN
     activation: "Before Concept Lock and when nearby products materially change."

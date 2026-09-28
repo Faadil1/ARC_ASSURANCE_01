@@ -163,9 +163,15 @@ product_depth_live_reality:
   current_external_user_operator_evidence: BLOCKED
   current_post_vertical_slice_depth_review: BLOCKED
 
-prebuild_reality_gap:
-  status: BLOCKED
-  missing:
-    - "external real user/operator evidence"
-    - "concrete real negative event with observable impact"
-  promotion_rule: "T0 technical spike may proceed in DESIGN; DELIVER promotion may not."
+prebuild_reality:
+  status: PROVEN
+  evidence: docs/research/PRE-BUILD-REALITY-EVIDENCE.md
+  proves:
+    - "external real operator problem exists"
+    - "concrete negative events exist"
+    - "observable financial/operational impact exists"
+  does_not_prove:
+    - "product demand"
+    - "adoption"
+    - "external-user product validation"
+    - "willingness to pay"
