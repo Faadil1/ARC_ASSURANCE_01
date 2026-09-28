@@ -169,3 +169,33 @@ prebuild_reality_gap:
     - "external real user/operator evidence"
     - "concrete real negative event with observable impact"
   promotion_rule: "T0 technical spike may proceed in DESIGN; DELIVER promotion may not."
+
+
+canonical_scorer:
+  branch: feat/canonical-scorer
+  status: LOCAL_VERIFIED
+  scorer_id: "ARC_ASSURANCE_SCORER_V1:invoice-exact-v1"
+  implementation: src/scorer/invoice-v1.mjs
+  tests: test/scorer/invoice-v1.test.mjs
+  spec: docs/CANONICAL-SCORER-SPEC.md
+  local_test_result:
+    observed_at: "2026-09-28"
+    tests: 8
+    passed: 8
+    failed: 0
+  schema:
+    money_representation: "integer minor units"
+    fields:
+      - invoice_number
+      - subtotal_minor
+      - tax_minor
+      - total_minor
+      - currency
+    exact_match: true
+    llm_primary_judge: false
+  test_vectors:
+    evidence_class: PRESEEDED
+    public_hidden_canary_eligible: false
+  remaining_before_contract_binding:
+    - "Independently cross-check keccak vectors with Arc/EVM toolchain."
+    - "Opeyemi reviews scorer/commit interface."
