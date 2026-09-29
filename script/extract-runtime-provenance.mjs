@@ -29,6 +29,17 @@ const references =
   artifact.immutableReferences ??
   {};
 
+const linkReferences =
+  artifact.deployedBytecode?.linkReferences ?? {};
+
+if (
+  Object.keys(linkReferences).length > 0
+) {
+  throw new Error(
+    "UNSUPPORTED_RUNTIME_LINK_REFERENCES"
+  );
+}
+
 const ranges = [];
 
 for (const entries of Object.values(references)) {
