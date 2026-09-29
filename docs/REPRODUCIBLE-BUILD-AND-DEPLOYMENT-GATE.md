@@ -1,6 +1,6 @@
 # Reproducible Build + Deployment Manifest Gate
 
-**Status:** ACTIVE / NOT PROVEN  
+**Status:** SOURCE REPRODUCIBILITY PROVEN / DEPLOYMENT PROVENANCE ACTIVE  
 **Branch:** `chore/reproducible-build-manifest`
 
 This gate binds reviewed source to the exact deployment transaction without pretending the runtime hash is knowable before deployment.
@@ -106,9 +106,11 @@ But reproducibility requires the **transitive npm graph** to be locked by a comm
 
 Current status:
 
-`BLOCKED_UNTIL_PACKAGE_LOCK_COMMITTED`
+`COMMITTED_AND_CLEAN_ROOM_VERIFIED`
 
-The CI workflow generates a candidate lock as an artifact. That artifact must be reviewed and committed before this gate can become PROVEN.
+The committed lock SHA-256 is:
+
+`c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea`
 
 ## Deterministic golden vector
 
@@ -139,10 +141,10 @@ Foundry independently recomputes:
 
 It performs:
 
-1. exact checkout;
+1. exact PR branch-head checkout;
 2. Node 22.16.0;
-3. candidate npm lock generation;
-4. npm clean install;
+3. require committed npm lock;
+4. npm clean install from that committed lock;
 5. pinned Solidity libraries;
 6. deterministic golden vector twice;
 7. all JS tests;
@@ -180,3 +182,31 @@ This gate becomes PROVEN only after all of the following:
 - source commit/build artifact provenance retained.
 
 No mainnet funding is authorized merely by producing these files.
+
+
+## Verified clean-room evidence
+
+Exact verified head:
+
+`a88d08a3a5fef63dac7b5093100fdb2d2c609cd7`
+
+Workflow run:
+
+`36625411255`
+
+Results:
+
+- JavaScript: 54 passed / 0 failed;
+- Solidity: 28 passed / 0 failed;
+- Solidity build: PASS;
+- deterministic golden-vector double generation: PASS;
+- JS/Solidity cross-language vector: PASS;
+- build manifest: generated;
+- deployment manifest candidate: generated;
+- artifact upload: PASS.
+
+Creation bytecode keccak256 at that head:
+
+`0x29bdd71974b5943f8f3194272f6cb13568e5e4ce23865cf085c6242334163afd`
+
+This proves source/build reproducibility only. Deployment provenance remains ACTIVE until a real Arc deployment transaction is bound to the approved init code and observed runtime.
