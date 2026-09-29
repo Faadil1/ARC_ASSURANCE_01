@@ -430,7 +430,7 @@ test("PASS proves atomic resolve and payout", async () => {
       { client: makeClient(built) }
     );
 
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, true, JSON.stringify(result));
   assert.equal(
     result.deterministic_result,
     "PASS"
@@ -454,7 +454,7 @@ test("FAIL proves atomic withhold and zero payment event", async () => {
       { client: makeClient(built) }
     );
 
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, true, JSON.stringify(result));
   assert.equal(
     result.deterministic_result,
     "FAIL"
@@ -478,7 +478,7 @@ test("BREAKER proves withhold then exact protected refund", async () => {
       { client: makeClient(built) }
     );
 
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, true, JSON.stringify(result));
   assert.equal(
     result.settlement_directive,
     "BREAKER"
