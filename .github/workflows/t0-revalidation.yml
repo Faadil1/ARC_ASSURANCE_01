@@ -79,12 +79,24 @@ jobs:
       - name: Build
         run: |
           set -o pipefail
-          arc-forge build --sizes 2>&1 | tee build.log
+          arc-forge build --sizes 2>&1 | tee build.log || {
+            echo "### BUILD FAILED" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -60 build.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
 
       - name: Test
         run: |
           set -o pipefail
-          arc-forge test -vv 2>&1 | tee test.log
+          arc-forge test -vv 2>&1 | tee test.log || {
+            echo "### TEST FAILED" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -120 test.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
 
       - name: Summarise
         if: always()
