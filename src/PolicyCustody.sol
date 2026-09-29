@@ -39,7 +39,8 @@ contract PolicyCustody {
         Funded,
         PaidOut,
         Refunded,
-        Completed
+        Completed,
+        Cancelled
     }
 
     /// @notice Immutable configuration bound at policy creation.
@@ -101,6 +102,7 @@ contract PolicyCustody {
     error DuplicatePolicyId();
     error InvalidStateTransition(State current, State expected);
     error PolicyExpired(uint64 expiry, uint64 nowTs);
+    error PolicyNotExpired(uint64 expiry, uint64 nowTs);
     error SpendCapExceeded(uint256 requested, uint256 cap);
     error UnitPayoutExceeded(uint256 unitPayout, uint256 cap);
     error InsufficientCustody(uint256 requested, uint256 available);
@@ -190,6 +192,15 @@ contract PolicyCustody {
         uint256 chainId,
         uint256 completedAtBlock,
         uint256 completedAtTimestamp
+    );
+
+    event PolicyCancelled(
+        bytes32 indexed policyId,
+        address indexed funder,
+        uint256 refundedAmount,
+        uint256 chainId,
+        uint256 cancelledAtBlock,
+        uint256 cancelledAtTimestamp
     );
 
     event PolicyStateChanged(
@@ -330,8 +341,11 @@ contract PolicyCustody {
         if (expiry_ != 0 && expiry_ <= block.timestamp) {
             revert PolicyExpired(expiry_, uint64(block.timestamp));
         }
-        if (totalCustodyReceived + maxSpendCap_ > deploymentSpendCap) {
-            revert SpendCapExceeded(totalCustodyReceived + maxSpendCap_, deploymentSpendCap);
+        // A policy cap is a per-policy ceiling, not a reservation of pooled
+        // deployment capacity. The lifetime deployment ceiling is enforced when
+        // real value enters custody in fund().
+        if (maxSpendCap_ > deploymentSpendCap) {
+            revert SpendCapExceeded(maxSpendCap_, deploymentSpendCap);
         }
 
         policyExists[policyId_] = true;
@@ -529,6 +543,70 @@ contract PolicyCustody {
         emit PolicyStateChanged(policyId_, previous, State.Refunded, block.chainid, block.number);
     }
 
+    /// @notice Recover a funded policy after its configured expiry.
+    /// @dev This is the fail-closed recovery path when payout can no longer be
+    ///      completed (for example, a permanently rejecting recipient). It is
+    ///      only available after a non-zero expiry has passed and always refunds
+    ///      the policy's own remaining liability to its immutable funder.
+    function cancelExpiredAndRefund(bytes32 policyId_)
+        external
+        onExpectedChain
+        nonReentrant
+        policyMustExist(policyId_)
+    {
+        Policy storage p = _policies[policyId_];
+        if (msg.sender != p.funder) revert NotPolicyOwner();
+        if (p.refundIssued) revert RefundAlreadyIssued();
+        if (p.state != State.Funded) {
+            revert InvalidStateTransition(p.state, State.Funded);
+        }
+        if (p.expiry == 0 || block.timestamp <= p.expiry) {
+            revert PolicyNotExpired(p.expiry, uint64(block.timestamp));
+        }
+
+        uint256 amount = p.totalFunded - p.totalPaidOut - p.totalRefunded;
+        if (amount == 0) revert NothingToRefund();
+        if (amount > address(this).balance) {
+            revert InsufficientCustody(amount, address(this).balance);
+        }
+
+        p.refundIssued = true;
+        p.totalRefunded += amount;
+        p.state = State.Cancelled;
+        p.resolvedAt = uint64(block.timestamp);
+        totalLiability -= amount;
+
+        _send(p.funder, amount);
+
+        emit RemainingFundsRefunded(
+            policyId_,
+            p.funder,
+            p.funder,
+            amount,
+            address(this).balance,
+            p.totalRefunded,
+            block.chainid,
+            block.number,
+            block.timestamp
+        );
+        emit PolicyRefunded(policyId_, p.funder, amount, block.chainid, block.number);
+        emit PolicyCancelled(
+            policyId_,
+            p.funder,
+            amount,
+            block.chainid,
+            block.number,
+            block.timestamp
+        );
+        emit PolicyStateChanged(
+            policyId_,
+            State.Funded,
+            State.Cancelled,
+            block.chainid,
+            block.number
+        );
+    }
+
     /// @notice Terminate a fully drained, refunded policy.
     /// @dev Completion requires the POLICY's liability to be zero, not that the
     ///      whole contract is empty. Unattributed forced value, if any, must not
@@ -586,12 +664,22 @@ contract PolicyCustody {
             });
     }
 
-    function stateOf(bytes32 policyId_) external view returns (State) {
+    function stateOf(bytes32 policyId_)
+        external
+        view
+        policyMustExist(policyId_)
+        returns (State)
+    {
         return _policies[policyId_].state;
     }
 
     /// @notice Remaining custody attributable to a policy.
-    function remainingFor(bytes32 policyId_) external view returns (uint256) {
+    function remainingFor(bytes32 policyId_)
+        external
+        view
+        policyMustExist(policyId_)
+        returns (uint256)
+    {
         Policy storage p = _policies[policyId_];
         if (p.state == State.Created) return 0;
         return p.totalFunded - p.totalPaidOut - p.totalRefunded;
