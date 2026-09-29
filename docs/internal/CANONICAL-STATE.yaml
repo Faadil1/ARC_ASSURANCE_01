@@ -325,3 +325,43 @@ assurance_core_v1:
     G4_REAL_FAILURE: BLOCKED
     G5_FINANCIAL_CAUSALITY: BLOCKED
     reason: "No exact-head verification or Arc mainnet composition with custody yet."
+
+
+verifier_cli_v1:
+  branch: feat/verifier-cli-v1
+  status: PRODUCED_REVALIDATION_REQUIRED
+  mode: OFFLINE_EVIDENCE_PACKET
+  implementation:
+    verifier: src/verifier/verify-evidence-v1.mjs
+    cli: src/verifier/cli.mjs
+    tests: test/verifier/verify-evidence-v1.test.mjs
+    evidence_spec: docs/EVIDENCE-PACKET-V1.md
+    verifier_spec: docs/VERIFIER-CLI-V1.md
+    golden_generator: src/verifier/generate-golden-vector-v1.mjs
+  recomputes:
+    - inputHash
+    - outputHash
+    - scorerIdHash
+    - EIP712 typed data
+    - EIP712 digest
+    - provider signature
+    - canary commitment
+    - canary key
+    - deterministic verdict
+    - event order by block/logIndex
+  fail_closed:
+    - wrong provider signature
+    - rewritten expected answer
+    - invalid event ordering
+    - FAIL paired with PAY
+    - BREAKER without CircuitBreakerTriggered
+    - packet self-claiming financial proof
+  truth_boundary:
+    packet_internal_consistency: "candidate verifier capability"
+    arc_rpc_reconstruction: NOT_IMPLEMENTED
+    financial_causality: NOT_PROVEN_PACKET_ONLY
+    G6_independent_verify: BLOCKED
+  local_environment:
+    node: "22.16.0 observed"
+    viem: "not installed"
+    dependency_install_attempt: "timed out; no test-pass claim"

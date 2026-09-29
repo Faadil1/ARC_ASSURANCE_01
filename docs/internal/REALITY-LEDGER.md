@@ -163,3 +163,36 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Real Arc mainnet FAIL -> no-pay.
 - Real Arc mainnet breaker -> protected/refunded remainder.
 - Whether an external provider can detect a canary from non-contractual features of the input.
+
+
+## Verifier CLI v1 reality delta — 2026-09-29
+
+### OBSERVED
+
+- Source now exists for an offline evidence-packet verifier.
+- The verifier recomputes input/output/scorer hashes rather than trusting copied values.
+- The verifier reconstructs the EIP-712 message and verifies the provider signature.
+- It recomputes the hidden-canary commitment from revealed material.
+- It checks the canonical order by block number + log index.
+- It rejects FAIL paired with PAY.
+- BREAKER requires a CircuitBreakerTriggered event in the expected causal window.
+- Offline financial fields are explicitly treated as untrusted claims.
+- `--require-financial` cannot succeed from packet-only evidence.
+- A golden-vector generator outputs public crypto material and does not output the ephemeral private key.
+- Node 22.16.0 is present in the current environment.
+- Viem is not present; dependency installation timed out.
+
+### INFERRED
+
+- Once dependencies are available and tests pass, this verifier can serve as a useful pre-chain verification layer and a foundation for the final independent verifier.
+- Separating packet consistency from chain provenance reduces the risk of narrating a self-authored evidence bundle as independent live proof.
+
+### UNKNOWN / NOT YET VERIFIED
+
+- Exact-head JS test results.
+- Golden-vector output under pinned Viem.
+- JS/Solidity golden-vector equality.
+- Arc RPC event decoding/reconstruction.
+- Custody/payment/refund verification.
+- Runtime/commit binding.
+- Clean-checkout G6 verification.
