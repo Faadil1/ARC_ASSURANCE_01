@@ -57,3 +57,18 @@ For the integrated candidate:
 - authority: human-controlled deployment/administrative address
 
 The provider signer is **not** a constructor parameter and must remain separate from the funding wallet.
+
+
+## Immutable runtime rule
+
+The deployed contract contains constructor-patched immutable values.
+
+Therefore the manifest provides `verifier_runtime_config` with:
+
+- `expected_normalized_code_hash`;
+- `immutable_references`;
+- public constructor values.
+
+The integrated verifier must zero those byte ranges in the observed Arc runtime, compare the normalized hash, then read the public immutable getters and compare them to the manifest.
+
+A raw runtime-hash mismatch caused only by immutable values is not treated as a source-code mismatch.
