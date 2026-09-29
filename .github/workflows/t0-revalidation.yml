@@ -1,0 +1,178 @@
+name: T0 Revalidation
+
+# Compile-and-test only. This workflow NEVER broadcasts, never funds, and has
+# no access to mainnet secrets. It exists only to produce reproducible
+# build/test evidence for the T0 mainnet custody gate.
+#
+# Scope guard: tests run entirely in-process. No `--broadcast`, no
+# `--rpc-url` mainnet calls, no PRIVATE_KEY.
+
+on:
+  push:
+    branches:
+      - feat/t0-mainnet-custody
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  revalidate:
+    name: arc-forge build + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # foundry.toml interpolates these into [rpc_endpoints]. The values are
+      # never dialed by this job; they exist only so config parsing succeeds.
+      # These are well-known public Arc endpoints, not secrets.
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      ARC_TESTNET_RPC_URL: https://rpc.testnet.arc.io
+      FOUNDRY_PROFILE: default
+
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v5
+
+      - name: Record tested commit
+        id: sha
+        run: |
+          SHA="$(git rev-parse HEAD)"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "### Tested commit: \`$SHA\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install arc-forge
+        run: |
+          set -euo pipefail
+          # Tag is "v0.8.0-2" but the asset filename has no leading "v" on the
+          # version segment. Split the tag so the URL is built correctly.
+          ARC_TAG="v0.8.0-2"
+          ARC_VER="${ARC_TAG#v}"
+          ASSET="arc-foundry-v${ARC_VER}-x86_64-unknown-linux-gnu.tar.gz"
+          URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_TAG}/${ASSET}"
+          EXPECTED_SHA256="088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556"
+
+          curl -fsSL "$URL" -o /tmp/arc.tar.gz
+          ACTUAL_SHA256="$(sha256sum /tmp/arc.tar.gz | awk '{print $1}')"
+          [ "$ACTUAL_SHA256" = "$EXPECTED_SHA256" ] || {
+            echo "Arc Foundry checksum mismatch" >&2
+            echo "expected: $EXPECTED_SHA256" >&2
+            echo "actual  : $ACTUAL_SHA256" >&2
+            exit 1
+          }
+          echo "Arc Foundry asset sha256: $ACTUAL_SHA256"
+          rm -rf /tmp/arcbin && mkdir -p /tmp/arcbin
+          tar -xzf /tmp/arc.tar.gz -C /tmp/arcbin
+
+          # The archive may nest binaries in a versioned directory, so install
+          # every executable found anywhere under the extraction root rather
+          # than assuming a flat layout.
+          mapfile -t BINS < <(find /tmp/arcbin -type f -executable | sort)
+          echo "Found ${#BINS[@]} executables:"
+          printf '%s\n' "${BINS[@]}"
+          if [ "${#BINS[@]}" -eq 0 ]; then
+            echo "### No executables in archive" >> "$GITHUB_STEP_SUMMARY"
+            tar -tzf /tmp/arc.tar.gz >> "$GITHUB_STEP_SUMMARY" 2>&1
+            exit 1
+          fi
+
+          for b in "${BINS[@]}"; do
+            sudo install -m 0755 "$b" "/usr/local/bin/$(basename "$b")"
+          done
+
+          # The arc-foundry release ships upstream-named binaries
+          # (forge/cast/anvil), not "arc-forge". Expose "arc-forge" as an alias
+          # so this workflow matches the documented Arc runbook command.
+          printf '#!/bin/sh\nexec forge "$@"\n' > /usr/local/bin/arc-forge
+          sudo chmod 0755 /usr/local/bin/arc-forge
+          printf '#!/bin/sh\nexec cast "$@"\n' > /usr/local/bin/arc-cast
+          sudo chmod 0755 /usr/local/bin/arc-cast
+
+          # Fail loudly here rather than masking a missing binary with "|| true".
+          command -v forge
+          forge --version 2>&1 | tee /tmp/arcforge-version.txt
+          {
+            echo "### Arc Foundry (arc-foundry $ARC_TAG) installed"
+            echo '```'
+            cat /tmp/arcforge-version.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install forge-std
+        run: |
+          set -euo pipefail
+          # lib/ is gitignored, so a fresh checkout has no test dependencies.
+          # Clone directly rather than relying on "forge install" flag support,
+          # which varies across Foundry/arc-forge versions.
+          EXPECTED_FORGE_STD_COMMIT="3b20d60d14b343ee4f908cb8079495c07f5e8981"
+          mkdir -p lib
+          git clone --depth 1 --branch v1.9.6 \
+            https://github.com/foundry-rs/forge-std.git lib/forge-std
+          cd lib/forge-std
+          git rev-parse HEAD > /tmp/forge-std-commit.txt
+          ACTUAL_FORGE_STD_COMMIT="$(cat /tmp/forge-std-commit.txt)"
+          [ "$ACTUAL_FORGE_STD_COMMIT" = "$EXPECTED_FORGE_STD_COMMIT" ] || {
+            echo "forge-std commit mismatch" >&2
+            echo "expected: $EXPECTED_FORGE_STD_COMMIT" >&2
+            echo "actual  : $ACTUAL_FORGE_STD_COMMIT" >&2
+            exit 1
+          }
+          cd ../..
+          echo "forge-std commit: $ACTUAL_FORGE_STD_COMMIT"
+
+      - name: Build
+        run: |
+          set -o pipefail
+          # foundry.toml declares fs_permissions on ./out, which does not exist
+          # on a fresh checkout. Create it so config validation cannot fail.
+          mkdir -p out cache
+          arc-forge build --sizes 2>&1 | tee build.log || {
+            echo "### BUILD FAILED" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -80 build.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
+          echo "### Build succeeded" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Test
+        run: |
+          set -o pipefail
+          arc-forge test -vv 2>&1 | tee test.log || {
+            echo "### TEST FAILED" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -120 test.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
+
+      - name: Summarise
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            echo "## T0 Revalidation Summary"
+            echo ""
+            echo "- Commit: \`$(git rev-parse HEAD)\`"
+            if [ -f test.log ]; then
+              echo ""
+              echo '```'
+              grep -E "^(Ran|Suite result|Encountered)" test.log || true
+              echo '```'
+            else
+              echo ""
+              echo "No test.log produced - see build log."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: t0-build-test-logs
+          path: |
+            build.log
+            test.log
+            /tmp/arcforge-version.txt
+          if-no-files-found: warn
+          retention-days: 90
