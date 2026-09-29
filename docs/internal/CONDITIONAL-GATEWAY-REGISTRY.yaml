@@ -610,3 +610,46 @@ source_reproducibility_subgate:
     build_manifest: true
     deployment_manifest_candidate: true
   invariant: "Any code/config/lock change after the proof head requires a new clean-room proof before deployment promotion."
+
+
+t0_post_audit_revalidation_gate:
+  status: PROVEN
+  exact_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+  workflow_run: 36637646773
+  proof:
+    arc_foundry_checksum_pinned: true
+    forge_std_commit_pinned: true
+    build: PASS
+    tests: "40/40"
+  does_not_prove:
+    - "mainnet deployment"
+    - "real custody"
+    - "real payout"
+    - "real refund"
+    - "G1"
+
+pre_mainnet_deployment_package_gate:
+  status: BLOCKED
+  current_state: PRODUCED_VALIDATION_PENDING
+  bounded_budget:
+    wallet_topup_ceiling_usdc: "5.00"
+    t0_fund_usdc: "0.010"
+    t0_payout_usdc: "0.002"
+    t0_expected_refund_usdc: "0.008"
+    t0_contract_hard_cap_usdc: "0.050"
+  produced:
+    no_secret_template: true
+    readiness_validator: true
+    readiness_tests: true
+    protected_execution_runbook: true
+  blockers:
+    - "exact-head package clean-room CI"
+    - "real public wallet addresses"
+    - "read-only gas estimate"
+    - "human review of 5 USDC sufficiency"
+    - "explicit wallet funding authorization"
+  protected_human_actions:
+    wallet_funding: true
+    mainnet_deploy: true
+    mainnet_value_movement: true
+  rule: "No tool or contributor may infer authorization from a prepared manifest or green CI."
