@@ -653,3 +653,18 @@ pre_mainnet_deployment_package_gate:
     mainnet_deploy: true
     mainnet_value_movement: true
   rule: "No tool or contributor may infer authorization from a prepared manifest or green CI."
+
+
+pre_mainnet_package_source_subgate:
+  status: PROVEN
+  proof_head: e76bd480785d5a627499f7d6ea27ae55705f4df9
+  workflow_run: 36638119707
+  evidence:
+    javascript_tests: "58/58"
+    solidity_tests: "28/28"
+    build: PASS
+    artifact_digest: "sha256:d2a849fcdabae06015c388ccca0b6ea90924eb9a3fc0eb0914db298ed3c3f1ab"
+  does_not_authorize:
+    - wallet_funding
+    - mainnet_deploy
+    - mainnet_value_movement
