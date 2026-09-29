@@ -450,20 +450,6 @@ export async function verifyIntegratedBatchFromArc(
       throw new Error("MULTIPLE_BREAKER_EVENTS");
     }
 
-    const preCoreBreakerLogs =
-      await publicClient.getLogs({
-        address,
-        event: EVENTS.CircuitBreakerTriggered,
-        args: { policyId, batchId },
-        fromBlock,
-        toBlock,
-        strict: true,
-      });
-
-    if (preCoreBreakerLogs.length > 1) {
-      throw new Error("MULTIPLE_BREAKER_EVENTS");
-    }
-
     const offchain = config.offchain;
 
     const chainEvents = [
