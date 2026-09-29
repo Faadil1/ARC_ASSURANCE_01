@@ -70,6 +70,32 @@ if (
 }
 
 if (
+  manifest.verifier_runtime_config
+    ?.expected_normalized_code_hash !==
+    manifest.reproducible_build
+      ?.expected_normalized_runtime_hash
+) {
+  throw new Error(
+    "VERIFIER_RUNTIME_HASH_BINDING_MISMATCH"
+  );
+}
+
+if (
+  JSON.stringify(
+    manifest.verifier_runtime_config
+      ?.immutable_references ?? null
+  ) !==
+  JSON.stringify(
+    manifest.reproducible_build
+      ?.immutable_references ?? null
+  )
+) {
+  throw new Error(
+    "VERIFIER_IMMUTABLE_RANGE_BINDING_MISMATCH"
+  );
+}
+
+if (
   String(manifest.reproducible_build?.solc) !==
   "0.8.24"
 ) {
