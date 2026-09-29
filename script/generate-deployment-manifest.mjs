@@ -114,7 +114,7 @@ const manifest = {
     block_number: deployBlock,
     chain_verification: "NOT_RUN",
   },
-  secrets_included: false,
+  sensitive_material_included: false,
   truth_boundary:
     "This manifest never proves deployment by itself. A chain-native verifier must fetch Arc bytecode/receipt and match the expected runtime code hash.",
 };
