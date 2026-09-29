@@ -440,3 +440,45 @@ Foundry/crypto dependencies are now explicitly reproducible on this branch:
 - Viem 2.56.9.
 
 No test-pass claim is made for this exact head until those suites are actually run.
+
+
+## 19. Verifier CLI v1 — offline evidence verification
+
+Branch:
+
+- `feat/verifier-cli-v1`
+
+Implemented:
+
+- fail-closed evidence packet verifier;
+- CLI with normal and `--require-financial` modes;
+- EIP-712 reconstruction/signature verification;
+- hidden commitment reconstruction;
+- deterministic verdict reconstruction;
+- event-order verification using block number + log index;
+- public golden-vector generator;
+- tamper/ordering/financial-boundary test sources.
+
+### Important distinction
+
+Verifier v1 validates **internal cryptographic/evidence consistency**.
+
+It does not yet fetch Arc mainnet logs itself.
+
+Therefore:
+
+```
+CORE_PROOF_VALID != ARC_MAINNET_PROOF
+```
+
+and no packet field can self-promote financial causality.
+
+`--require-financial` intentionally fails until the verifier has a chain-native custody/receipt verification path.
+
+### Local environment result
+
+Node 22.16.0 is available in the current agent environment.
+
+Viem was not installed. A dependency-install attempt timed out, so no exact-head JS test pass is claimed.
+
+This branch remains `PRODUCED_REVALIDATION_REQUIRED`.
