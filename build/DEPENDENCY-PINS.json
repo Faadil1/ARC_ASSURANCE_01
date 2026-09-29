@@ -1,0 +1,24 @@
+{
+  "node": "22.16.0",
+  "npm_direct_dependency": {
+    "viem": "2.56.9"
+  },
+  "solidity": {
+    "solc": "0.8.24",
+    "optimizer": true,
+    "optimizer_runs": 200
+  },
+  "foundry_dependencies": {
+    "forge_std": "v1.16.1",
+    "openzeppelin_contracts": "v5.6.1"
+  },
+  "arc_foundry_deploy_target": {
+    "reported_version": "1.7.1-dev",
+    "reported_commit": "d497beea",
+    "status": "REVALIDATE_BEFORE_DEPLOY"
+  },
+  "transitive_node_lockfile": {
+    "required": true,
+    "current_status": "BLOCKED_UNTIL_PACKAGE_LOCK_COMMITTED"
+  }
+}
