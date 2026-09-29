@@ -1,7 +1,7 @@
 # T0 — Arc Mainnet Native USDC Custody Runbook
 
 **Gate:** G1 / T0_MAINNET_CUSTODY
-**Status:** CODE_READY_CANDIDATE — locally verified, **not** live-proven until real mainnet receipts are captured.
+**Status:** REVALIDATION_REQUIRED — Opeyemi's 35/35 Arc Foundry result applies to commit `18bf5d6`; the current head adds recovery/driver fixes and must be re-run before mainnet.
 
 ## Purpose
 
@@ -33,6 +33,8 @@ Why it was removed:
 
 ```
 Created -> Funded -> PaidOut -> Refunded -> Completed
+                 \
+                  -> Cancelled (expiry recovery from Funded)
 ```
 
 ## Asset model
@@ -44,7 +46,8 @@ Arc mainnet chain id: **5042**.
 ## Truth boundary
 
 - Contract source: **PRODUCED**
-- Local Arc Foundry tests: **LOCAL VERIFIED** (35/35 on 2026-09-29)
+- Prior Arc Foundry run: **35/35 LOCAL VERIFIED at commit `18bf5d6`**
+- Current head after audit fixes: **REVALIDATION_REQUIRED**
 - Mainnet deployment: **NOT_IMPLEMENTED**
 - Real custody / payout / refund: **NOT_IMPLEMENTED**
 - G1: **ACTIVE, NOT PROVEN**
@@ -90,7 +93,7 @@ This verifies chain id, USDC interface code, USDC decimals, that `T0_AUTHORITY_A
 
 ## 5. Choose bounded amounts
 
-Use deliberately small values. The driver enforces a hard ceiling of `0.05` native USDC (`50000000000000000` wei).
+Use deliberately small values. The driver enforces a hard ceiling of `0.05` native USDC (`50000000000000000` wei). For the protected T0 run, `T0_AUTHORITY_ADDRESS` and `T0_FUNDER_ADDRESS` intentionally resolve to the same human-controlled signer; the payout recipient remains immutable and may be a separate provider/test recipient.
 
 `0.01` native USDC is `10000000000000000` wei. Verify the conversion and the wallet balance before sending; do not copy an amount blindly.
 
@@ -113,7 +116,7 @@ export T0_CONTRACT_ADDRESS="0x..."
 ./script/t0-mainnet-proof.sh full --confirm
 ```
 
-This re-verifies the contract's own `expectedChainId()` and `usdcErc20Interface()` bindings before moving value, then runs fund -> payout -> refund -> complete and prints the final snapshot.
+This is intentionally a second protected action after deployment. It re-verifies deployed code, chain binding, USDC binding, authority, policy existence and initial state before moving value, then runs fund -> payout -> refund -> complete with state checks after every transaction.
 
 ## 8. Manual equivalent
 
@@ -176,3 +179,42 @@ Then update:
 ## Protected human action
 
 A human must control the mainnet signing key, fund the wallet, and approve the real value movements. Source preparation and a prepared script are not authorization to spend.
+
+
+## Recovery path
+
+T0 now requires a non-zero future expiry.
+
+If the policy is still `Funded` after expiry because payout cannot complete, the funder may call:
+
+```solidity
+cancelExpiredAndRefund(policyId)
+```
+
+This refunds only that policy's remaining liability and moves it to terminal `Cancelled`.
+
+This path is a recovery mechanism, not the hero happy path, and must be tested again under Arc Foundry before mainnet.
+
+## Audit delta — 2026-09-29
+
+The post-Opeyemi audit fixed:
+
+- broken tiny-value shell guard;
+- explicit Foundry signer binding through `startBroadcast(privateKey)`;
+- single-signer T0 authority/funder mismatch;
+- unsafe deploy+verify retry that could redeploy;
+- ambiguous one-command fresh deploy/value movement;
+- missing expiry recovery;
+- unknown policy views silently appearing as zero/default state;
+- policy-cap reservation semantics.
+
+The protected mainnet flow is now deliberately:
+
+```
+preflight
+→ deploy --confirm
+→ human inspects deployed address / explorer
+→ set T0_CONTRACT_ADDRESS
+→ execute --confirm
+→ evidence capture
+```
