@@ -48,11 +48,11 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 ## Current live-reality status
 
 - Live Core Loop: **NOT_IMPLEMENTED**
-- Load-Bearing Arc Integration: **NOT_IMPLEMENTED**
+- Load-Bearing Arc Integration: **PARTIAL** — source-level integrated candidate exists; no live proof
 - Real Consequence: **NOT_IMPLEMENTED**
 - External User/Operator Evidence: **NOT_IMPLEMENTED**
 - Judge/Operator Self-Serve: **NOT_IMPLEMENTED**
-- Clean-Room Reproduction: **NOT_IMPLEMENTED**
+- Clean-Room Reproduction: **PARTIAL** — pinned clean-room workflow exists; exact-head run pending
 - Post-Vertical-Slice Depth Review: **NOT_IMPLEMENTED**
 
 
@@ -266,3 +266,57 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Real breaker -> refund.
 - Reproducible Git commit -> deployed bytecode provenance.
 - External clean-room verification.
+
+
+## Reproducible Build + Deployment Gate reality delta — 2026-09-29
+
+### OBSERVED
+
+- A machine-readable dependency lock now pins the exact Arc Foundry source commit, solc version, forge-std commit, OpenZeppelin commit, Viem version/source tag commit, and CI action commits.
+- Arc Foundry is installed from exact source rather than substituted with upstream Foundry.
+- `foundry.toml` now has an explicit Arc profile with `network = "arc"`.
+- The build script checks that the resolved Arc Foundry config actually uses Arc semantics.
+- The reproducible-build script records exact Git commit/tree plus creation/runtime bytecode hashes.
+- A double-build script builds the same exact commit from two separate clean checkout paths and compares deterministic evidence fields.
+- The JS golden-vector generator now derives an intentionally public deterministic test key rather than a random key.
+- A Solidity golden-vector generator independently computes the same provider/canary/EIP-712 values.
+- A comparison tool requires exact equality across the selected JS/Solidity vector fields.
+- A deployment-manifest generator records only public build/constructor/deployment metadata and accepts no private key.
+- The deployment manifest cannot self-declare chain verification.
+- A pinned GitHub Actions clean-room workflow source exists.
+- The clean-room runner performs no mainnet call or value movement.
+
+### INFERRED
+
+- If the exact-head clean-room workflow passes, creation/runtime bytecode equality across two checkout paths will provide strong evidence that the reviewed contract build is deterministic under the pinned toolchain.
+- Cross-language golden-vector equality will materially reduce the risk of a JS/Solidity encoding mismatch before mainnet.
+
+### UNKNOWN / NOT YET VERIFIED
+
+- Whether the clean-room workflow passes on the exact branch head.
+- The actual exact-head AssuranceVault runtime code hash.
+- The actual exact-head creation bytecode hash.
+- Whether all integrated Solidity tests pass under the pinned Arc Foundry source.
+- Whether all JS/verifier tests pass against the generated npm dependency tree.
+- Whether JS and Solidity golden vectors match on this exact head.
+- A reviewed/committed canonical package-lock.json.
+- Mainnet deployed code hash.
+- Reproducible source commit -> deployed runtime equality.
+
+
+### Runtime immutable provenance correction — 2026-09-29
+
+**OBSERVED**
+
+- `AssuranceVault` declares immutable constructor configuration.
+- Solidity artifacts expose immutable-reference byte ranges for deployed runtime.
+- The reproducible-build gate now records those ranges and computes a normalized runtime hash with those ranges zeroed.
+- Runtime link references are rejected by the provenance extractor rather than silently normalized.
+- Integrated verifier v3 can now normalize observed Arc runtime using manifest ranges.
+- Verifier v3 can separately check the public immutable getters when constructor expectations are supplied.
+
+**UNKNOWN / NOT YET VERIFIED**
+
+- Exact immutable ranges produced by the clean-room build.
+- Exact normalized runtime hash.
+- On-chain immutable getter values, because the integrated vault is not deployed.

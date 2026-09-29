@@ -1,6 +1,7 @@
 import {
   getAddress,
   keccak256,
+  parseAbi,
   parseAbiItem,
 } from "viem";
 import {
@@ -11,6 +12,9 @@ import {
 import {
   verifyEvidencePacketV1,
 } from "./verify-evidence-v1.mjs";
+import {
+  hashNormalizedRuntime,
+} from "./runtime-provenance-v1.mjs";
 
 const EVENTS = Object.freeze({
   AssurancePolicyCreated: parseAbiItem(
@@ -47,6 +51,13 @@ const EVENTS = Object.freeze({
     "event PolicyClosed(bytes32 indexed policyId,address indexed funder,uint256 totalFunded,uint256 totalPaidOut,uint256 totalRefunded,uint256 blockNumber)"
   ),
 });
+
+const IMMUTABLE_GETTERS = parseAbi([
+  "function authority() view returns (address)",
+  "function expectedChainId() view returns (uint256)",
+  "function usdcErc20Interface() view returns (address)",
+  "function deploymentSpendCap() view returns (uint256)",
+]);
 
 const DIRECTIVE = Object.freeze({
   0: "NONE",
@@ -149,27 +160,156 @@ async function runtimeCheck(
     throw new Error("NO_DEPLOYED_CODE");
   }
 
-  const observed = keccak256(bytecode);
+  const observedRaw = keccak256(bytecode);
+  const immutableReferences =
+    runtime.immutable_references ?? [];
+
+  let observedNormalized = null;
+  if (
+    runtime.expected_normalized_code_hash ||
+    immutableReferences.length > 0
+  ) {
+    observedNormalized = hashNormalizedRuntime(
+      bytecode,
+      immutableReferences
+    );
+  }
+
+  if (
+    runtime.expected_normalized_code_hash &&
+    !sameHex(
+      observedNormalized,
+      runtime.expected_normalized_code_hash
+    )
+  ) {
+    throw new Error(
+      "NORMALIZED_RUNTIME_CODE_HASH_MISMATCH"
+    );
+  }
+
   if (
     runtime.expected_code_hash &&
     !sameHex(
-      observed,
+      observedRaw,
       runtime.expected_code_hash
     )
   ) {
     throw new Error("RUNTIME_CODE_HASH_MISMATCH");
   }
 
+  let commitBinding =
+    "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED";
+
+  if (runtime.expected_normalized_code_hash) {
+    commitBinding =
+      "NORMALIZED_CODE_HASH_MATCH_IMMUTABLE_BINDINGS_STILL_REQUIRED";
+  } else if (runtime.expected_code_hash) {
+    commitBinding =
+      "RAW_CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED";
+  }
+
   return {
-    observed_code_hash: observed,
-    expected_code_hash:
+    observed_raw_code_hash: observedRaw,
+    observed_normalized_code_hash:
+      observedNormalized,
+    expected_raw_code_hash:
       runtime.expected_code_hash ?? null,
+    expected_normalized_code_hash:
+      runtime.expected_normalized_code_hash ?? null,
+    immutable_references: immutableReferences,
     source_commit_claim:
       runtime.source_commit ?? null,
-    commit_binding:
-      runtime.expected_code_hash
-        ? "CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED"
-        : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
+    commit_binding: commitBinding,
+  };
+}
+
+async function verifyConstructorBindings(
+  client,
+  address,
+  expected
+) {
+  if (!expected) {
+    return {
+      status: "NOT_SUPPLIED",
+    };
+  }
+
+  const calls = [
+    ["authority", expected.authority],
+    [
+      "expectedChainId",
+      BigInt(expected.expected_chain_id),
+    ],
+    [
+      "usdcErc20Interface",
+      expected.usdc_erc20_interface,
+    ],
+    [
+      "deploymentSpendCap",
+      BigInt(expected.deployment_spend_cap_wei),
+    ],
+  ];
+
+  const observed = {};
+
+  for (const [functionName] of calls) {
+    observed[functionName] =
+      await client.readContract({
+        address,
+        abi: IMMUTABLE_GETTERS,
+        functionName,
+      });
+  }
+
+  if (
+    !sameHex(
+      observed.authority,
+      expected.authority
+    )
+  ) {
+    throw new Error(
+      "IMMUTABLE_AUTHORITY_MISMATCH"
+    );
+  }
+
+  if (
+    BigInt(observed.expectedChainId) !==
+    BigInt(expected.expected_chain_id)
+  ) {
+    throw new Error(
+      "IMMUTABLE_CHAIN_ID_MISMATCH"
+    );
+  }
+
+  if (
+    !sameHex(
+      observed.usdcErc20Interface,
+      expected.usdc_erc20_interface
+    )
+  ) {
+    throw new Error(
+      "IMMUTABLE_USDC_INTERFACE_MISMATCH"
+    );
+  }
+
+  if (
+    BigInt(observed.deploymentSpendCap) !==
+    BigInt(expected.deployment_spend_cap_wei)
+  ) {
+    throw new Error(
+      "IMMUTABLE_DEPLOYMENT_CAP_MISMATCH"
+    );
+  }
+
+  return {
+    status: "PROVEN_FROM_CHAIN_GETTERS",
+    authority: observed.authority,
+    expected_chain_id:
+      String(observed.expectedChainId),
+    usdc_erc20_interface:
+      observed.usdcErc20Interface,
+    deployment_spend_cap_wei:
+      String(observed.deploymentSpendCap),
   };
 }
 
@@ -207,6 +347,29 @@ export async function verifyIntegratedBatchFromArc(
       address,
       config.runtime ?? {}
     );
+
+    runtime.constructor_bindings =
+      await verifyConstructorBindings(
+        publicClient,
+        address,
+        config.runtime?.constructor ?? null
+      );
+
+    if (
+      runtime.expected_normalized_code_hash &&
+      runtime.constructor_bindings.status !==
+        "PROVEN_FROM_CHAIN_GETTERS"
+    ) {
+      runtime.commit_binding =
+        "NORMALIZED_CODE_HASH_MATCH_IMMUTABLE_BINDINGS_NOT_SUPPLIED";
+    } else if (
+      runtime.expected_normalized_code_hash &&
+      runtime.constructor_bindings.status ===
+        "PROVEN_FROM_CHAIN_GETTERS"
+    ) {
+      runtime.commit_binding =
+        "NORMALIZED_CODE_HASH_AND_IMMUTABLE_BINDINGS_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED";
+    }
 
     const policy = await uniqueLog(publicClient, {
       address,

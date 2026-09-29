@@ -1,0 +1,58 @@
+name: Reproducible AssuranceVault Gate
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "test/**"
+      - "script/**"
+      - "build/**"
+      - "foundry.toml"
+      - "remappings.txt"
+      - "package.json"
+      - ".github/workflows/reproducible-assurance-vault.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reproducible-assurance-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clean-room:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Setup pinned Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22.16.0"
+
+      - name: Cache verified Arc Foundry release
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: |
+            .tooling/downloads
+          key: arc-foundry-v0.8.0-2-088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Run full reproducible gate
+        shell: bash
+        run: |
+          bash script/run-reproducible-gate.sh
+
+      - name: Upload proof artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: assurance-vault-reproducible-proof-${{ github.sha }}
+          path: build/out/
+          if-no-files-found: error
+          retention-days: 30

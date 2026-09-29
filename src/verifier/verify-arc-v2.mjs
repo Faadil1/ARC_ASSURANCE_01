@@ -7,6 +7,9 @@ import {
   parseAbiItem,
 } from "viem";
 import {
+  hashNormalizedRuntime,
+} from "./runtime-provenance-v1.mjs";
+import {
   verifyEvidencePacketV1,
 } from "./verify-evidence-v1.mjs";
 
@@ -244,14 +247,52 @@ async function verifyRuntimeCode(
     });
   }
 
-  const codeHash = keccak256(bytecode);
-  const expected = runtime.expected_code_hash ?? null;
+  const rawCodeHash = keccak256(bytecode);
+  const expectedRaw =
+    runtime.expected_code_hash ?? null;
+  const expectedNormalized =
+    runtime.expected_normalized_code_hash ?? null;
+  const immutableReferences =
+    runtime.immutable_references ?? [];
 
-  if (expected && !sameHex(codeHash, expected)) {
+  const normalizedCodeHash =
+    expectedNormalized ||
+    immutableReferences.length > 0
+      ? hashNormalizedRuntime(
+          bytecode,
+          immutableReferences
+        )
+      : null;
+
+  if (
+    expectedNormalized &&
+    !sameHex(
+      normalizedCodeHash,
+      expectedNormalized
+    )
+  ) {
+    return fail(
+      "NORMALIZED_RUNTIME_CODE_HASH_MISMATCH",
+      {
+        address: normalized,
+        observed_normalized_code_hash:
+          normalizedCodeHash,
+        expected_normalized_code_hash:
+          expectedNormalized,
+        source_commit_claim:
+          runtime.source_commit ?? null,
+      }
+    );
+  }
+
+  if (
+    expectedRaw &&
+    !sameHex(rawCodeHash, expectedRaw)
+  ) {
     return fail("RUNTIME_CODE_HASH_MISMATCH", {
       address: normalized,
-      observed_code_hash: codeHash,
-      expected_code_hash: expected,
+      observed_code_hash: rawCodeHash,
+      expected_code_hash: expectedRaw,
       source_commit_claim:
         runtime.source_commit ?? null,
     });
@@ -259,14 +300,21 @@ async function verifyRuntimeCode(
 
   return pass({
     address: normalized,
-    observed_code_hash: codeHash,
-    expected_code_hash: expected,
+    observed_raw_code_hash: rawCodeHash,
+    observed_normalized_code_hash:
+      normalizedCodeHash,
+    expected_raw_code_hash: expectedRaw,
+    expected_normalized_code_hash:
+      expectedNormalized,
+    immutable_references: immutableReferences,
     source_commit_claim:
       runtime.source_commit ?? null,
     commit_binding:
-      expected
-        ? "CODE_HASH_MATCH_MANIFEST_COMMIT_PROVENANCE_STILL_REQUIRED"
-        : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
+      expectedNormalized
+        ? "NORMALIZED_CODE_HASH_MATCH_IMMUTABLE_BINDINGS_STILL_REQUIRED"
+        : expectedRaw
+          ? "RAW_CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED"
+          : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
   });
 }
 
