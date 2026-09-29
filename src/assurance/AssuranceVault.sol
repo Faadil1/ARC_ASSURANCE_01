@@ -102,7 +102,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
     error PolicyAlreadyExists(bytes32 policyId);
     error PolicyNotFound(bytes32 policyId);
     error PolicyPaused(bytes32 policyId);
-    error PolicyClosed(bytes32 policyId);
+    error PolicyAlreadyClosed(bytes32 policyId);
     error PolicyExpired(uint64 expiry, uint64 nowTs);
     error PolicyNotExpired(uint64 expiry, uint64 nowTs);
     error ActiveBatchExists(bytes32 activeBatchId);
@@ -976,7 +976,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         bytes32 policyId,
         Policy storage policy
     ) internal view {
-        if (policy.closed) revert PolicyClosed(policyId);
+        if (policy.closed) revert PolicyAlreadyClosed(policyId);
         if (policy.paused) revert PolicyPaused(policyId);
         if (block.timestamp > policy.expiry) {
             revert PolicyExpired(
