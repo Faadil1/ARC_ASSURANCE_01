@@ -549,63 +549,6 @@ export async function verifyIntegratedBatchFromArc(
     };
 
     const core = await verifyEvidencePacketV1(packet);
-          committed,
-          {
-            policy_id: committed.args.policyId,
-            batch_id: committed.args.batchId,
-            commitment: committed.args.commitment,
-          }
-        ),
-        evidenceEvent(
-          "ProviderOutputLocked",
-          locked,
-          {
-            block_timestamp: String(
-              lockBlock.timestamp
-            ),
-            policy_id: locked.args.policyId,
-            batch_id: locked.args.batchId,
-            work_id: locked.args.workId,
-            input_hash: locked.args.inputHash,
-            output_hash: locked.args.outputHash,
-            scorer_id_hash:
-              locked.args.scorerIdHash,
-            provider_digest:
-              locked.args.providerDigest,
-            provider: locked.args.provider,
-          }
-        ),
-        evidenceEvent(
-          "CanaryRevealed",
-          revealed,
-          {
-            policy_id: revealed.args.policyId,
-            batch_id: revealed.args.batchId,
-            work_id: revealed.args.workId,
-            input_hash: revealed.args.inputHash,
-            expected_output_hash:
-              revealed.args.expectedOutputHash,
-            scorer_id_hash:
-              revealed.args.scorerIdHash,
-            canary_key: revealed.args.canaryKey,
-          }
-        ),
-        evidenceEvent(
-          "BatchResolved",
-          resolved,
-          {
-            policy_id: resolved.args.policyId,
-            batch_id: resolved.args.batchId,
-            work_id: resolved.args.workId,
-            passed: resolved.args.passed,
-            directive,
-          }
-        ),
-      ],
-      financial_evidence: null,
-    };
-
-    const core = await verifyEvidencePacketV1(packet);
     if (!core.ok) {
       throw new Error(
         "CORE_CRYPTO_PROOF_FAILED:" +
