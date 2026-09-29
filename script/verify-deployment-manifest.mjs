@@ -76,6 +76,19 @@ if (
 }
 
 const status = manifest.status;
+const allowedStatuses = new Set([
+  "PREDEPLOY_TEMPLATE",
+  "PREDEPLOY_READY",
+  "DEPLOYED_UNVERIFIED",
+]);
+
+if (!allowedStatuses.has(status)) {
+  throw new Error("INVALID_DEPLOYMENT_STATUS");
+}
+
+if (manifest.sensitive_material_included !== false) {
+  throw new Error("SENSITIVE_MATERIAL_FLAG_MUST_BE_FALSE");
+}
 
 if (status === "PREDEPLOY_READY") {
   if (
@@ -120,7 +133,7 @@ console.log(
       status,
       chain_verification_required:
         status === "DEPLOYED_UNVERIFIED",
-      secrets_included: false,
+      sensitive_material_included: false,
     },
     null,
     2
