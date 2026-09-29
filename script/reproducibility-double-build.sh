@@ -13,12 +13,12 @@ for name in a b; do
   git clone -q --no-hardlinks "$ROOT" "$TMP/$name"
   (
     cd "$TMP/$name"
-    ./script/bootstrap-pinned-deps.sh
+    bash ./script/bootstrap-pinned-deps.sh
     ARC_FORGE="$ARC_FORGE" \
     ARC_CAST="$ARC_CAST" \
     ARC_FOUNDRY_SOURCE_DIR="$ARC_SOURCE" \
     BUILD_OUT_DIR="$TMP/$name-manifest" \
-      ./script/reproducible-build.sh >/dev/null
+      bash ./script/reproducible-build.sh >/dev/null
   )
 done
 
