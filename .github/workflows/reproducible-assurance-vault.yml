@@ -31,7 +31,6 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: "22.16.0"
-          cache: "npm"
 
       - name: Cache Cargo and Arc Foundry build
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
