@@ -383,3 +383,60 @@ Required next:
 3. generate one JS/Solidity golden vector proving identical final EIP-712 digest;
 4. Opeyemi reviews the Solidity integration seam after T0 revalidation;
 5. final assurance state machine binds one signed output to one work item before financial consequence.
+
+
+## 18. Assurance Core v1 — hidden-canary state machine
+
+Branch:
+
+- `feat/assurance-core-v1`
+
+Stacking:
+
+`feat/provider-service → feat/eip712-provider-binding → feat/assurance-core-v1`
+
+This branch does not modify Opeyemi's T0 branch.
+
+Implemented causal sequence:
+
+```
+PRECOMMIT
+→ EIP-712 PROVIDER OUTPUT LOCK
+→ REVEAL
+→ DETERMINISTIC RESOLVE
+→ PAY / WITHHOLD / BREAKER directive
+```
+
+### Important protocol choices
+
+- one unresolved batch per policy;
+- provider address and scorer hash are policy-bound;
+- commitment includes Arc chain + exact contract address;
+- commitment hides work/input/expected/scorer/salt;
+- workId cannot be locked twice;
+- exact canary ground truth cannot be reused after reveal;
+- reveal is impossible before signed output lock;
+- buyer cannot replace expectedOutputHash or salt after seeing the provider result;
+- PASS is exact `outputHash == expectedOutputHash`;
+- failure threshold is cumulative in v1;
+- reaching threshold pauses policy and blocks new batches.
+
+### Financial truth boundary
+
+The module does not hold or move USDC.
+
+`PAY`, `WITHHOLD`, and `BREAKER` are only settlement directives.
+
+Therefore G5 Financial Causality and Product Depth Real Consequence remain BLOCKED until real Arc custody is composed with this state machine and receipts prove the money path.
+
+### Verification boundary
+
+Status is `PRODUCED_REVALIDATION_REQUIRED`.
+
+Foundry/crypto dependencies are now explicitly reproducible on this branch:
+
+- forge-std v1.16.1;
+- OpenZeppelin Contracts v5.6.1;
+- Viem 2.56.9.
+
+No test-pass claim is made for this exact head until those suites are actually run.
