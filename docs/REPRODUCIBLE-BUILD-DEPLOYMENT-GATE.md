@@ -30,7 +30,15 @@ The full machine-readable lock is:
 
 `build/dependencies.lock.json`
 
-Arc Foundry is built from the exact source commit with its own locked Rust dependency graph. Upstream Foundry is deliberately not substituted for Arc execution tests.
+Arc Foundry release `v0.8.0-2` has been verified to point exactly to the locked source commit `d497beea…`.
+
+On supported platforms, the gate installs Circle's official precompiled release archive and verifies its pinned SHA-256 before extraction. The source-build mode remains available as a fallback via `ARC_FOUNDRY_INSTALL_MODE=source`.
+
+For CI Linux x86_64, the pinned archive SHA-256 is:
+
+`088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556`
+
+Upstream Foundry is deliberately not substituted for Arc execution tests.
 
 ## Arc execution profile
 
