@@ -116,6 +116,23 @@ const manifest = {
   operator: {
     deployer,
   },
+  verifier_runtime_config: {
+    source_commit: build.source.commit,
+    expected_normalized_code_hash:
+      build.runtime.normalized_hash,
+    immutable_references:
+      build.runtime.immutable_references,
+    constructor:
+      authority && spendCap
+        ? {
+            authority,
+            expected_chain_id: "5042",
+            usdc_erc20_interface:
+              "0x3600000000000000000000000000000000000000",
+            deployment_spend_cap_wei: spendCap,
+          }
+        : null,
+  },
   deployment: {
     contract_address: deployedAddress,
     transaction_hash: deployTxHash,
