@@ -16,9 +16,10 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Checkout exact commit
+      - name: Checkout exact branch head
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
       - name: Use exact Node
@@ -26,10 +27,12 @@ jobs:
         with:
           node-version: 22.16.0
 
-      - name: Generate candidate npm lock
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Require committed npm lock
+        run: |
+          test -f package-lock.json
+          git diff --exit-code -- package.json package-lock.json
 
-      - name: Clean Node install from generated lock
+      - name: Clean Node install from committed lock
         run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Install Foundry
@@ -57,7 +60,7 @@ jobs:
 
       - name: Generate reproducible build manifest
         env:
-          GIT_COMMIT: ${{ github.sha }}
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
         run: npm run build:manifest
 
       - name: Generate deterministic CI deployment manifest
@@ -87,7 +90,7 @@ jobs:
       - name: Upload reproducibility evidence
         uses: actions/upload-artifact@v4
         with:
-          name: reproducible-build-${{ github.sha }}
+          name: reproducible-build-${{ github.event.pull_request.head.sha || github.sha }}
           if-no-files-found: error
           path: |
             package-lock.json
