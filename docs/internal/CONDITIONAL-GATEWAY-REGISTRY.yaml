@@ -591,3 +591,19 @@ clean_room_reproduction_gate:
   status: ACTIVE
   current: "Pinned GitHub Actions workflow produced; execution evidence pending."
   no_mainnet_side_effects: true
+
+
+runtime_immutable_binding_gate:
+  status: ACTIVE
+  activation: "Any deployment whose runtime contains Solidity immutable references."
+  build:
+    compiler_ranges_recorded: IMPLEMENTED
+    normalized_runtime_hash: IMPLEMENTED
+    unexpected_link_references: REFUSE
+  live_verification:
+    normalized_arc_runtime_hash_match: BLOCKED
+    authority_getter_match: BLOCKED
+    expectedChainId_getter_match: BLOCKED
+    usdcErc20Interface_getter_match: BLOCKED
+    deploymentSpendCap_getter_match: BLOCKED
+  rule: "Raw artifact deployedBytecode hash MUST NOT be treated as the expected Arc runtime hash when immutables are present."
