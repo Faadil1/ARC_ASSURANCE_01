@@ -586,6 +586,7 @@ export async function verifyAssuranceCoreFromArc(
     });
 
     assertOrdered([
+      policyCreated,
       committed,
       locked,
       revealed,
@@ -604,6 +605,32 @@ export async function verifyAssuranceCoreFromArc(
     if (breakerLogs.length > 1) {
       throw new Error(
         "MULTIPLE_CIRCUIT_BREAKER_EVENTS"
+      );
+    }
+
+    if (
+      !sameHex(
+        policyCreated.args.provider,
+        locked.args.provider
+      )
+    ) {
+      throw new Error(
+        "ASSURANCE_PROVIDER_POLICY_BINDING_MISMATCH"
+      );
+    }
+
+    if (
+      !sameHex(
+        policyCreated.args.scorerIdHash,
+        locked.args.scorerIdHash
+      ) ||
+      !sameHex(
+        policyCreated.args.scorerIdHash,
+        revealed.args.scorerIdHash
+      )
+    ) {
+      throw new Error(
+        "ASSURANCE_SCORER_POLICY_BINDING_MISMATCH"
       );
     }
 
@@ -650,6 +677,25 @@ export async function verifyAssuranceCoreFromArc(
 
     if (breakerLogs.length === 1) {
       const breaker = breakerLogs[0];
+
+      if (
+        Number(breaker.args.maxFailures) !==
+        Number(policyCreated.args.maxFailures)
+      ) {
+        throw new Error(
+          "BREAKER_THRESHOLD_POLICY_BINDING_MISMATCH"
+        );
+      }
+
+      if (
+        Number(breaker.args.failureCount) <
+        Number(breaker.args.maxFailures)
+      ) {
+        throw new Error(
+          "BREAKER_TRIGGERED_BELOW_THRESHOLD"
+        );
+      }
+
       chainEvents.push(
         eventToEvidence(
           "CircuitBreakerTriggered",
