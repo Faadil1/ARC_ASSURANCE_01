@@ -89,7 +89,7 @@ function requireString(value, label) {
   return value;
 }
 
-function toBlock(value, fallback) {
+function parseBlockTag(value, fallback) {
   if (value === undefined || value === null) return fallback;
   return BigInt(value);
 }
@@ -332,8 +332,8 @@ export async function verifyT0CustodyFromArc(
       };
     }
 
-    const fromBlock = toBlock(config.from_block, 0n);
-    const toBlock = toBlock(config.to_block, "latest");
+    const fromBlock = parseBlockTag(config.from_block, 0n);
+    const toBlock = parseBlockTag(config.to_block, "latest");
 
     const created = await getUniqueLog(publicClient, {
       address,
@@ -562,8 +562,8 @@ export async function verifyAssuranceCoreFromArc(
       };
     }
 
-    const fromBlock = toBlock(config.from_block, 0n);
-    const toBlock = toBlock(config.to_block, "latest");
+    const fromBlock = parseBlockTag(config.from_block, 0n);
+    const toBlock = parseBlockTag(config.to_block, "latest");
 
     const policyCreated = await getUniqueLog(publicClient, {
       address,

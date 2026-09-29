@@ -475,8 +475,9 @@ integrated_assurance_vault:
     source_produced: true
     solidity_tests_authored: true
     verifier_tests_authored: true
-    exact_head_compile_executed: false
-    exact_head_tests_executed: false
+    exact_head_compile_executed: true
+    exact_head_tests_executed: true
+    clean_room_evidence_sha: "a88d08a3a5fef63dac7b5093100fdb2d2c609cd7"
     live_mainnet_deployment: NOT_IMPLEMENTED
   promotion:
     Load_Bearing_Integration: BLOCKED
@@ -484,3 +485,37 @@ integrated_assurance_vault:
     G5_FINANCIAL_CAUSALITY: BLOCKED
     G6_INDEPENDENT_VERIFY: BLOCKED
     Live_Core_Loop: BLOCKED
+
+
+reproducible_build_and_deploy_gate:
+  branch: chore/reproducible-build-manifest
+  status: ACTIVE
+  parent_candidate: feat/integrated-assurance-vault
+  exact_parent_head_observed: c2f972e46637e4a6aae918522aab0bace76f3c59
+  toolchain_pins:
+    node: 22.16.0
+    viem: 2.56.9
+    solc: 0.8.24
+    forge_std: v1.16.1
+    openzeppelin_contracts: v5.6.1
+    arc_foundry_target: "1.7.1-dev / d497beea — revalidate before deploy"
+  reproducibility:
+    deterministic_golden_vector: PRODUCED
+    cross_language_foundry_test: PRODUCED
+    creation_bytecode_manifest: PRODUCED
+    deployment_init_code_manifest: PRODUCED
+    deployment_tx_input_verification: PRODUCED
+    clean_room_ci: GREEN_CANDIDATE
+    committed_package_lock: PROVEN
+    package_lock_sha256: "c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea"
+    last_green_exact_head: "a88d08a3a5fef63dac7b5093100fdb2d2c609cd7"
+    last_green_workflow_run: 36625411255
+    javascript_tests: "54 passed / 0 failed"
+    solidity_tests: "28 passed / 0 failed"
+    exact_head_ci_policy: "Every branch-head change must re-run clean-room CI before promotion."
+  runtime_binding:
+    predeploy_target: "creation bytecode + constructor args + init-code hash"
+    postdeploy_target: "deploy tx input + receipt + contract address + observed runtime hash"
+    generic_precomputed_runtime_hash_allowed: false
+  mainnet_integrated_deploy: BLOCKED
+  reason: "Source reproducibility is clean-room verified; Opeyemi technical review, T0 completion, approved live constructor values, and real Arc deployment receipts remain required before protected deploy."

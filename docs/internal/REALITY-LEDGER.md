@@ -266,3 +266,50 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Real breaker -> refund.
 - Reproducible Git commit -> deployed bytecode provenance.
 - External clean-room verification.
+
+
+## Reproducible build / deployment provenance delta — 2026-09-29
+
+### OBSERVED
+
+- The golden-vector generator is now deterministic and derives its test-only signing key in memory from a fixed public test label.
+- The generated private key is not emitted.
+- A Solidity test now independently reconstructs the EIP-712 digest, signer recovery, canary commitment and canary key from the JS-generated vector.
+- Build tooling now records exact Git SHA, source/config fingerprints and AssuranceVault creation-bytecode hash.
+- A deployment-manifest generator now hashes exact constructor arguments with creation bytecode into an init-code hash.
+- A Solidity test independently cross-checks creation-code and init-code hashes from generated manifests.
+- A strict local clean-room script exists and requires Node 22.16.0 plus a committed package-lock.
+- A GitHub Actions workflow exists to exercise the build and upload reproducibility artifacts.
+- Integrated verifier v3 can now compare the real Arc deployment transaction input against an expected init-code hash and check the deployment receipt contract address.
+- A pre-mainnet audit checklist now exists.
+
+### IMPORTANT ARCHITECTURAL FACT
+
+- Generic predeployment runtime hash is not treated as sufficient identity because constructor/address-dependent immutables may affect deployed runtime.
+- The canonical predeployment identity is creation bytecode + exact constructor args + init-code hash.
+
+### CLEAN-ROOM PROOF OBSERVED
+
+- A committed npm lock now exists and matches the prior green candidate artifact hash:
+  `c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea`.
+- Exact branch head `a88d08a3a5fef63dac7b5093100fdb2d2c609cd7` passed workflow run `36625411255`.
+- 54/54 JavaScript tests passed.
+- Solidity build with solc 0.8.24 passed.
+- 28/28 Solidity tests passed.
+- Deterministic golden-vector double-generation passed.
+- JS/Solidity EIP-712 and canary vector equality passed.
+- Reproducible build and CI deployment manifests were generated.
+- The evidence artifact name is `reproducible-build-a88d08a3a5fef63dac7b5093100fdb2d2c609cd7`.
+- Foundry observed in the clean-room run was 1.8.3, commit `cae51ad458f6abb64852b7709eb784352429825d`.
+
+### STILL UNKNOWN / BLOCKED
+
+- Opeyemi technical review of the integrated candidate.
+- T0 PR #6 completion.
+- Real integrated deployment transaction.
+- Deployment transaction input -> approved real init-code binding.
+- Postdeployment runtime hash.
+- Real PASS -> payout receipt.
+- Real FAIL -> no-pay receipt.
+- Real breaker -> protected refund receipt.
+- Full Runtime/Commit Binding remains BLOCKED until real deployment evidence exists.

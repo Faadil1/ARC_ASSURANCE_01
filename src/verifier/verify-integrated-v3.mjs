@@ -160,16 +160,73 @@ async function runtimeCheck(
     throw new Error("RUNTIME_CODE_HASH_MISMATCH");
   }
 
+  let deploymentInputBinding = "NOT_CHECKED";
+
+  if (
+    runtime.deploy_tx_hash &&
+    runtime.expected_init_code_hash
+  ) {
+    const tx = await client.getTransaction({
+      hash: runtime.deploy_tx_hash,
+    });
+    const receipt =
+      await client.getTransactionReceipt({
+        hash: runtime.deploy_tx_hash,
+      });
+
+    if (receipt.status !== "success") {
+      throw new Error(
+        "DEPLOY_TRANSACTION_NOT_SUCCESSFUL"
+      );
+    }
+
+    if (
+      !receipt.contractAddress ||
+      !sameHex(
+        receipt.contractAddress,
+        address
+      )
+    ) {
+      throw new Error(
+        "DEPLOY_RECEIPT_ADDRESS_MISMATCH"
+      );
+    }
+
+    const observedInitHash = keccak256(tx.input);
+    if (
+      !sameHex(
+        observedInitHash,
+        runtime.expected_init_code_hash
+      )
+    ) {
+      throw new Error(
+        "DEPLOY_INIT_CODE_HASH_MISMATCH"
+      );
+    }
+
+    deploymentInputBinding =
+      "DEPLOY_TX_INPUT_MATCH_EXPECTED_INIT_CODE";
+  }
+
   return {
     observed_code_hash: observed,
     expected_code_hash:
       runtime.expected_code_hash ?? null,
+    deploy_tx_hash:
+      runtime.deploy_tx_hash ?? null,
+    expected_init_code_hash:
+      runtime.expected_init_code_hash ?? null,
+    deployment_input_binding:
+      deploymentInputBinding,
     source_commit_claim:
       runtime.source_commit ?? null,
     commit_binding:
-      runtime.expected_code_hash
-        ? "CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED"
-        : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
+      deploymentInputBinding ===
+      "DEPLOY_TX_INPUT_MATCH_EXPECTED_INIT_CODE"
+        ? "DEPLOY_INPUT_BOUND_TO_EXPECTED_INIT_CODE_COMMIT_REPRODUCIBILITY_STILL_REQUIRED"
+        : runtime.expected_code_hash
+          ? "CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED"
+          : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
   };
 }
 
@@ -379,7 +436,89 @@ export async function verifyIntegratedBatchFromArc(
       throw new Error("UNKNOWN_DIRECTIVE");
     }
 
+    const preCoreBreakerLogs =
+      await publicClient.getLogs({
+        address,
+        event: EVENTS.CircuitBreakerTriggered,
+        args: { policyId, batchId },
+        fromBlock,
+        toBlock,
+        strict: true,
+      });
+
+    if (preCoreBreakerLogs.length > 1) {
+      throw new Error("MULTIPLE_BREAKER_EVENTS");
+    }
+
     const offchain = config.offchain;
+
+    const chainEvents = [
+      evidenceEvent(
+        "BatchCommitted",
+        committed,
+        {
+          policy_id: committed.args.policyId,
+          batch_id: committed.args.batchId,
+          commitment: committed.args.commitment,
+        }
+      ),
+      evidenceEvent(
+        "ProviderOutputLocked",
+        locked,
+        {
+          block_timestamp: String(lockBlock.timestamp),
+          policy_id: locked.args.policyId,
+          batch_id: locked.args.batchId,
+          work_id: locked.args.workId,
+          input_hash: locked.args.inputHash,
+          output_hash: locked.args.outputHash,
+          scorer_id_hash: locked.args.scorerIdHash,
+          provider_digest: locked.args.providerDigest,
+          provider: locked.args.provider,
+        }
+      ),
+      evidenceEvent(
+        "CanaryRevealed",
+        revealed,
+        {
+          policy_id: revealed.args.policyId,
+          batch_id: revealed.args.batchId,
+          work_id: revealed.args.workId,
+          input_hash: revealed.args.inputHash,
+          expected_output_hash: revealed.args.expectedOutputHash,
+          scorer_id_hash: revealed.args.scorerIdHash,
+          canary_key: revealed.args.canaryKey,
+        }
+      ),
+    ];
+
+    if (preCoreBreakerLogs.length === 1) {
+      chainEvents.push(
+        evidenceEvent(
+          "CircuitBreakerTriggered",
+          preCoreBreakerLogs[0],
+          {
+            policy_id: preCoreBreakerLogs[0].args.policyId,
+            batch_id: preCoreBreakerLogs[0].args.batchId,
+          }
+        )
+      );
+    }
+
+    chainEvents.push(
+      evidenceEvent(
+        "BatchResolved",
+        resolved,
+        {
+          policy_id: resolved.args.policyId,
+          batch_id: resolved.args.batchId,
+          work_id: resolved.args.workId,
+          passed: resolved.args.passed,
+          directive,
+        }
+      )
+    );
+
     const packet = {
       version: "ARC_ASSURANCE_EVIDENCE_V1",
       network: {
@@ -388,8 +527,7 @@ export async function verifyIntegratedBatchFromArc(
       },
       work: {
         input_text: offchain.input_text,
-        canonical_output:
-          offchain.canonical_output,
+        canonical_output: offchain.canonical_output,
         scorer_id: offchain.scorer_id,
       },
       provider: {
@@ -402,67 +540,11 @@ export async function verifyIntegratedBatchFromArc(
         policy_id: policyId,
         batch_id: batchId,
         work_id: revealed.args.workId,
-        expected_output_hash:
-          revealed.args.expectedOutputHash,
+        expected_output_hash: revealed.args.expectedOutputHash,
         salt: revealed.args.salt,
         commitment: committed.args.commitment,
       },
-      chain_events: [
-        evidenceEvent(
-          "BatchCommitted",
-          committed,
-          {
-            policy_id: committed.args.policyId,
-            batch_id: committed.args.batchId,
-            commitment: committed.args.commitment,
-          }
-        ),
-        evidenceEvent(
-          "ProviderOutputLocked",
-          locked,
-          {
-            block_timestamp: String(
-              lockBlock.timestamp
-            ),
-            policy_id: locked.args.policyId,
-            batch_id: locked.args.batchId,
-            work_id: locked.args.workId,
-            input_hash: locked.args.inputHash,
-            output_hash: locked.args.outputHash,
-            scorer_id_hash:
-              locked.args.scorerIdHash,
-            provider_digest:
-              locked.args.providerDigest,
-            provider: locked.args.provider,
-          }
-        ),
-        evidenceEvent(
-          "CanaryRevealed",
-          revealed,
-          {
-            policy_id: revealed.args.policyId,
-            batch_id: revealed.args.batchId,
-            work_id: revealed.args.workId,
-            input_hash: revealed.args.inputHash,
-            expected_output_hash:
-              revealed.args.expectedOutputHash,
-            scorer_id_hash:
-              revealed.args.scorerIdHash,
-            canary_key: revealed.args.canaryKey,
-          }
-        ),
-        evidenceEvent(
-          "BatchResolved",
-          resolved,
-          {
-            policy_id: resolved.args.policyId,
-            batch_id: resolved.args.batchId,
-            work_id: resolved.args.workId,
-            passed: resolved.args.passed,
-            directive,
-          }
-        ),
-      ],
+      chain_events: chainEvents,
       financial_evidence: null,
     };
 
@@ -500,14 +582,7 @@ export async function verifyIntegratedBatchFromArc(
       strict: true,
     });
 
-    const breakerLogs = await publicClient.getLogs({
-      address,
-      event: EVENTS.CircuitBreakerTriggered,
-      args: { policyId, batchId },
-      fromBlock,
-      toBlock,
-      strict: true,
-    });
+    const breakerLogs = preCoreBreakerLogs;
 
     let financialProof;
 

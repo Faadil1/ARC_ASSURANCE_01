@@ -515,7 +515,10 @@ integrated_assurance_vault_gate:
     solidity_tests_authored: true
     integrated_arc_verifier_authored: true
     integrated_verifier_tests_authored: true
-    exact_head_test_execution: BLOCKED
+    exact_head_test_execution: PROVEN_ON_CLEAN_ROOM_HEAD
+    clean_room_head: "a88d08a3a5fef63dac7b5093100fdb2d2c609cd7"
+    javascript_tests: "54/54"
+    solidity_tests: "28/28"
     live_arc_receipts: BLOCKED
   required_before_proven:
     - "Arc Foundry compile/test exact head."
@@ -546,3 +549,64 @@ product_depth_integrated_candidate:
   Shared_Product_Core:
     status: ACTIVE
     current: "provider/scorer/EIP-712/vault/verifier are now designed around one integrated proof path"
+
+
+reproducible_build_gate:
+  status: ACTIVE
+  current_state: SOURCE_AND_CI_PRODUCED
+  required_for:
+    - Runtime_Commit_Binding
+    - G5_FINANCIAL_CAUSALITY
+    - G6_INDEPENDENT_VERIFY
+    - Live_Core_Loop
+    - Integrated_Mainnet_Deployment
+  pins:
+    node: "22.16.0"
+    viem: "2.56.9"
+    solc: "0.8.24"
+    forge_std: "v1.16.1"
+    openzeppelin_contracts: "v5.6.1"
+  produced:
+    deterministic_golden_vector: true
+    solidity_cross_language_test: true
+    build_manifest_generator: true
+    deployment_manifest_generator: true
+    clean_room_ci: true
+    deployment_tx_input_binding_verifier: true
+    pre_mainnet_audit: true
+  blockers:
+    - "Opeyemi technical review pending after T0"
+    - "integrated mainnet deployment not authorized"
+  truth_rule: "Direct version pins are not equivalent to a locked transitive dependency graph."
+
+runtime_commit_binding_gate:
+  status: BLOCKED
+  predeploy_proof:
+    creation_bytecode_hash: IMPLEMENTED
+    constructor_args: IMPLEMENTED
+    init_code_hash: IMPLEMENTED
+  postdeploy_proof:
+    deploy_tx_input_hash_check: IMPLEMENTED
+    receipt_contract_address_check: IMPLEMENTED
+    observed_runtime_hash: IMPLEMENTED
+  remaining:
+    - "clean-room exact commit artifact must be green"
+    - "committed transitive dependency lock"
+    - "real Arc deployment transaction"
+
+
+source_reproducibility_subgate:
+  status: PROVEN
+  proof_head: "a88d08a3a5fef63dac7b5093100fdb2d2c609cd7"
+  workflow_run: 36625411255
+  evidence:
+    committed_package_lock: true
+    package_lock_sha256: "c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea"
+    deterministic_golden_vector: true
+    javascript_tests: "54 passed / 0 failed"
+    solidity_build: true
+    solidity_tests: "28 passed / 0 failed"
+    cross_language_vector: true
+    build_manifest: true
+    deployment_manifest_candidate: true
+  invariant: "Any code/config/lock change after the proof head requires a new clean-room proof before deployment promotion."

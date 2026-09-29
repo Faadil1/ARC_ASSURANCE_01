@@ -1,0 +1,101 @@
+name: reproducible-build-candidate
+
+on:
+  push:
+    branches:
+      - chore/reproducible-build-manifest
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clean-room:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Require committed npm lock
+        run: |
+          test -f package-lock.json
+          git diff --exit-code -- package.json package-lock.json
+
+      - name: Clean Node install from committed lock
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install pinned Solidity libraries
+        run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+
+      - name: Generate golden vector twice
+        run: |
+          npm run golden:write
+          cp fixtures/golden/provider-output-pass-v1.json /tmp/vector-1.json
+          npm run golden:write
+          cmp /tmp/vector-1.json fixtures/golden/provider-output-pass-v1.json
+
+      - name: Run JavaScript suites
+        run: npm run test:all-js
+
+      - name: Build Solidity
+        run: forge build
+
+      - name: Generate reproducible build manifest
+        env:
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: npm run build:manifest
+
+      - name: Generate deterministic CI deployment manifest
+        env:
+          DEPLOY_AUTHORITY: "0x1111111111111111111111111111111111111111"
+          DEPLOYMENT_SPEND_CAP_WEI: "50000000000000000"
+          POLICY_ID: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          POLICY_FUNDER: "0x2222222222222222222222222222222222222222"
+          POLICY_PROVIDER: "0x3333333333333333333333333333333333333333"
+          POLICY_PAYOUT_RECIPIENT: "0x4444444444444444444444444444444444444444"
+          POLICY_SCORER_ID_HASH: "0x5555555555555555555555555555555555555555555555555555555555555555"
+          POLICY_MAX_FAILURES: "2"
+          POLICY_MAX_SPEND_CAP_WEI: "20000000000000000"
+          POLICY_UNIT_PAYOUT_WEI: "2000000000000000"
+          POLICY_EXPIRY: "2000000000"
+        run: node script/generate-deployment-manifest.mjs build/reproducible-build-manifest.json build/deployment-manifest.ci.json
+
+      - name: Run Solidity tests and cross-language checks
+        run: forge test -vv
+
+      - name: Record tool versions
+        run: |
+          node -v > build/tool-versions.txt
+          npm -v >> build/tool-versions.txt
+          forge --version >> build/tool-versions.txt
+
+      - name: Upload reproducibility evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproducible-build-${{ github.event.pull_request.head.sha || github.sha }}
+          if-no-files-found: error
+          path: |
+            package-lock.json
+            fixtures/golden/provider-output-pass-v1.json
+            build/reproducible-build-manifest.json
+            build/deployment-manifest.ci.json
+            build/tool-versions.txt
+            out/AssuranceVault.sol/AssuranceVault.json

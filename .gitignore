@@ -8,3 +8,7 @@ cache/
 broadcast/
 lib/
 .DS_Store
+build/*.json
+!build/DEPENDENCY-PINS.json
+fixtures/golden/*.json
+!fixtures/golden/.gitkeep

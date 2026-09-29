@@ -455,7 +455,7 @@ test("T0 chain verifier proves bounded custody sequence", async () => {
     { client }
   );
 
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, true, JSON.stringify(result));
   assert.equal(
     result.verdict,
     "T0_CUSTODY_PROVEN_FROM_ARC"
@@ -494,7 +494,7 @@ test("assurance chain verifier reconstructs signed PASS", async () => {
     { client }
   );
 
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, true, JSON.stringify(result));
   assert.equal(
     result.verdict,
     "ASSURANCE_CORE_PROVEN_FROM_ARC"
@@ -541,7 +541,7 @@ test("both proven primitives do not become integrated causality", async () => {
     { client }
   );
 
-  assert.equal(result.ok, true);
+  assert.equal(result.ok, true, JSON.stringify(result));
   assert.equal(
     result.verdict,
     "PRIMITIVES_PROVEN_INTEGRATION_NOT_PROVEN"

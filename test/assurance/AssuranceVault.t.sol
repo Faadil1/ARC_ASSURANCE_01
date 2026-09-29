@@ -520,10 +520,17 @@ contract AssuranceVaultTest is Test {
         bytes memory wrongSignature =
             _sign(output, WRONG_PROVIDER_PK);
 
+        address wrongProvider =
+            vm.addr(WRONG_PROVIDER_PK);
+
         vm.expectRevert(
-            ProviderOutputEIP712
-                .ProviderSignatureMismatch
-                .selector
+            abi.encodeWithSelector(
+                ProviderOutputEIP712
+                    .ProviderSignatureMismatch
+                    .selector,
+                provider,
+                wrongProvider
+            )
         );
         vault.lockProviderOutput(
             output,
@@ -569,9 +576,37 @@ contract AssuranceVaultTest is Test {
         bytes32 rewritten =
             keccak256("rewritten-ground-truth");
 
+        bytes32 originalCommitment =
+            vault.computeCanaryCommitment(
+                POLICY_ID,
+                BATCH_1,
+                WORK_1,
+                INPUT_1,
+                EXPECTED_1,
+                SCORER_ID_HASH,
+                SALT_1
+            );
+
+        bytes32 rewrittenCommitment =
+            vault.computeCanaryCommitment(
+                POLICY_ID,
+                BATCH_1,
+                WORK_1,
+                INPUT_1,
+                rewritten,
+                SCORER_ID_HASH,
+                SALT_1
+            );
+
         vm.prank(funder);
         vm.expectRevert(
-            AssuranceVault.CommitmentMismatch.selector
+            abi.encodeWithSelector(
+                AssuranceVault
+                    .CommitmentMismatch
+                    .selector,
+                originalCommitment,
+                rewrittenCommitment
+            )
         );
         vault.revealCanary(
             POLICY_ID,

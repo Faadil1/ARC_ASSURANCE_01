@@ -172,7 +172,7 @@ test("HTTP service returns real extraction with explicit evidence metadata", asy
     );
     assert.equal(
       response.body.evidence.signature_status,
-      "NOT_IMPLEMENTED"
+      "DISABLED"
     );
     assert.equal(
       response.body.result.total_minor,
