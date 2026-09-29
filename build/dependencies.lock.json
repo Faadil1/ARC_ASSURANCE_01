@@ -1,0 +1,39 @@
+{
+  "version": "ARC_ASSURANCE_BUILD_DEPS_V1",
+  "contract_build": {
+    "solc": "0.8.24",
+    "arc_foundry": {
+      "repository": "circlefin/arc-foundry",
+      "commit": "d497beea7096ff2a8e583c8b307941f24a61b06b",
+      "observed_version": "1.7.1-dev",
+      "provenance": "resolved from the exact Arc Foundry commit previously used for T0 local verification"
+    },
+    "forge_std": {
+      "repository": "foundry-rs/forge-std",
+      "tag": "v1.16.1",
+      "commit": "620536fa5277db4e3fd46772d5cbc1ea0696fb43"
+    },
+    "openzeppelin_contracts": {
+      "repository": "OpenZeppelin/openzeppelin-contracts",
+      "tag": "v5.6.1",
+      "commit": "5fd1781b1454fd1ef8e722282f86f9293cacf256"
+    }
+  },
+  "javascript": {
+    "node": "22.16.0",
+    "viem": {
+      "npm_version": "2.56.9",
+      "repository": "wevm/viem",
+      "tag": "viem@2.56.9",
+      "commit": "ec5403a7ebac5b564fb12e7513d061da1550a47f"
+    },
+    "lockfile_status": "BLOCKED_NO_PACKAGE_LOCK_YET",
+    "promotion_rule": "JavaScript is not reproducible-clean-room until a generated package-lock.json is reviewed and committed. Contract bytecode reproducibility does not depend on Node."
+  },
+  "github_actions": {
+    "checkout": "11bd71901bbe5b1630ceea73d27597364c9af683",
+    "setup_node": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "cache": "5a3ec84eff668545956fd18022155c47e93e2684",
+    "upload_artifact": "ea165f8d65b6e75b540449e92b4886f43607fa02"
+  }
+}
