@@ -302,3 +302,21 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - A reviewed/committed canonical package-lock.json.
 - Mainnet deployed code hash.
 - Reproducible source commit -> deployed runtime equality.
+
+
+### Runtime immutable provenance correction — 2026-09-29
+
+**OBSERVED**
+
+- `AssuranceVault` declares immutable constructor configuration.
+- Solidity artifacts expose immutable-reference byte ranges for deployed runtime.
+- The reproducible-build gate now records those ranges and computes a normalized runtime hash with those ranges zeroed.
+- Runtime link references are rejected by the provenance extractor rather than silently normalized.
+- Integrated verifier v3 can now normalize observed Arc runtime using manifest ranges.
+- Verifier v3 can separately check the public immutable getters when constructor expectations are supplied.
+
+**UNKNOWN / NOT YET VERIFIED**
+
+- Exact immutable ranges produced by the clean-room build.
+- Exact normalized runtime hash.
+- On-chain immutable getter values, because the integrated vault is not deployed.
