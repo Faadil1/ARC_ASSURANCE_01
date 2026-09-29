@@ -48,19 +48,38 @@ jobs:
           # version segment. Split the tag so the URL is built correctly.
           ARC_TAG="v0.8.0-2"
           ARC_VER="${ARC_TAG#v}"
-          URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_TAG}/arc-foundry-v${ARC_VER}-x86_64-unknown-linux-gnu.tar.gz"
-          echo "Downloading: $URL"
+          ASSET="arc-foundry-v${ARC_VER}-x86_64-unknown-linux-gnu.tar.gz"
+          URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_TAG}/${ASSET}"
 
           curl -fsSL "$URL" -o /tmp/arc.tar.gz
-          mkdir -p /tmp/arcbin
+          rm -rf /tmp/arcbin && mkdir -p /tmp/arcbin
           tar -xzf /tmp/arc.tar.gz -C /tmp/arcbin
-          sudo install -m 0755 /tmp/arcbin/* /usr/local/bin/
 
-          # Record the real toolchain identity alongside the audited version.
-          arc-forge --version 2>&1 | tee /tmp/arcforge-version.txt || true
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          cat /tmp/arcforge-version.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          # The archive may nest binaries in a versioned directory, so install
+          # every executable found anywhere under the extraction root rather
+          # than assuming a flat layout.
+          mapfile -t BINS < <(find /tmp/arcbin -type f -executable | sort)
+          echo "Found ${#BINS[@]} executables:"
+          printf '%s\n' "${BINS[@]}"
+          if [ "${#BINS[@]}" -eq 0 ]; then
+            echo "### No executables in archive" >> "$GITHUB_STEP_SUMMARY"
+            tar -tzf /tmp/arc.tar.gz >> "$GITHUB_STEP_SUMMARY" 2>&1
+            exit 1
+          fi
+
+          for b in "${BINS[@]}"; do
+            sudo install -m 0755 "$b" "/usr/local/bin/$(basename "$b")"
+          done
+
+          # Fail loudly here rather than masking a missing binary with "|| true".
+          command -v arc-forge
+          arc-forge --version 2>&1 | tee /tmp/arcforge-version.txt
+          {
+            echo "### arc-forge installed"
+            echo '```'
+            cat /tmp/arcforge-version.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Install forge-std
         run: |
