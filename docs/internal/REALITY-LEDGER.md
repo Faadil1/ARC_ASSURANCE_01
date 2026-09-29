@@ -266,3 +266,33 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Real breaker -> refund.
 - Reproducible Git commit -> deployed bytecode provenance.
 - External clean-room verification.
+
+
+## Reproducible build / deployment provenance delta — 2026-09-29
+
+### OBSERVED
+
+- The golden-vector generator is now deterministic and derives its test-only signing key in memory from a fixed public test label.
+- The generated private key is not emitted.
+- A Solidity test now independently reconstructs the EIP-712 digest, signer recovery, canary commitment and canary key from the JS-generated vector.
+- Build tooling now records exact Git SHA, source/config fingerprints and AssuranceVault creation-bytecode hash.
+- A deployment-manifest generator now hashes exact constructor arguments with creation bytecode into an init-code hash.
+- A Solidity test independently cross-checks creation-code and init-code hashes from generated manifests.
+- A strict local clean-room script exists and requires Node 22.16.0 plus a committed package-lock.
+- A GitHub Actions workflow exists to exercise the build and upload reproducibility artifacts.
+- Integrated verifier v3 can now compare the real Arc deployment transaction input against an expected init-code hash and check the deployment receipt contract address.
+- A pre-mainnet audit checklist now exists.
+
+### IMPORTANT ARCHITECTURAL FACT
+
+- Generic predeployment runtime hash is not treated as sufficient identity because constructor/address-dependent immutables may affect deployed runtime.
+- The canonical predeployment identity is creation bytecode + exact constructor args + init-code hash.
+
+### UNKNOWN / BLOCKED
+
+- No committed package-lock yet.
+- Exact-head clean-room CI result not yet observed.
+- No reviewed candidate package-lock artifact yet.
+- No integrated deployment transaction.
+- No postdeployment runtime hash.
+- Runtime/Commit Binding remains BLOCKED.
