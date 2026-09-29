@@ -807,3 +807,29 @@ Current blockers before human funding:
 4. explicit human funding authorization.
 
 No wallet funding or mainnet action has occurred.
+
+
+## 26. Pre-mainnet package clean-room proof
+
+The no-secret package passed clean-room verification on:
+
+`e76bd480785d5a627499f7d6ea27ae55705f4df9`
+
+Workflow:
+
+`36638119707`
+
+Observed:
+
+- 58/58 JavaScript tests PASS;
+- 28/28 Solidity tests PASS;
+- build PASS;
+- package-lock unchanged and verified;
+- AssuranceVault creation bytecode unchanged:
+  `0x29bdd71974b5943f8f3194272f6cb13568e5e4ce23865cf085c6242334163afd`;
+- evidence artifact digest:
+  `sha256:d2a849fcdabae06015c388ccca0b6ea90924eb9a3fc0eb0914db298ed3c3f1ab`.
+
+The additional four JS tests are the pre-mainnet bounded-configuration checks.
+
+This proof does not authorize funding. The next gate is human/public configuration + read-only gas estimation.
