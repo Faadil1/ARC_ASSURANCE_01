@@ -71,11 +71,19 @@ jobs:
             sudo install -m 0755 "$b" "/usr/local/bin/$(basename "$b")"
           done
 
+          # The arc-foundry release ships upstream-named binaries
+          # (forge/cast/anvil), not "arc-forge". Expose "arc-forge" as an alias
+          # so this workflow matches the documented Arc runbook command.
+          printf '#!/bin/sh\nexec forge "$@"\n' > /usr/local/bin/arc-forge
+          sudo chmod 0755 /usr/local/bin/arc-forge
+          printf '#!/bin/sh\nexec cast "$@"\n' > /usr/local/bin/arc-cast
+          sudo chmod 0755 /usr/local/bin/arc-cast
+
           # Fail loudly here rather than masking a missing binary with "|| true".
-          command -v arc-forge
-          arc-forge --version 2>&1 | tee /tmp/arcforge-version.txt
+          command -v forge
+          forge --version 2>&1 | tee /tmp/arcforge-version.txt
           {
-            echo "### arc-forge installed"
+            echo "### Arc Foundry (arc-foundry $ARC_TAG) installed"
             echo '```'
             cat /tmp/arcforge-version.txt
             echo '```'
