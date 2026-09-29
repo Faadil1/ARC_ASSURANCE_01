@@ -365,3 +365,64 @@ verifier_cli_v1:
     node: "22.16.0 observed"
     viem: "not installed"
     dependency_install_attempt: "timed out; no test-pass claim"
+
+
+chain_native_verifier_v2:
+  branch: feat/chain-native-verifier-v2
+  status: PRODUCED_REVALIDATION_REQUIRED
+  mode: ARC_MAINNET_RPC
+  implementation:
+    verifier: src/verifier/verify-arc-v2.mjs
+    cli: src/verifier/chain-cli-v2.mjs
+    tests: test/verifier/verify-arc-v2.test.mjs
+    manifest_spec: docs/CHAIN-VERIFICATION-MANIFEST-V2.md
+    verifier_spec: docs/CHAIN-NATIVE-VERIFIER-V2.md
+  arc:
+    required_chain_id: 5042
+    default_rpc: https://rpc.mainnet.arc.io
+  t0_reconstruction:
+    events:
+      - PolicyCreated
+      - PolicyFunded
+      - PaymentReleased
+      - RemainingFundsRefunded
+      - PolicyCompleted
+    checks:
+      - "canonical block/log ordering"
+      - "successful receipts"
+      - "runtime bytecode exists"
+      - "optional expected runtime code-hash equality"
+      - "funder and payout-recipient binding"
+      - "funded = paid + refunded"
+      - "paid = configured unit payout"
+      - "refund returns to immutable funder"
+  assurance_reconstruction:
+    events:
+      - PolicyCreated
+      - BatchCommitted
+      - ProviderOutputLocked
+      - CanaryRevealed
+      - BatchResolved
+      - CircuitBreakerTriggered_when_applicable
+    checks:
+      - "policy precedes batch"
+      - "provider/scorer bind to policy"
+      - "signature/core cryptographic proof reconstructed"
+      - "directive matches deterministic verdict"
+      - "WITHHOLD below threshold"
+      - "BREAKER at/above threshold with breaker event"
+      - "successful receipts"
+  runtime_binding:
+    deployed_code_hash: checked_from_rpc
+    source_commit_field: provenance_claim
+    full_reproducible_commit_binding: BLOCKED
+  truth_boundary:
+    t0_custody_from_arc: "can become PROVEN after live run"
+    assurance_core_from_arc: "can become PROVEN after live deploy/run"
+    integrated_financial_causality: NOT_PROVEN_SEPARATE_PRIMITIVES
+    G6_independent_verify: BLOCKED
+  evidence:
+    source_produced: true
+    mock_rpc_tests_authored: true
+    exact_head_tests_executed: false
+    live_arc_run_executed: false
