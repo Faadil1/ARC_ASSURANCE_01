@@ -102,3 +102,31 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - EIP-712 signing/interface compatibility.
 - Runtime/commit binding.
 - External provider behavior and hidden-canary detectability.
+
+
+## EIP-712 provider-output reality delta — 2026-09-29
+
+### OBSERVED
+
+- A frozen EIP-712 `ProviderOutput` schema is now present in the repository.
+- The schema binds provider, policy, batch, work, input hash, output hash, scorer hash, nonce, and deadline.
+- The EIP-712 domain is designed for Arc chain 5042 plus the exact verifying contract.
+- The provider HTTP service now contains an optional signed mode using a dedicated provider signer.
+- Signed mode does not allow the request to choose chain id or verifying contract.
+- Canonicalizable outputs can enter the signing path.
+- Malformed outputs return `ABSTAIN_MALFORMED` and remain unsigned.
+- A reusable Solidity verification/replay-consumption module and JS/Solidity test sources have been authored.
+- No real provider signing key has been committed to the repository.
+
+### INFERRED
+
+- For invoice-v1 exact-match scoring, comparing the signed `outputHash` to a correctly revealed/precommitted `expectedOutputHash` can provide a deterministic verdict without an LLM evaluator.
+- Domain separation plus digest consumption should reduce cross-chain/cross-contract/exact-message replay risk when integrated correctly.
+
+### UNKNOWN / NOT YET VERIFIED
+
+- Exact JS EIP-712 digest/signature behavior on the branch head, because the pinned Viem dependency has not been executed in the current environment.
+- Solidity compilation/recovery behavior with the chosen pinned OpenZeppelin release.
+- Cross-language JS/Solidity digest equality.
+- Final contract state-machine protection against two financially consequential outputs for the same workId.
+- Live provider runtime/commit binding.

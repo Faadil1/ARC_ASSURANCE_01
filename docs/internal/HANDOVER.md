@@ -293,3 +293,93 @@ The preferred future signed hero failure is now:
 It changes tax and total together so the result remains schema-valid and canonicalizable while still being objectively wrong against the hidden known-answer canary.
 
 Malformed outputs remain boundary cases and should route to `REVIEW/ABSTAIN` until a signed raw-envelope protocol exists.
+
+
+## 17. EIP-712 provider-output binding — PRODUCED / REVALIDATION_REQUIRED
+
+Branch:
+
+- `feat/eip712-provider-binding`
+
+Stacking:
+
+- based on `feat/provider-service`
+- does not modify Opeyemi's T0 branch
+
+Frozen typed-data primary type:
+
+```
+ProviderOutput(
+  address provider,
+  bytes32 policyId,
+  bytes32 batchId,
+  bytes32 workId,
+  bytes32 inputHash,
+  bytes32 outputHash,
+  bytes32 scorerIdHash,
+  uint256 nonce,
+  uint256 deadline
+)
+```
+
+Domain:
+
+```
+name = ARC_ASSURANCE
+version = 1
+chainId = 5042
+verifyingContract = final assurance contract
+```
+
+### Provider integration
+
+Signed mode now binds the actual canonical provider result.
+
+Trusted runtime configuration supplies:
+
+- dedicated provider signing key;
+- Arc chain id;
+- verifying contract.
+
+The HTTP caller supplies only:
+
+- policy id;
+- batch id;
+- work id;
+- nonce;
+- deadline.
+
+The request cannot choose the EIP-712 chain or verifying contract.
+
+### Negative path
+
+- schema-valid `WRONG_AMOUNT_VALID`: signable and attributable;
+- malformed output: `ABSTAIN_MALFORMED`, no signature.
+
+### Contract integration
+
+`ProviderOutputEIP712.sol` is an abstract module intended to be inherited by the final assurance contract.
+
+It verifies provider identity, deadline, typed-data signature, and exact-digest replay consumption.
+
+It deliberately does **not** decide PASS/FAIL or pay money.
+
+For invoice-v1 the later deterministic verdict can be:
+
+```
+signed outputHash == revealed expectedOutputHash
+```
+
+after the hidden precommit is successfully reconstructed.
+
+### Truth boundary
+
+Status is **PRODUCED_REVALIDATION_REQUIRED**, not LOCAL_VERIFIED.
+
+Required next:
+
+1. install pinned Node dependency and run EIP-712 JS/HTTP tests;
+2. install a pinned audited OpenZeppelin Contracts release and run Arc Foundry Solidity tests;
+3. generate one JS/Solidity golden vector proving identical final EIP-712 digest;
+4. Opeyemi reviews the Solidity integration seam after T0 revalidation;
+5. final assurance state machine binds one signed output to one work item before financial consequence.

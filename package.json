@@ -1,0 +1,15 @@
+{
+  "name": "arc-assurance-01",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test:core": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/eip712/provider-output-v1.test.mjs",
+    "test:eip712": "node --test test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs"
+  },
+  "dependencies": {
+    "viem": "2.56.9"
+  }
+}

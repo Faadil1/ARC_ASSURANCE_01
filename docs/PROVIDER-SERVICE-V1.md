@@ -99,13 +99,25 @@ Malformed modes such as `WRONG_TOTAL`, `LOWERCASE_CURRENCY`, and `DROP_FIELD` ar
 
 ## Signature boundary
 
-The service currently returns:
+EIP-712 signing is implemented on the dedicated `feat/eip712-provider-binding` integration branch.
+
+Unsigned runtime mode remains supported for local provider development and reports:
 
 ```
-signature_status: NOT_IMPLEMENTED
+signature_status: DISABLED
 ```
 
-EIP-712 provider binding belongs to the contract/provider integration surface and must be reviewed with Opeyemi.
+Signed mode requires trusted runtime configuration:
+
+- `PROVIDER_SIGNING_KEY`
+- `PROVIDER_CHAIN_ID=5042`
+- `PROVIDER_VERIFYING_CONTRACT`
+
+A canonicalizable result returns `SIGNED_EIP712_V1`.
+
+A malformed result returns `ABSTAIN_MALFORMED` and no signature.
+
+See `docs/EIP712-PROVIDER-OUTPUT-V1.md`.
 
 No unsigned output can satisfy the final SIGNED OUTPUT invariant.
 
