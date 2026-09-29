@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-28T11:35:00-04:00"
+updated_at: "2026-09-29T01:30:00-04:00"
 source_of_truth: true
 
 status_vocabulary:
@@ -30,7 +30,7 @@ macro_lifecycle:
     evidence: "PRD v0.1 and demo-first architecture are under review in PR #1."
   DELIVER:
     status: BLOCKED
-    blocker: "G0 PRD_READY, Pre-Build Reality external evidence gap, and T0 mainnet custody proof remain open."
+    blocker: "G0 PRD_READY (PR #1 unmerged), Pre-Build Reality external evidence gap, and T0 mainnet custody proof remain open."
   AUDIT:
     status: BLOCKED
     blocker: "No live runtime/canonical mainnet run yet."
@@ -196,7 +196,7 @@ expanded_gates:
   Technical_Ownership:
     status: ACTIVE
     activation: "Multi-contributor build."
-    evidence: "Opeyemi collaborator access is active with write permission; T0 technical review remains pending."
+    evidence: "Opeyemi collaborator access is active with write permission. T0 implementation hardened and locally verified; merge and mainnet review still pending."
   Session_Continuity:
     status: N/A
     activation: "Only when session/browser continuity is material."
@@ -246,11 +246,11 @@ payment_and_platform_gateways:
   Wallets:
     status: ACTIVE
     condition: "Network, address, signer, chain ID, environment, and balance evidence must be coherent."
-    current: "Human-controlled mainnet signer/funding still pending protected execution."
+    current: "Human-controlled mainnet signer/funding still pending protected execution. Arc mainnet chain id 5042 and USDC interface confirmed read-only via public RPC."
   Contracts:
     status: ACTIVE
     condition: "Deployment network, address, calls, state transitions, and receipts must be verifiable."
-    current: "T0 contract source produced; compilation/runtime/mainnet receipts not yet verified."
+    current: "PolicyCustody source produced and locally verified (35/35 under arc-forge 1.7.1-dev); compilation on generic CI not available; no deployment, address, call, or receipt evidence yet."
   App_Kit_External_Platform_Integration:
     status: N/A
     rationale: "No sponsor App Kit is currently required."
@@ -354,10 +354,16 @@ t0_gate_detail:
   substate: CODE_READY_CANDIDATE
   evidence_class: NOT_IMPLEMENTED
   source_produced: true
-  tests_executed_with_arc_foundry: false
+  tests_executed_with_arc_foundry: true
+  tests_passed: 35
+  tests_failed: 0
   mainnet_deployed: false
   real_funding: false
   real_payout: false
   real_refund: false
   runtime_commit_bound: false
   promotion_condition: "All above execution/evidence fields true with receipts bound to exact commit."
+  boundary: >-
+    tests_executed_with_arc_foundry is true but mainnet_deployed through
+    runtime_commit_bound are all false. LOCAL test evidence is explicitly NOT
+    promoted to LIVE_GATEWAY. G1 remains ACTIVE and NOT PROVEN.

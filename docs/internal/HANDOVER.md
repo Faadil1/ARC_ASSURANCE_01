@@ -1,6 +1,6 @@
 # ARC_ASSURANCE_01 — Handover
 
-Updated: 2026-09-27
+Updated: 2026-09-29
 
 ## 1. Current baseline
 
@@ -70,15 +70,15 @@ No consequential product build should be treated as promoted until G0 is merged/
 
 ## 5. Immediate blocker
 
-Faadil has already sent Opeyemi (`opeblow`) a collaborator invitation with the intended write access.
+The collaborator invitation is **ACCEPTED**; GitHub reports write permission for `opeblow`.
 
-Current status:
+Current blocking state:
 
-- collaborator invitation: **INVITE_PENDING**
-- next action: **Opeyemi accepts the existing GitHub invitation**
-- after acceptance, verify that `opeblow` can push a branch/open a PR and request him on PR #1.
+- `main` is still at the bootstrap commit `b874462`. **Nothing has been merged.**
+- PR #1 (`docs/prd-v0.1`) is still open, and PRs #6, #7, #8, #10 are all stacked on top of it.
+- Because nothing is merged, a merge-ordering decision is needed before any further stacked work is meaningful.
 
-No new invitation is required unless the existing one expires or is declined.
+Recommended merge order: #1, then #8, then #7, then #6, then #10. Each is stacked on the previous.
 
 ## 6. Next gate
 
@@ -208,47 +208,68 @@ The project must not stop at a vertical slice or a technical proof. Before submi
 Heavy polish comes after material reality/depth gaps are closed.
 
 
-## 13. T0 code spike started
+## 13. T0 hardened and locally verified
 
-Opeyemi's collaborator invitation is now accepted and GitHub reports **write** permission.
+Opeyemi's collaborator invitation is accepted and GitHub reports **write** permission.
 
-No Opeyemi feature branch/commit/PR existed when checked immediately before starting T0, so the initial T0 implementation was started on:
+### Files
 
-- `feat/t0-mainnet-custody`
-
-Prepared:
-
-- `src/T0NativeCustody.sol`
-- `test/T0NativeCustody.t.sol`
+- `src/PolicyCustody.sol`
+- `test/PolicyCustody.t.sol`
+- `script/DeployT0.s.sol`
+- `script/t0-mainnet-proof.sh`
 - `foundry.toml`
 - `.env.example`
 - `docs/T0-MAINNET-RUNBOOK.md`
 - `docs/evidence/T0-MAINNET-CUSTODY.md`
 - `T0-README.md`
 
+`src/T0NativeCustody.sol` and `test/T0NativeCustody.t.sol` were **removed**. The initial spike allowed a caller-supplied payout recipient and refunded from the pooled contract balance. `PolicyCustody` fixes both. No mainnet deployment existed for the removed spike, so nothing was lost.
+
 ### T0 design correction
 
-The initial PRD wording assumed an ERC-20 `approve/transferFrom` custody spike.
+Arc's native asset is USDC with 18 decimals, so T0 uses `msg.value` rather than adding an ERC-20 approval dependency. The 6-decimal ERC-20 interface at `0x3600…0000` is recorded on-chain as `usdcErc20Interface()` for evidence only and is never called. The two representations differ by `1e12` and must not be mixed.
 
-Current Arc documentation makes a simpler load-bearing path preferable: Arc uses USDC as the native value/gas asset, so T0 now tests:
+### Local verification — Arc Foundry
+
+Arc Foundry is **not** available in the standard container and `lib/` is gitignored, so forge-std is not vendored. Install it before testing:
+
+```bash
+forge install foundry-rs/forge-std@v1.9.6
+arc-forge test -vv
+```
+
+Recorded on 2026-09-29 with `arc-forge 1.7.1-dev` (commit `d497beea`), solc `0.8.24`:
 
 ```
-native USDC msg.value
-→ contract custody
-→ native USDC payout
-→ native USDC refund
+35 passed; 0 failed
 ```
 
-This is a T0-only design refinement. It does not yet change the final assurance contract architecture.
+### Security properties established
+
+- immutable `payoutRecipient`; no call can redirect value
+- per-policy liability (`totalFunded - totalPaidOut - totalRefunded`); payout and refund are bounded by that figure, never by the pooled balance, so no policy can spend another's funds
+- `refundRemaining` requires `State.PaidOut`, so the funder cannot skip the payout and reclaim the whole position
+- authority-only policy registration with an explicitly named funder
+- immutable `expectedChainId`; every mutator is chain-guarded
+- `nonReentrant` on every state-changing entry point
+- `receive`/`fallback` revert, so only `fund` accepts value
+- hard `deploymentSpendCap` ceiling on lifetime custody received
 
 ### Truth status
 
 - source: **PRODUCED**
-- local/Arc Foundry tests: **NOT VERIFIED**
+- local/Arc Foundry tests: **LOCAL VERIFIED** (35/35)
 - mainnet deployment: **NOT IMPLEMENTED**
 - real custody/payout/refund: **NOT IMPLEMENTED**
 - T0 gate: **ACTIVE, NOT PROVEN**
 
-The current environment did not have Arc Foundry installed and no protected mainnet signing action was attempted.
+Local test success does **not** advance G1. The gate requires real mainnet receipts bound to the exact commit.
 
-Opeyemi remains the technical/mainnet execution reviewer for Issue #3.
+### Blocked on a protected human action
+
+G1 cannot advance without a human-controlled funded Arc mainnet wallet. The deploy script and proof driver are fail-closed: they require chain id 5042, the canonical USDC address, authority matching the broadcaster, `T0_CONFIRM_MAINNET=1`, and a literal `--confirm` flag.
+
+### Review queue for opeblow
+
+PR #7 (canonical scorer) states that contract binding is blocked until opeyemi reviews the hash/commit interface and makes the on-chain commitment encoding byte-for-byte compatible with the scorer's keccak vectors. That review gates P1.1 independently of T0.
