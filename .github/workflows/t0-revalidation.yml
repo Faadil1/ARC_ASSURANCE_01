@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout exact commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Record tested commit
         id: sha
@@ -72,20 +72,24 @@ jobs:
           git clone --depth 1 --branch v1.9.6 \
             https://github.com/foundry-rs/forge-std.git lib/forge-std
           cd lib/forge-std
-          git rev-parse HEAD > ../../forge-std-commit.txt
+          git rev-parse HEAD > /tmp/forge-std-commit.txt
           cd ../..
-          echo "forge-std commit: $(cat forge-std-commit.txt)"
+          echo "forge-std commit: $(cat /tmp/forge-std-commit.txt)"
 
       - name: Build
         run: |
           set -o pipefail
+          # foundry.toml declares fs_permissions on ./out, which does not exist
+          # on a fresh checkout. Create it so config validation cannot fail.
+          mkdir -p out cache
           arc-forge build --sizes 2>&1 | tee build.log || {
             echo "### BUILD FAILED" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
-            tail -60 build.log >> "$GITHUB_STEP_SUMMARY"
+            tail -80 build.log >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             exit 1
           }
+          echo "### Build succeeded" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Test
         run: |
@@ -119,7 +123,7 @@ jobs:
 
       - name: Upload evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: t0-build-test-logs
           path: |
