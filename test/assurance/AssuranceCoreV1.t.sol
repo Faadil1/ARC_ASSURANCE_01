@@ -459,13 +459,19 @@ contract AssuranceCoreV1Test is Test {
                 2
             );
 
+        bytes memory secondSignature =
+            _sign(second, PROVIDER_PK);
+
         vm.expectRevert(
             abi.encodeWithSelector(
                 AssuranceCoreV1.WorkIdAlreadyUsed.selector,
                 WORK_1
             )
         );
-        _lock(second);
+        core.lockProviderOutput(
+            second,
+            secondSignature
+        );
     }
 
     function test_WrongProviderSignatureIsRejected() public {
@@ -490,9 +496,13 @@ contract AssuranceCoreV1Test is Test {
             _sign(output, WRONG_PROVIDER_PK);
 
         vm.expectRevert(
-            ProviderOutputEIP712
-                .ProviderSignatureMismatch
-                .selector
+            abi.encodeWithSelector(
+                ProviderOutputEIP712
+                    .ProviderSignatureMismatch
+                    .selector,
+                provider,
+                wrongProvider
+            )
         );
 
         core.lockProviderOutput(
