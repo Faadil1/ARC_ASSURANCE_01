@@ -48,5 +48,15 @@ if ! cmp -s "$TMP/a.json" "$TMP/b.json"; then
   exit 1
 fi
 
-echo "REPRODUCIBLE_BUILD_PROVEN_FOR_EXACT_COMMIT"
-cat "$TMP/a.json"
+mkdir -p "$ROOT/build/out"
+jq -n \
+  --arg verdict "REPRODUCIBLE_BUILD_PROVEN_FOR_EXACT_COMMIT" \
+  --slurpfile comparison "$TMP/a.json" \
+  '{
+    ok:true,
+    verdict:$verdict,
+    comparison:$comparison[0],
+    live_claim:false
+  }' > "$ROOT/build/out/reproducibility-proof.json"
+
+cat "$ROOT/build/out/reproducibility-proof.json"
