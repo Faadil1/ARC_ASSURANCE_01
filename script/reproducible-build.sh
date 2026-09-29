@@ -67,8 +67,13 @@ RUNTIME="$(jq -r '.deployedBytecode.object' "$ARTIFACT")"
 [ "$CREATION" != "null" ] && [ "$CREATION" != "0x" ] || { echo "empty creation bytecode" >&2; exit 1; }
 [ "$RUNTIME" != "null" ] && [ "$RUNTIME" != "0x" ] || { echo "empty runtime bytecode" >&2; exit 1; }
 
+RUNTIME_PROVENANCE="$OUT_DIR/runtime-provenance.json"
+node "$ROOT/script/extract-runtime-provenance.mjs" "$ARTIFACT" > "$RUNTIME_PROVENANCE"
+NORMALIZED_RUNTIME="$(jq -r '.normalized_runtime_bytecode' "$RUNTIME_PROVENANCE")"
+
 CREATION_HASH="$("$ARC_CAST" keccak "$CREATION")"
-RUNTIME_HASH="$("$ARC_CAST" keccak "$RUNTIME")"
+RUNTIME_TEMPLATE_HASH="$("$ARC_CAST" keccak "$RUNTIME")"
+NORMALIZED_RUNTIME_HASH="$("$ARC_CAST" keccak "$NORMALIZED_RUNTIME")"
 
 GIT_SHA="$(git -C "$ROOT" rev-parse HEAD)"
 TREE_SHA="$(git -C "$ROOT" rev-parse HEAD^{tree})"
@@ -88,7 +93,9 @@ jq -n \
   --arg forge_std_commit "$FORGE_STD_SHA" \
   --arg openzeppelin_commit "$OZ_SHA" \
   --arg creation_hash "$CREATION_HASH" \
-  --arg runtime_hash "$RUNTIME_HASH" \
+  --arg runtime_template_hash "$RUNTIME_TEMPLATE_HASH" \
+  --arg normalized_runtime_hash "$NORMALIZED_RUNTIME_HASH" \
+  --slurpfile runtime_provenance "$RUNTIME_PROVENANCE" \
   --arg source_sha256 "$(sha_file "$ROOT/src/assurance/AssuranceVault.sol")" \
   --arg eip712_sha256 "$(sha_file "$ROOT/src/eip712/ProviderOutputEIP712.sol")" \
   --arg foundry_toml_sha256 "$(sha_file "$ROOT/foundry.toml")" \
@@ -105,7 +112,13 @@ jq -n \
     },
     settings:{foundry_profile:"arc",network:"arc",optimizer:true,optimizer_runs:200},
     creation_bytecode_hash:$creation_hash,
-    runtime_bytecode_hash:$runtime_hash,
+    runtime:{
+      template_hash:$runtime_template_hash,
+      normalized_hash:$normalized_runtime_hash,
+      immutable_references:$runtime_provenance[0].immutable_references,
+      immutable_reference_count:$runtime_provenance[0].immutable_reference_count,
+      comparison_rule:"Zero immutable byte ranges in observed Arc runtime before hashing; separately verify public immutable getters."
+    },
     source_hashes:{
       assurance_vault_sha256:$source_sha256,
       provider_output_eip712_sha256:$eip712_sha256,
