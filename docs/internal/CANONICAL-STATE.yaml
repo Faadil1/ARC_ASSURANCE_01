@@ -484,3 +484,32 @@ integrated_assurance_vault:
     G5_FINANCIAL_CAUSALITY: BLOCKED
     G6_INDEPENDENT_VERIFY: BLOCKED
     Live_Core_Loop: BLOCKED
+
+
+reproducible_build_and_deploy_gate:
+  branch: chore/reproducible-build-manifest
+  status: ACTIVE_BLOCKED
+  parent_candidate: feat/integrated-assurance-vault
+  exact_parent_head_observed: c2f972e46637e4a6aae918522aab0bace76f3c59
+  toolchain_pins:
+    node: 22.16.0
+    viem: 2.56.9
+    solc: 0.8.24
+    forge_std: v1.16.1
+    openzeppelin_contracts: v5.6.1
+    arc_foundry_target: "1.7.1-dev / d497beea — revalidate before deploy"
+  reproducibility:
+    deterministic_golden_vector: PRODUCED
+    cross_language_foundry_test: PRODUCED
+    creation_bytecode_manifest: PRODUCED
+    deployment_init_code_manifest: PRODUCED
+    deployment_tx_input_verification: PRODUCED
+    clean_room_ci: PRODUCED
+    committed_package_lock: BLOCKED
+    exact_head_ci_result: BLOCKED
+  runtime_binding:
+    predeploy_target: "creation bytecode + constructor args + init-code hash"
+    postdeploy_target: "deploy tx input + receipt + contract address + observed runtime hash"
+    generic_precomputed_runtime_hash_allowed: false
+  mainnet_integrated_deploy: BLOCKED
+  reason: "Transitive Node lock + clean-room green run + technical review + T0 completion required before protected deploy."
