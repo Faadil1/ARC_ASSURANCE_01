@@ -28,7 +28,7 @@ jq '{
   toolchain,
   settings,
   creation_bytecode_hash,
-  runtime_bytecode_hash,
+  runtime,
   source_hashes
 }' "$TMP/a-manifest/AssuranceVault.build-manifest.json" | jq -S . > "$TMP/a.json"
 
