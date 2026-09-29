@@ -517,6 +517,7 @@ reproducible_build_deployment_gate_v1:
     status: BLOCKED_CANONICAL_LOCKFILE
   evidence_outputs:
     - build/out/AssuranceVault.build-manifest.json
+    - build/out/runtime-provenance.json
     - build/out/reproducibility-proof.json
     - build/out/golden-js.json
     - build/out/golden-solidity.json
@@ -541,3 +542,23 @@ reproducible_build_deployment_gate_v1:
     runtime_commit_binding: BLOCKED_PENDING_BUILD_AND_LIVE_CODE_MATCH
     G5_FINANCIAL_CAUSALITY: BLOCKED
     G6_INDEPENDENT_VERIFY: BLOCKED
+
+
+runtime_immutable_provenance_v1:
+  status: ACTIVE
+  reason: "AssuranceVault contains Solidity immutables; raw compiled runtime hash is not sufficient for deployed-code equality."
+  build_rule:
+    compiler_immutable_ranges_recorded: true
+    normalized_runtime_hash: implemented
+    runtime_link_references_allowed: false
+  chain_rule:
+    normalize_observed_runtime_before_hash: implemented_in_verifier
+    public_immutable_getters_required_for_full_binding:
+      - authority
+      - expectedChainId
+      - usdcErc20Interface
+      - deploymentSpendCap
+  promotion:
+    normalized_code_hash_match: BLOCKED_PENDING_RUN
+    immutable_getter_match: BLOCKED_PENDING_DEPLOYMENT
+    git_commit_provenance: BLOCKED
