@@ -9,7 +9,7 @@ Do not fill this file with simulated hashes or placeholder explorer links and th
 
 ## Build identity
 
-- Git commit: _(fill after commit is pushed)_
+- Git commit: **CURRENT HEAD MUST BE FILLED AFTER REVALIDATION**
 - Arc Foundry version: `1.7.1-dev` (commit `d497beea7096ff2a8e583c8b307941f24a61b06b`)
 - Solidity compiler: `0.8.24`
 - forge-std: `v1.9.6` (not vendored; `lib/` is gitignored)
@@ -24,7 +24,7 @@ arc-forge 1.7.1-dev, solc 0.8.24
 35 passed; 0 failed
 ```
 
-Recorded 2026-09-29 against the working tree. Re-record against the exact pushed commit.
+Recorded by Opeyemi at commit `18bf5d6`. **Superseded for promotion purposes by later audit fixes. Re-run Arc Foundry against the exact current head before any mainnet action.**
 
 ## Addresses
 
@@ -147,3 +147,20 @@ _To be populated only after the real mainnet run._
 - Full live product integration.
 - External-user adoption.
 - Arc mainnet gas cost for the lifecycle.
+
+
+## Audit/revalidation note — 2026-09-29
+
+Commit `18bf5d6` remains valid evidence for Opeyemi's local 35/35 run, but it is **not** the final demonstrated commit.
+
+Current-head changes include:
+
+- expiry cancellation/refund recovery;
+- explicit signer binding;
+- corrected preflight amount logic;
+- two-stage deploy/execute flow;
+- removal of deploy-on-verification-failure retry;
+- truthful unknown-policy views;
+- corrected policy-cap semantics.
+
+Do not promote this gate until the current head is recompiled/tested with Arc Foundry and then bound to the mainnet receipts.
