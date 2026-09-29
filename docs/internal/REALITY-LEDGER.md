@@ -313,3 +313,31 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Real FAIL -> no-pay receipt.
 - Real breaker -> protected refund receipt.
 - Full Runtime/Commit Binding remains BLOCKED until real deployment evidence exists.
+
+
+## T0 + pre-mainnet package reality delta — 2026-09-29
+
+### OBSERVED
+
+- T0 exact head `f7fdf4e1b592c9122d4680d5272635baa2afff3f` passed Arc Foundry build and 40/40 tests.
+- The CI now verifies the official Arc Foundry Linux x86_64 release SHA-256 before installing it.
+- The CI now verifies the exact forge-std commit before compiling.
+- No T0 mainnet transaction has been broadcast.
+- A pre-mainnet package now encodes a maximum dedicated-wallet top-up of 5 USDC.
+- The T0 contract-value plan remains 0.010 USDC funding, 0.002 USDC payout and 0.008 USDC expected refund, under a 0.050 USDC hard contract cap.
+- A no-secret readiness validator exists and cannot sign or broadcast transactions.
+- Local real-address configuration is gitignored.
+
+### INFERRED
+
+- Separating wallet headroom from contract custody should make the real-money boundary easier to audit.
+- Using a distinct payout-recipient EOA will make the T0 payout consequence more legible than paying back to the funder address.
+
+### UNKNOWN / BLOCKED
+
+- Real operator/funder wallet address.
+- Real payout-recipient address.
+- Real integrated provider signer address.
+- Actual gas estimates for deployment and lifecycle operations.
+- Whether 5 USDC is sufficient for the intended live sequence after measured gas.
+- Any mainnet custody, payout or refund receipt.
