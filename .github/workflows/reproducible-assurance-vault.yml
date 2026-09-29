@@ -36,14 +36,12 @@ jobs:
         with:
           node-version: "22.16.0"
 
-      - name: Cache Cargo and Arc Foundry build
+      - name: Cache verified Arc Foundry release
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            .tooling/arc-foundry-target
-          key: arc-foundry-d497beea7096ff2a8e583c8b307941f24a61b06b-${{ runner.os }}-${{ runner.arch }}
+            .tooling/downloads
+          key: arc-foundry-v0.8.0-2-088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556-${{ runner.os }}-${{ runner.arch }}
 
       - name: Run full reproducible gate
         shell: bash
