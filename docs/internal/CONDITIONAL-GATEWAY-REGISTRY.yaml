@@ -546,3 +546,48 @@ product_depth_integrated_candidate:
   Shared_Product_Core:
     status: ACTIVE
     current: "provider/scorer/EIP-712/vault/verifier are now designed around one integrated proof path"
+
+
+reproducible_build_deployment_manifest_gate:
+  status: ACTIVE
+  source_state: PRODUCED
+  execution_state: BLOCKED
+  contract_reproducibility:
+    exact_arc_foundry_source_commit: PROVEN_IN_LOCK
+    exact_solc_version: PROVEN_IN_CONFIG
+    exact_forge_std_commit: PROVEN_IN_LOCK
+    exact_openzeppelin_commit: PROVEN_IN_LOCK
+    arc_profile_network_check: IMPLEMENTED
+    clean_path_double_build: IMPLEMENTED
+    exact_head_run: BLOCKED
+  golden_vectors:
+    deterministic_public_test_key: IMPLEMENTED
+    js_vector_generator: IMPLEMENTED
+    solidity_vector_generator: IMPLEMENTED
+    exact_cross_language_comparison: IMPLEMENTED
+    exact_head_match: BLOCKED
+  deployment_manifest:
+    secret_free_structure: IMPLEMENTED
+    expected_runtime_hash_binding: IMPLEMENTED
+    source_commit_tree_binding: IMPLEMENTED
+    constructor_public_config: IMPLEMENTED
+    self_verified_deployment_allowed: false
+  node_dependency_lock:
+    status: BLOCKED
+    reason: "No committed package-lock.json yet."
+    current_evidence: "Clean-room gate emits candidate lock + resolved npm tree for review."
+  required_before_reproducible_build_PROVEN:
+    - "Run the clean-room workflow on exact PR head."
+    - "All Arc Foundry tests pass."
+    - "Independent double build produces identical creation/runtime hashes."
+    - "JS/Solidity golden vector comparison passes."
+  required_before_runtime_commit_binding_PROVEN:
+    - "Commit/review canonical npm lock for JS verifier reproducibility."
+    - "Deploy only exact clean-room-proven Git SHA."
+    - "Integrated verifier fetches Arc runtime bytecode."
+    - "Observed Arc runtime code hash equals reproducible build manifest hash."
+
+clean_room_reproduction_gate:
+  status: ACTIVE
+  current: "Pinned GitHub Actions workflow produced; execution evidence pending."
+  no_mainnet_side_effects: true
