@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-28T11:35:00-04:00"
+updated_at: "2026-09-29T08:56:00-04:00"
 source_of_truth: true
 phase: PRD_READY_CANDIDATE
 product_name:
@@ -100,7 +100,7 @@ current_gate:
     - "canonical state merged"
     - "handover merged"
     - "work split merged"
-    - "Opeyemi accepts the pending collaborator invitation and has repo write access"
+    - "Opeyemi collaborator access verified; criterion satisfied."
 
 next_gate:
   id: G1_T0_MAINNET_CUSTODY
@@ -116,7 +116,7 @@ collaboration:
     role: "product / repo / integration lead"
   opeblow:
     role: "smart contract / execution technical lead"
-    invite_status_2026_09_27: INVITE_PENDING
+    invite_status_2026_09_29: ACCEPTED_WRITE_VERIFIED
     invited_by_faadil: true
     required_permission_after_acceptance: write
   assistant:
@@ -426,3 +426,61 @@ chain_native_verifier_v2:
     mock_rpc_tests_authored: true
     exact_head_tests_executed: false
     live_arc_run_executed: false
+
+
+integrated_assurance_vault:
+  branch: feat/integrated-assurance-vault
+  status: PRODUCED_REVALIDATION_REQUIRED
+  role: "candidate load-bearing product core"
+  implementation:
+    contract: src/assurance/AssuranceVault.sol
+    solidity_tests: test/assurance/AssuranceVault.t.sol
+    integrated_verifier: src/verifier/verify-integrated-v3.mjs
+    verifier_tests: test/verifier/verify-integrated-v3.test.mjs
+    spec: docs/INTEGRATED-ASSURANCE-VAULT.md
+    verifier_spec: docs/INTEGRATED-CHAIN-VERIFIER-V3.md
+  chain:
+    expected_chain_id: 5042
+    native_asset: "Arc native USDC / msg.value / 18 decimals"
+    wrong_chain_deploy_rejected: true
+  payout_boundary:
+    independent_release_function_exists: false
+    only_provider_payout_path: "resolveBatch() after deterministic PASS"
+  pass_path:
+    deterministic_rule: "signed outputHash == revealed expectedOutputHash"
+    consequence: "unitPayout native USDC transferred to immutable payoutRecipient"
+    atomic_with_resolve: true
+  fail_path:
+    consequence: "no provider transfer; liability remains protected"
+    batch_terminal: true
+  breaker_path:
+    failure_semantics: cumulative
+    blocks_future_batches: true
+    protected_remainder_refundable_to_funder: true
+  recovery:
+    future_expiry_required: true
+    unresolved_expired_batch_cancel: implemented
+    rejecting_payout_recipient_recovery: "cancel after expiry -> refund protected remainder"
+  policy_isolation:
+    pooled_balance_subsidy_allowed: false
+    liability_formula: "totalFunded - totalPaidOut - totalRefunded"
+  verifier_v3:
+    source_of_chain_truth: "Arc mainnet JSON-RPC"
+    pass_requires_same_tx_resolve_and_payment: true
+    fail_requires_zero_payment_event_for_batch: true
+    breaker_requires_refund_and_close: true
+    runtime_code_hash_check: implemented
+    reproducible_git_to_bytecode_binding: BLOCKED
+  evidence:
+    source_produced: true
+    solidity_tests_authored: true
+    verifier_tests_authored: true
+    exact_head_compile_executed: false
+    exact_head_tests_executed: false
+    live_mainnet_deployment: NOT_IMPLEMENTED
+  promotion:
+    Load_Bearing_Integration: BLOCKED
+    Real_Consequence: BLOCKED
+    G5_FINANCIAL_CAUSALITY: BLOCKED
+    G6_INDEPENDENT_VERIFY: BLOCKED
+    Live_Core_Loop: BLOCKED
