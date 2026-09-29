@@ -517,6 +517,9 @@ contract AssuranceVaultTest is Test {
                 1
             );
 
+        bytes memory wrongSignature =
+            _sign(output, WRONG_PROVIDER_PK);
+
         vm.expectRevert(
             ProviderOutputEIP712
                 .ProviderSignatureMismatch
@@ -524,7 +527,7 @@ contract AssuranceVaultTest is Test {
         );
         vault.lockProviderOutput(
             output,
-            _sign(output, WRONG_PROVIDER_PK)
+            wrongSignature
         );
 
         AssuranceVault.Batch memory batch =
@@ -769,9 +772,37 @@ contract AssuranceVaultTest is Test {
             address(vault).call{value: 1}("");
 
         assertFalse(ok);
+
+        bytes4 selector;
+        assembly {
+            selector := mload(add(data, 32))
+        }
+
         assertEq(
-            bytes4(data),
+            selector,
             AssuranceVault.DirectFundingDisabled.selector
+        );
+    }
+}
+
+
+contract AssuranceVaultWrongChainTest is Test {
+    function test_ConstructorRejectsWrongChainBinding() public {
+        vm.chainId(5042);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                AssuranceVault.WrongChain.selector,
+                1,
+                5042
+            )
+        );
+
+        new AssuranceVault(
+            address(this),
+            1,
+            0x3600000000000000000000000000000000000000,
+            50_000_000_000_000_000
         );
     }
 }
