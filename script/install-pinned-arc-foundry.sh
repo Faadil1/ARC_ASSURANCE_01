@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOCK="$ROOT/build/dependencies.lock.json"
 SOURCE_DIR="${ARC_FOUNDRY_SOURCE_DIR:-$ROOT/.tooling/arc-foundry-src}"
 BIN_DIR="${ARC_FOUNDRY_BIN_DIR:-$ROOT/.tooling/bin}"
+TARGET_DIR="${ARC_FOUNDRY_TARGET_DIR:-$ROOT/.tooling/arc-foundry-target}"
 
 command -v git >/dev/null || { echo "git is required" >&2; exit 1; }
 command -v cargo >/dev/null || { echo "cargo is required" >&2; exit 1; }
@@ -27,15 +28,17 @@ fi
   exit 1
 }
 
+mkdir -p "$TARGET_DIR"
 (
   cd "$SOURCE_DIR"
-  cargo build --release --locked --bin forge --bin cast --bin anvil
+  CARGO_TARGET_DIR="$TARGET_DIR" \
+    cargo build --release --locked --bin forge --bin cast --bin anvil
 )
 
 mkdir -p "$BIN_DIR"
-cp "$SOURCE_DIR/target/release/forge" "$BIN_DIR/arc-forge"
-cp "$SOURCE_DIR/target/release/cast" "$BIN_DIR/arc-cast"
-cp "$SOURCE_DIR/target/release/anvil" "$BIN_DIR/arc-anvil"
+cp "$TARGET_DIR/release/forge" "$BIN_DIR/arc-forge"
+cp "$TARGET_DIR/release/cast" "$BIN_DIR/arc-cast"
+cp "$TARGET_DIR/release/anvil" "$BIN_DIR/arc-anvil"
 chmod +x "$BIN_DIR/arc-forge" "$BIN_DIR/arc-cast" "$BIN_DIR/arc-anvil"
 
 echo "Arc Foundry source: $SHA"
