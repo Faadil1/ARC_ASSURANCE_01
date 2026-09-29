@@ -160,16 +160,73 @@ async function runtimeCheck(
     throw new Error("RUNTIME_CODE_HASH_MISMATCH");
   }
 
+  let deploymentInputBinding = "NOT_CHECKED";
+
+  if (
+    runtime.deploy_tx_hash &&
+    runtime.expected_init_code_hash
+  ) {
+    const tx = await client.getTransaction({
+      hash: runtime.deploy_tx_hash,
+    });
+    const receipt =
+      await client.getTransactionReceipt({
+        hash: runtime.deploy_tx_hash,
+      });
+
+    if (receipt.status !== "success") {
+      throw new Error(
+        "DEPLOY_TRANSACTION_NOT_SUCCESSFUL"
+      );
+    }
+
+    if (
+      !receipt.contractAddress ||
+      !sameHex(
+        receipt.contractAddress,
+        address
+      )
+    ) {
+      throw new Error(
+        "DEPLOY_RECEIPT_ADDRESS_MISMATCH"
+      );
+    }
+
+    const observedInitHash = keccak256(tx.input);
+    if (
+      !sameHex(
+        observedInitHash,
+        runtime.expected_init_code_hash
+      )
+    ) {
+      throw new Error(
+        "DEPLOY_INIT_CODE_HASH_MISMATCH"
+      );
+    }
+
+    deploymentInputBinding =
+      "DEPLOY_TX_INPUT_MATCH_EXPECTED_INIT_CODE";
+  }
+
   return {
     observed_code_hash: observed,
     expected_code_hash:
       runtime.expected_code_hash ?? null,
+    deploy_tx_hash:
+      runtime.deploy_tx_hash ?? null,
+    expected_init_code_hash:
+      runtime.expected_init_code_hash ?? null,
+    deployment_input_binding:
+      deploymentInputBinding,
     source_commit_claim:
       runtime.source_commit ?? null,
     commit_binding:
-      runtime.expected_code_hash
-        ? "CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED"
-        : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
+      deploymentInputBinding ===
+      "DEPLOY_TX_INPUT_MATCH_EXPECTED_INIT_CODE"
+        ? "DEPLOY_INPUT_BOUND_TO_EXPECTED_INIT_CODE_COMMIT_REPRODUCIBILITY_STILL_REQUIRED"
+        : runtime.expected_code_hash
+          ? "CODE_HASH_MATCH_COMMIT_PROVENANCE_STILL_REQUIRED"
+          : "CODE_EXISTS_EXPECTED_HASH_NOT_SUPPLIED",
   };
 }
 
