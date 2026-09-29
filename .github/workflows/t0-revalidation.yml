@@ -1,0 +1,106 @@
+name: T0 Revalidation
+
+# Compile-and-test only. This workflow NEVER broadcasts, never funds, and has
+# no access to mainnet secrets. It exists only to produce reproducible
+# build/test evidence for the T0 mainnet custody gate.
+#
+# Scope guard: tests run entirely in-process. No `--broadcast`, no
+# `--rpc-url` mainnet calls, no PRIVATE_KEY.
+
+on:
+  push:
+    branches:
+      - feat/t0-mainnet-custody
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  revalidate:
+    name: arc-forge build + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # foundry.toml interpolates these into [rpc_endpoints]. The values are
+      # never dialed by this job; they exist only so config parsing succeeds.
+      # These are well-known public Arc endpoints, not secrets.
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      ARC_TESTNET_RPC_URL: https://rpc.testnet.arc.io
+      FOUNDRY_PROFILE: default
+
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+
+      - name: Record tested commit
+        id: sha
+        run: |
+          SHA="$(git rev-parse HEAD)"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "### Tested commit: \`$SHA\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install arc-forge
+        run: |
+          set -euo pipefail
+          ARC_VERSION="v0.8.0-2"
+          URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_VERSION}/arc-foundry-v${ARC_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+
+          curl -fsSL "$URL" -o /tmp/arc.tar.gz
+          mkdir -p /tmp/arcbin
+          tar -xzf /tmp/arc.tar.gz -C /tmp/arcbin
+          sudo install -m 0755 /tmp/arcbin/* /usr/local/bin/
+
+          # Record the real toolchain identity alongside the audited version.
+          arc-forge --version 2>&1 | tee /tmp/arcforge-version.txt || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/arcforge-version.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install forge-std
+        run: |
+          set -euo pipefail
+          # lib/ is gitignored, so a fresh checkout has no test dependencies.
+          arc-forge install foundry-rs/forge-std@v1.9.6 --no-git
+
+      - name: Build
+        run: |
+          set -o pipefail
+          arc-forge build --sizes 2>&1 | tee build.log
+
+      - name: Test
+        run: |
+          set -o pipefail
+          arc-forge test -vv 2>&1 | tee test.log
+
+      - name: Summarise
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            echo "## T0 Revalidation Summary"
+            echo ""
+            echo "- Commit: \`$(git rev-parse HEAD)\`"
+            if [ -f test.log ]; then
+              echo ""
+              echo '```'
+              grep -E "^(Ran|Suite result|Encountered)" test.log || true
+              echo '```'
+            else
+              echo ""
+              echo "No test.log produced - see build log."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: t0-build-test-logs
+          path: |
+            build.log
+            test.log
+            /tmp/arcforge-version.txt
+          if-no-files-found: warn
+          retention-days: 90
