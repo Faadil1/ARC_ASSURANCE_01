@@ -169,5 +169,9 @@ test("signed mode refuses missing binding", async () => {
       response.body.error,
       "SIGNING_BINDING_REQUIRED"
     );
+    assert.equal(
+      response.body.evidence.execution,
+      "NOT_RUN"
+    );
   });
 });
