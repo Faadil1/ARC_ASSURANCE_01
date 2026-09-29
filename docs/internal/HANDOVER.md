@@ -681,3 +681,18 @@ The deployment manifest can reach `DEPLOYED_UNVERIFIED`, never `LIVE` or `VERIFI
 Arc RPC verifier v3 must independently fetch the deployed runtime and receipts.
 
 No wallet, private key, Arc transaction or USDC movement occurs in this gate.
+
+
+### Runtime immutable correction
+
+A post-build-gate audit identified that `AssuranceVault` has Solidity immutables. The compiled deployed-bytecode template cannot be compared naively to live runtime by raw hash because constructor values are patched into immutable slots.
+
+The gate now:
+
+1. records compiler immutable byte ranges;
+2. rejects unexpected runtime link references;
+3. zeros immutable ranges before hashing build/runtime code;
+4. compares normalized runtime hashes;
+5. requires the chain verifier to separately read the four public immutable getters.
+
+This replaces the earlier raw-runtime-hash assumption.
