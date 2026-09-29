@@ -88,8 +88,14 @@ const manifest = {
   },
   reproducible_build: {
     manifest_version: build.version,
-    runtime_code_hash: build.runtime_bytecode_hash,
-    creation_bytecode_hash: build.creation_bytecode_hash,
+    runtime_template_hash:
+      build.runtime.template_hash,
+    expected_normalized_runtime_hash:
+      build.runtime.normalized_hash,
+    immutable_references:
+      build.runtime.immutable_references,
+    creation_bytecode_hash:
+      build.creation_bytecode_hash,
     solc: build.toolchain.solc,
     arc_foundry_commit:
       build.toolchain.arc_foundry.commit,
@@ -104,6 +110,8 @@ const manifest = {
     usdc_erc20_interface:
       "0x3600000000000000000000000000000000000000",
     deployment_spend_cap_wei: spendCap,
+    immutable_binding_verification:
+      "REQUIRED_ON_CHAIN",
   },
   operator: {
     deployer,
