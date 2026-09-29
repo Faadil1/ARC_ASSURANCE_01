@@ -626,3 +626,58 @@ Status is `PRODUCED_REVALIDATION_REQUIRED`.
 No compile/test pass is claimed for the exact head.
 No integrated Arc deployment exists.
 No G5/G6/Live Core Loop promotion is allowed yet.
+
+
+## 22. Reproducible Build + Deployment Manifest Gate v1
+
+Branch:
+
+- `chore/reproducible-build-gate`
+
+Owner for now:
+
+- Faadil + assistant
+- **Do not assign Opeyemi until PR #6/T0 is green.**
+
+One-command non-mainnet gate:
+
+```bash
+bash script/run-reproducible-gate.sh
+```
+
+It performs:
+
+1. builds Arc Foundry from exact source commit `d497beea7096ff2a8e583c8b307941f24a61b06b`;
+2. installs forge-std and OpenZeppelin from exact commits;
+3. generates an npm lock candidate and records the resolved npm tree;
+4. runs all JS tests;
+5. runs Arc-profile Foundry tests;
+6. produces AssuranceVault creation/runtime code hashes;
+7. generates JS and Solidity golden vectors;
+8. requires exact cross-language digest/commitment equality;
+9. builds the exact Git commit independently in two clean paths and compares bytecode evidence;
+10. generates and structurally verifies a secret-free predeploy manifest.
+
+### Contract reproducibility boundary
+
+The contract build is independent of Node and can be proven from exact Arc Foundry/solc/Solidity dependency pins.
+
+### JavaScript lock boundary
+
+Viem is exact-version pinned, but a canonical `package-lock.json` is not yet committed.
+
+The gate therefore emits `package-lock.candidate.json` and `npm-tree.json`.
+
+Until the candidate lock is reviewed and committed:
+
+`JavaScript Dependency Reproducibility = BLOCKED`
+
+This does not block proving deterministic AssuranceVault bytecode.
+
+### Deployment truth boundary
+
+The deployment manifest can reach `DEPLOYED_UNVERIFIED`, never `LIVE` or `VERIFIED` by itself.
+
+Arc RPC verifier v3 must independently fetch the deployed runtime and receipts.
+
+No wallet, private key, Arc transaction or USDC movement occurs in this gate.
