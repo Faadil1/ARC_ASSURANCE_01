@@ -273,3 +273,28 @@ G1 cannot advance without a human-controlled funded Arc mainnet wallet. The depl
 ### Review queue for opeblow
 
 PR #7 (canonical scorer) states that contract binding is blocked until opeyemi reviews the hash/commit interface and makes the on-chain commitment encoding byte-for-byte compatible with the scorer's keccak vectors. That review gates P1.1 independently of T0.
+
+
+## T0 post-Opeyemi audit — 2026-09-29
+
+Opeyemi pushed commit `18bf5d6` and reported:
+
+- Arc Foundry 1.7.1-dev;
+- solc 0.8.24;
+- 35 passed / 0 failed;
+- read-only Arc mainnet preflight.
+
+Independent review confirmed the hardening was material but found mainnet blockers in the driver/lifecycle. They were patched on `feat/t0-mainnet-custody`.
+
+Key corrections:
+
+1. removed the broken tiny-value shell guard;
+2. bound the deploy signer explicitly via `startBroadcast(privateKey)`;
+3. made protected T0 authority/funder use one human-controlled signer;
+4. replaced fresh `full` with two-stage `deploy` then `execute`;
+5. removed `--verify || redeploy` double-broadcast risk;
+6. added expiry recovery via `cancelExpiredAndRefund`;
+7. unknown policy reads now revert instead of looking like default Created/zero state;
+8. policy caps no longer reserve deployment capacity before value is actually funded.
+
+**Critical truth boundary:** Opeyemi's 35/35 result applies to `18bf5d6`, not the new head. T0 is now `REVALIDATION_REQUIRED` and no mainnet execution should occur until Opeyemi/Arc Foundry re-runs the exact current head.
