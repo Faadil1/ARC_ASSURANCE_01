@@ -8,7 +8,7 @@ This ledger records what is **OBSERVED**, **INFERRED**, or **UNKNOWN**. It is no
 
 - The public repository `Faadil1/ARC_ASSURANCE_01` exists.
 - PR #1 contains the draft PRD, work split, canonical state, handover, and contribution rules.
-- Opeyemi has been invited as a collaborator; acceptance is still pending.
+- Opeyemi has accepted collaborator access and has pushed real commits to the repository.
 - The current product direction is a precommitted hidden-canary assurance mechanism for deterministic paid work.
 - The critical MVP path intentionally excludes Circle Agent Wallets, Nanopayments, x402, ERC-8004, and ERC-8183.
 - No canonical Arc mainnet product run has been completed yet.
@@ -230,3 +230,39 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Integrated FAIL -> no-pay causality.
 - Integrated BREAKER -> refund/protected remainder.
 - Clean-checkout verification by an external judge/operator.
+
+
+## Integrated AssuranceVault reality delta — 2026-09-29
+
+### OBSERVED
+
+- `src/assurance/AssuranceVault.sol` now composes native Arc custody, EIP-712 provider attribution, hidden-canary commitment/reveal, deterministic resolution, payout/withhold, breaker and protected refund in one source-level state machine.
+- There is no independent provider payout function in the integrated contract source.
+- The PASS branch of `resolveBatch()` is the only source-level path that sends the configured provider payout.
+- The FAIL branch leaves policy liability unchanged and emits an explicit withhold event.
+- The breaker pauses the policy and prevents future batch commits.
+- Protected refund is bounded to the policy's remaining liability and goes to the immutable funder.
+- Policy payout is bounded by policy liability rather than pooled vault balance.
+- The constructor rejects an expected chain ID different from the active chain.
+- Direct unattributed funding reverts; forced value remains outside policy liability accounting.
+- An expiry recovery path exists for unresolved batches, including a payout recipient that rejects native value.
+- Solidity test source now covers PASS, FAIL, breaker/refund, wrong signature, ground-truth rewrite, rejecting recipient recovery, policy isolation and wrong-chain deployment.
+- Integrated verifier v3 source now requires same-transaction PASS->PaymentReleased, FAIL->PaymentWithheld with zero payment events, and BREAKER->protected refund/close semantics.
+
+### INFERRED
+
+- If exact-head tests pass and the deployed runtime matches the reviewed source, this architecture closes the previous non-load-bearing gap between assurance and custody.
+- Same-transaction resolution/payment events should provide a substantially stronger causal proof than separately demonstrated assurance and custody primitives.
+
+### UNKNOWN / NOT YET VERIFIED
+
+- Exact-head Solidity compilation result.
+- Exact-head Arc Foundry test result.
+- Exact-head integrated verifier JS test result.
+- Cross-language EIP-712/commitment vector equality on the integrated contract address.
+- Mainnet deployment bytecode.
+- Real PASS -> payout.
+- Real FAIL -> no-pay.
+- Real breaker -> refund.
+- Reproducible Git commit -> deployed bytecode provenance.
+- External clean-room verification.
