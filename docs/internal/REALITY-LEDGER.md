@@ -130,3 +130,36 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Cross-language JS/Solidity digest equality.
 - Final contract state-machine protection against two financially consequential outputs for the same workId.
 - Live provider runtime/commit binding.
+
+
+## Assurance Core v1 reality delta — 2026-09-29
+
+### OBSERVED
+
+- `AssuranceCoreV1.sol` now contains a non-custodial hidden-canary state machine.
+- The source enforces one unresolved batch per policy.
+- Hidden commitment is stored before provider output lock.
+- Provider output lock consumes the EIP-712 provider-output verification layer.
+- Reveal recomputes the prior commitment and rejects a changed expected answer or salt.
+- The source fingerprints revealed canaries by inputHash + expectedOutputHash + scorerIdHash and rejects exact reuse.
+- Resolution compares signed outputHash to revealed expectedOutputHash.
+- Source-level directives are PAY, WITHHOLD, and BREAKER.
+- The breaker marks the policy paused after the configured cumulative failure threshold.
+- The module contains no custody or transfer operation.
+- Foundry configuration/remappings are now present on the assurance branch for forge-std and OpenZeppelin integration.
+
+### INFERRED
+
+- If exact-head tests and cross-language hash vectors pass, this architecture can provide a deterministic, inspectable causal bridge from hidden precommit to settlement instruction without an LLM judge.
+- Limiting v1 to one unresolved batch per policy reduces breaker-bypass/concurrency complexity for the hackathon proof.
+
+### UNKNOWN / NOT YET VERIFIED
+
+- Exact-head Solidity compilation/test result.
+- Exact-head JS commitment hash result under pinned Viem.
+- JS/Solidity commitment hash equality.
+- Integrated custody + assurance behavior.
+- Real Arc mainnet PASS -> payout.
+- Real Arc mainnet FAIL -> no-pay.
+- Real Arc mainnet breaker -> protected/refunded remainder.
+- Whether an external provider can detect a canary from non-contractual features of the input.

@@ -390,3 +390,43 @@ eip712_provider_output_gate:
     - "Produce cross-language JS/Solidity golden digest vector."
     - "Review integration with final assurance contract."
     - "Bind one workId to one financially consequential resolution."
+
+
+assurance_core_v1_gate:
+  status: BLOCKED
+  current_state: PRODUCED_REVALIDATION_REQUIRED
+  sequence:
+    - PRECOMMIT
+    - SIGNED_OUTPUT_LOCK
+    - REVEAL
+    - DETERMINISTIC_RESOLVE
+  local_source_invariants:
+    precommit_before_output_lock: implemented
+    output_lock_before_reveal: implemented
+    expected_answer_rewrite_rejected: implemented
+    work_id_replay_rejected: implemented
+    canary_reuse_rejected: implemented
+    deterministic_hash_compare: implemented
+    cumulative_failure_counter: implemented
+    breaker_blocks_new_batches: implemented
+  settlement_directives:
+    - PAY
+    - WITHHOLD
+    - BREAKER
+  moves_real_value: false
+  required_before_proven:
+    - "Compile/test exact branch head under Arc Foundry."
+    - "Run JS canary commitment tests."
+    - "Produce cross-language JS/Solidity commitment vector."
+    - "Complete EIP-712 golden vector verification."
+    - "Opeyemi reviews integration seam after T0."
+    - "Compose verified state machine with real Arc custody."
+  promotion_effect:
+    G2_PRECOMMIT: BLOCKED
+    G3_REAL_WORK: BLOCKED
+    G4_REAL_FAILURE: BLOCKED
+    G5_FINANCIAL_CAUSALITY: BLOCKED
+
+financial_causality_truth_boundary:
+  status: BLOCKED
+  rule: "A PAY/WITHHOLD/BREAKER directive is not a financial consequence until real custody proves the corresponding USDC movement or non-movement."

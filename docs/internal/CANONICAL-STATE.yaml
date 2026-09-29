@@ -277,3 +277,51 @@ eip712_provider_output:
       - "OpenZeppelin Foundry dependency not installed/executed on this branch."
       - "JS and Solidity digest equality golden vector not yet produced."
       - "Final assurance contract address/state-machine integration does not exist yet."
+
+
+assurance_core_v1:
+  branch: feat/assurance-core-v1
+  status: PRODUCED_REVALIDATION_REQUIRED
+  purpose: "hidden precommit -> signed output lock -> reveal -> deterministic resolve"
+  implementation:
+    solidity: src/assurance/AssuranceCoreV1.sol
+    canary_helper: src/canary/commitment-v1.mjs
+    solidity_tests: test/assurance/AssuranceCoreV1.t.sol
+    js_tests: test/canary/commitment-v1.test.mjs
+    spec: docs/ASSURANCE-CORE-V1.md
+  policy_rules:
+    unresolved_batches_per_policy: 1
+    failure_threshold_semantics: cumulative
+    breaker_blocks_new_batches: true
+  commitment:
+    hides:
+      - workId
+      - inputHash
+      - expectedOutputHash
+      - scorerIdHash
+      - salt
+    domain_separated_by:
+      - chainId
+      - verifyingContract
+  output_lock:
+    requires_eip712_provider_signature: true
+    work_id_reuse_allowed: false
+  reveal:
+    requires_output_locked_first: true
+    expected_answer_rewrite_allowed: false
+    exact_canary_reuse_allowed: false
+  deterministic_resolve:
+    pass_rule: "signed outputHash == revealed expectedOutputHash"
+    directives: [PAY, WITHHOLD, BREAKER]
+    moves_funds: false
+  evidence:
+    source_produced: true
+    exact_head_compiled: false
+    exact_head_tests_executed: false
+    cross_language_commitment_vector: BLOCKED
+  promotion_boundary:
+    G2_PRECOMMIT: BLOCKED_REVALIDATION_AND_LIVE
+    G3_REAL_WORK: BLOCKED
+    G4_REAL_FAILURE: BLOCKED
+    G5_FINANCIAL_CAUSALITY: BLOCKED
+    reason: "No exact-head verification or Arc mainnet composition with custody yet."
