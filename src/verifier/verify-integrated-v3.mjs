@@ -436,7 +436,103 @@ export async function verifyIntegratedBatchFromArc(
       throw new Error("UNKNOWN_DIRECTIVE");
     }
 
+    const preCoreBreakerLogs =
+      await publicClient.getLogs({
+        address,
+        event: EVENTS.CircuitBreakerTriggered,
+        args: { policyId, batchId },
+        fromBlock,
+        toBlock,
+        strict: true,
+      });
+
+    if (preCoreBreakerLogs.length > 1) {
+      throw new Error("MULTIPLE_BREAKER_EVENTS");
+    }
+
+    const preCoreBreakerLogs =
+      await publicClient.getLogs({
+        address,
+        event: EVENTS.CircuitBreakerTriggered,
+        args: { policyId, batchId },
+        fromBlock,
+        toBlock,
+        strict: true,
+      });
+
+    if (preCoreBreakerLogs.length > 1) {
+      throw new Error("MULTIPLE_BREAKER_EVENTS");
+    }
+
     const offchain = config.offchain;
+
+    const chainEvents = [
+      evidenceEvent(
+        "BatchCommitted",
+        committed,
+        {
+          policy_id: committed.args.policyId,
+          batch_id: committed.args.batchId,
+          commitment: committed.args.commitment,
+        }
+      ),
+      evidenceEvent(
+        "ProviderOutputLocked",
+        locked,
+        {
+          block_timestamp: String(lockBlock.timestamp),
+          policy_id: locked.args.policyId,
+          batch_id: locked.args.batchId,
+          work_id: locked.args.workId,
+          input_hash: locked.args.inputHash,
+          output_hash: locked.args.outputHash,
+          scorer_id_hash: locked.args.scorerIdHash,
+          provider_digest: locked.args.providerDigest,
+          provider: locked.args.provider,
+        }
+      ),
+      evidenceEvent(
+        "CanaryRevealed",
+        revealed,
+        {
+          policy_id: revealed.args.policyId,
+          batch_id: revealed.args.batchId,
+          work_id: revealed.args.workId,
+          input_hash: revealed.args.inputHash,
+          expected_output_hash: revealed.args.expectedOutputHash,
+          scorer_id_hash: revealed.args.scorerIdHash,
+          canary_key: revealed.args.canaryKey,
+        }
+      ),
+    ];
+
+    if (preCoreBreakerLogs.length === 1) {
+      chainEvents.push(
+        evidenceEvent(
+          "CircuitBreakerTriggered",
+          preCoreBreakerLogs[0],
+          {
+            policy_id: preCoreBreakerLogs[0].args.policyId,
+            batch_id: preCoreBreakerLogs[0].args.batchId,
+          }
+        )
+      );
+    }
+
+    chainEvents.push(
+      evidenceEvent(
+        "BatchResolved",
+        resolved,
+        {
+          policy_id: resolved.args.policyId,
+          batch_id: resolved.args.batchId,
+          work_id: resolved.args.workId,
+          passed: resolved.args.passed,
+          directive,
+        }
+      )
+    );
+
     const packet = {
       version: "ARC_ASSURANCE_EVIDENCE_V1",
       network: {
@@ -445,8 +541,7 @@ export async function verifyIntegratedBatchFromArc(
       },
       work: {
         input_text: offchain.input_text,
-        canonical_output:
-          offchain.canonical_output,
+        canonical_output: offchain.canonical_output,
         scorer_id: offchain.scorer_id,
       },
       provider: {
@@ -459,14 +554,15 @@ export async function verifyIntegratedBatchFromArc(
         policy_id: policyId,
         batch_id: batchId,
         work_id: revealed.args.workId,
-        expected_output_hash:
-          revealed.args.expectedOutputHash,
+        expected_output_hash: revealed.args.expectedOutputHash,
         salt: revealed.args.salt,
         commitment: committed.args.commitment,
       },
-      chain_events: [
-        evidenceEvent(
-          "BatchCommitted",
+      chain_events: chainEvents,
+      financial_evidence: null,
+    };
+
+    const core = await verifyEvidencePacketV1(packet);
           committed,
           {
             policy_id: committed.args.policyId,
@@ -557,14 +653,7 @@ export async function verifyIntegratedBatchFromArc(
       strict: true,
     });
 
-    const breakerLogs = await publicClient.getLogs({
-      address,
-      event: EVENTS.CircuitBreakerTriggered,
-      args: { policyId, batchId },
-      fromBlock,
-      toBlock,
-      strict: true,
-    });
+    const breakerLogs = preCoreBreakerLogs;
 
     let financialProof;
 
