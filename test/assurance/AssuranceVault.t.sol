@@ -765,13 +765,13 @@ contract AssuranceVaultTest is Test {
     function test_DirectFundingIsRejected() public {
         vm.deal(address(this), 1 ether);
 
-        vm.expectRevert(
+        (bool ok, bytes memory data) =
+            address(vault).call{value: 1}("");
+
+        assertFalse(ok);
+        assertEq(
+            bytes4(data),
             AssuranceVault.DirectFundingDisabled.selector
         );
-        (bool ok, ) = address(vault).call{
-            value: 1
-        }("");
-
-        assertTrue(ok);
     }
 }
