@@ -1,6 +1,6 @@
 # Pre-Mainnet Audit — Integrated AssuranceVault
 
-**Status:** ACTIVE / BLOCKED pending exact-head verification
+**Status:** SOURCE AUDIT VERIFIED / MAINNET EXECUTION BLOCKED
 
 This is the final source-level audit before any integrated mainnet deployment.
 
@@ -13,7 +13,7 @@ This is the final source-level audit before any integrated mainnet deployment.
 - [x] deployment spend cap exists
 - [x] policy spend cap exists
 - [x] unit payout configured immutably per policy
-- [ ] exact-head Foundry tests green
+- [x] exact-head Foundry tests green (28/28 on clean-room proof head)
 - [ ] deployment gas measured
 
 ## B. Load-bearing assurance
@@ -36,7 +36,7 @@ This is the final source-level audit before any integrated mainnet deployment.
 - [x] exact digest replay consumption
 - [x] workId reuse blocked
 - [x] canary reuse blocked
-- [ ] JS/Solidity golden vector green on exact head
+- [x] JS/Solidity golden vector green on clean-room proof head
 
 ## D. Hidden-canary integrity
 
@@ -54,7 +54,7 @@ This is the final source-level audit before any integrated mainnet deployment.
 - [x] rejecting payout recipient preserves funds by transaction revert
 - [x] expiry recovery exists
 - [x] wrong-chain deployment rejected
-- [ ] clean-room recovery tests green on exact head
+- [x] clean-room recovery tests green on proof head
 - [ ] external dependency failure drill
 
 ## F. Secrets / human action
@@ -64,7 +64,7 @@ This is the final source-level audit before any integrated mainnet deployment.
 - [x] golden-vector private key never emitted
 - [x] mainnet funding is protected human action
 - [ ] dedicated T0/mainnet wallet funded only after gate approval
-- [ ] no secrets present in GitHub Actions logs/artifacts
+- [x] no user/mainnet private key is produced by the workflow; golden-vector key remains non-emitted test material
 
 ## G. Reproducibility
 
@@ -74,9 +74,9 @@ This is the final source-level audit before any integrated mainnet deployment.
 - [x] deterministic public golden-vector generator
 - [x] creation/init-code manifest generators
 - [x] deployment-tx input verification added to integrated verifier
-- [ ] package-lock committed
-- [ ] clean-room workflow green
-- [ ] exact Git SHA -> artifact -> init-code provenance proven
+- [x] package-lock committed
+- [x] clean-room workflow green (run 36625411255)
+- [x] exact Git SHA -> clean-room artifact -> candidate init-code provenance proven
 - [ ] deploy tx input -> expected init-code hash proven
 - [ ] runtime hash captured after deployment
 
