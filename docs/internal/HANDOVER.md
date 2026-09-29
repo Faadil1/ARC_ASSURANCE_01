@@ -482,3 +482,80 @@ Node 22.16.0 is available in the current agent environment.
 Viem was not installed. A dependency-install attempt timed out, so no exact-head JS test pass is claimed.
 
 This branch remains `PRODUCED_REVALIDATION_REQUIRED`.
+
+
+## 20. Chain-Native Verifier v2 — Arc RPC reconstruction
+
+Branch:
+
+- `feat/chain-native-verifier-v2`
+
+v2 changes the verifier trust model:
+
+```
+v1: self-authored event packet
+v2: Arc RPC logs + receipts + runtime bytecode
+```
+
+The manifest may still contain off-chain provider material that the current contracts do not emit:
+
+- exact input text;
+- canonical output string;
+- scorer ID string;
+- provider signature;
+- nonce;
+- deadline.
+
+But it no longer supplies canonical chain events.
+
+### T0 mode
+
+v2 can independently reconstruct:
+
+```
+PolicyCreated
+→ PolicyFunded
+→ PaymentReleased
+→ RemainingFundsRefunded
+→ PolicyCompleted
+```
+
+It checks event ordering, transaction success, immutable funder/recipient binding and value conservation.
+
+A real successful run may produce:
+
+`T0_CUSTODY_PROVEN_FROM_ARC`
+
+### Assurance mode
+
+v2 independently fetches the assurance core events, policy provider/scorer configuration and lock block timestamp, then reuses the strict v1 cryptographic reconstruction.
+
+A real successful run may produce:
+
+`ASSURANCE_CORE_PROVEN_FROM_ARC`
+
+### Critical integration boundary
+
+Today T0 custody and Assurance Core are separate primitives.
+
+Therefore even if both independently prove:
+
+```
+T0_CUSTODY_PROVEN_FROM_ARC
++
+ASSURANCE_CORE_PROVEN_FROM_ARC
+```
+
+the combined verdict is still:
+
+`PRIMITIVES_PROVEN_INTEGRATION_NOT_PROVEN`
+
+No causal financial claim is allowed until the assurance decision is load-bearing on the custody/settlement path.
+
+### Runtime/commit binding
+
+v2 fetches runtime bytecode from Arc and computes its keccak256 hash.
+
+If the manifest supplies an expected code hash, a mismatch fails closed.
+
+However an expected code hash plus a text Git SHA does not itself prove reproducible build provenance. Full Runtime/Commit Binding remains BLOCKED until exact commit -> build artifact -> deployed bytecode is reproducibly linked.

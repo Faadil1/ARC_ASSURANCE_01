@@ -458,3 +458,41 @@ verifier_cli_v1_gate:
     - "Direct Arc RPC log/receipt retrieval."
     - "Deployed contract address + bytecode/commit binding."
     - "Independent custody/payment/no-pay/breaker/refund reconstruction."
+
+
+chain_native_verifier_v2_gate:
+  status: BLOCKED
+  current_state: PRODUCED_REVALIDATION_REQUIRED
+  source_of_chain_truth: "Arc mainnet JSON-RPC"
+  t0_capability:
+    status: ACTIVE
+    proof_target: T0_CUSTODY_PROVEN_FROM_ARC
+  assurance_capability:
+    status: ACTIVE
+    proof_target: ASSURANCE_CORE_PROVEN_FROM_ARC
+  runtime_code:
+    deployed_bytecode_fetch: implemented
+    code_hash_check: implemented
+    source_commit_reproducible_binding: BLOCKED
+  receipts:
+    successful_transaction_check: implemented
+  integration_truth:
+    separate_primitive_success_is_financial_causality: false
+    current_result_if_both_prove: PRIMITIVES_PROVEN_INTEGRATION_NOT_PROVEN
+  required_before_G6_PROVEN:
+    - "Execute v2 on exact deployed mainnet contracts."
+    - "Reproducibly bind exact Git commit/build artifact to deployed runtime bytecode."
+    - "Integrate assurance decision and custody into one load-bearing financial state machine."
+    - "Verify PASS -> real payout from Arc."
+    - "Verify FAIL -> real no-pay from Arc over a bounded canonical state transition."
+    - "Verify BREAKER -> protected/refunded remainder from Arc."
+    - "Run clean checkout verification by an external operator/judge."
+
+runtime_commit_binding_v2:
+  status: BLOCKED
+  current:
+    chain_bytecode_hash: IMPLEMENTED_IN_VERIFIER
+    expected_hash_comparison: IMPLEMENTED_IN_VERIFIER
+    source_commit_claim: PARTIAL
+    reproducible_build_provenance: NOT_IMPLEMENTED
+  rule: "A manifest Git SHA is not proof that the on-chain bytecode came from that commit."

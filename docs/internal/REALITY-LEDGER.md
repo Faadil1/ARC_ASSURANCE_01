@@ -196,3 +196,37 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Custody/payment/refund verification.
 - Runtime/commit binding.
 - Clean-checkout G6 verification.
+
+
+## Chain-Native Verifier v2 reality delta — 2026-09-29
+
+### OBSERVED
+
+- Source now exists for direct Arc JSON-RPC verification.
+- v2 requires Arc chain ID 5042.
+- v2 fetches deployed runtime bytecode and computes its code hash.
+- v2 can compare the observed code hash with an expected deployment-manifest code hash.
+- v2 fetches T0 custody events directly from the configured contract address and policy ID.
+- T0 verification checks transaction success, canonical event ordering, identity binding and value conservation.
+- v2 fetches Assurance Core events directly from Arc and binds provider/scorer execution to the policy configuration.
+- Assurance reconstruction feeds chain-fetched evidence into the strict EIP-712/canary verifier.
+- WITHHOLD/BREAKER threshold semantics are checked against the policy configuration.
+- Mock-RPC test sources exist for T0, Assurance Core, runtime-hash mismatch and the separate-primitives integration boundary.
+- The verifier explicitly returns that two separately proven primitives do not prove integrated financial causality.
+- Arc's public mainnet explorer is currently available at explorer.arc.io.
+
+### INFERRED
+
+- After exact-head dependency/test validation, v2 should remove the largest trust gap in verifier v1: self-supplied event provenance.
+- Keeping T0 custody and Assurance Core verification separately named should make it harder to overclaim a causal relationship before integration.
+
+### UNKNOWN / NOT YET VERIFIED
+
+- Exact-head v2 test execution under pinned Viem.
+- A real T0 Arc mainnet contract address and proof run.
+- A deployed Assurance Core address and proof run.
+- Reproducible source commit -> deployed bytecode provenance.
+- Integrated PASS -> payout causality.
+- Integrated FAIL -> no-pay causality.
+- Integrated BREAKER -> refund/protected remainder.
+- Clean-checkout verification by an external judge/operator.
