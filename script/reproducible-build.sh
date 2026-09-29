@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LOCK="$ROOT/build/dependencies.lock.json"
+OUT_DIR="${BUILD_OUT_DIR:-$ROOT/build/out}"
+ARC_FORGE="${ARC_FORGE:-$ROOT/.tooling/bin/arc-forge}"
+ARC_CAST="${ARC_CAST:-$ROOT/.tooling/bin/arc-cast}"
+ARC_FOUNDRY_SOURCE_DIR="${ARC_FOUNDRY_SOURCE_DIR:-$ROOT/.tooling/arc-foundry-src}"
+
+for cmd in git jq sha256sum; do
+  command -v "$cmd" >/dev/null || { echo "$cmd is required" >&2; exit 1; }
+done
+
+[ -x "$ARC_FORGE" ] || { echo "missing arc-forge: $ARC_FORGE" >&2; exit 1; }
+[ -x "$ARC_CAST" ] || { echo "missing arc-cast: $ARC_CAST" >&2; exit 1; }
+
+if [ -n "$(git -C "$ROOT" status --porcelain --untracked-files=no)" ]; then
+  echo "tracked working tree must be clean for reproducible build" >&2
+  exit 1
+fi
+
+check_dep() {
+  local path="$1"
+  local expected="$2"
+  [ -d "$path/.git" ] || { echo "missing dependency: $path" >&2; exit 1; }
+  local actual
+  actual="$(git -C "$path" rev-parse HEAD)"
+  [ "$actual" = "$expected" ] || {
+    echo "dependency mismatch: $path $actual != $expected" >&2
+    exit 1
+  }
+}
+
+FORGE_STD_SHA="$(jq -r '.contract_build.forge_std.commit' "$LOCK")"
+OZ_SHA="$(jq -r '.contract_build.openzeppelin_contracts.commit' "$LOCK")"
+ARC_SHA="$(jq -r '.contract_build.arc_foundry.commit' "$LOCK")"
+
+check_dep "$ROOT/lib/forge-std" "$FORGE_STD_SHA"
+check_dep "$ROOT/lib/openzeppelin-contracts" "$OZ_SHA"
+check_dep "$ARC_FOUNDRY_SOURCE_DIR" "$ARC_SHA"
+
+mkdir -p "$OUT_DIR"
+
+CONFIG_JSON="$OUT_DIR/foundry-config.json"
+(
+  cd "$ROOT"
+  FOUNDRY_PROFILE=arc "$ARC_FORGE" config --json > "$CONFIG_JSON"
+)
+
+jq -e '.network == "arc"' "$CONFIG_JSON" >/dev/null || {
+  echo "Arc profile did not resolve network=arc" >&2
+  exit 1
+}
+
+(
+  cd "$ROOT"
+  FOUNDRY_PROFILE=arc "$ARC_FORGE" clean
+  FOUNDRY_PROFILE=arc "$ARC_FORGE" build --force
+)
+
+ARTIFACT="$ROOT/out/AssuranceVault.sol/AssuranceVault.json"
+[ -f "$ARTIFACT" ] || { echo "missing AssuranceVault artifact" >&2; exit 1; }
+
+CREATION="$(jq -r '.bytecode.object' "$ARTIFACT")"
+RUNTIME="$(jq -r '.deployedBytecode.object' "$ARTIFACT")"
+[ "$CREATION" != "null" ] && [ "$CREATION" != "0x" ] || { echo "empty creation bytecode" >&2; exit 1; }
+[ "$RUNTIME" != "null" ] && [ "$RUNTIME" != "0x" ] || { echo "empty runtime bytecode" >&2; exit 1; }
+
+CREATION_HASH="$("$ARC_CAST" keccak "$CREATION")"
+RUNTIME_HASH="$("$ARC_CAST" keccak "$RUNTIME")"
+
+GIT_SHA="$(git -C "$ROOT" rev-parse HEAD)"
+TREE_SHA="$(git -C "$ROOT" rev-parse HEAD^{tree})"
+ARC_VERSION="$("$ARC_FORGE" --version | tr '\n' ' ' | sed 's/[[:space:]]*$//')"
+SOLC_PIN="$(jq -r '.contract_build.solc' "$LOCK")"
+
+sha_file() { sha256sum "$1" | awk '{print $1}'; }
+
+jq -n \
+  --arg version "ARC_ASSURANCE_REPRO_BUILD_V1" \
+  --arg source_commit "$GIT_SHA" \
+  --arg source_tree "$TREE_SHA" \
+  --arg contract "src/assurance/AssuranceVault.sol:AssuranceVault" \
+  --arg solc "$SOLC_PIN" \
+  --arg arc_foundry_commit "$ARC_SHA" \
+  --arg arc_foundry_version "$ARC_VERSION" \
+  --arg forge_std_commit "$FORGE_STD_SHA" \
+  --arg openzeppelin_commit "$OZ_SHA" \
+  --arg creation_hash "$CREATION_HASH" \
+  --arg runtime_hash "$RUNTIME_HASH" \
+  --arg source_sha256 "$(sha_file "$ROOT/src/assurance/AssuranceVault.sol")" \
+  --arg eip712_sha256 "$(sha_file "$ROOT/src/eip712/ProviderOutputEIP712.sol")" \
+  --arg foundry_toml_sha256 "$(sha_file "$ROOT/foundry.toml")" \
+  --arg remappings_sha256 "$(sha_file "$ROOT/remappings.txt")" \
+  '{
+    version:$version,
+    source:{commit:$source_commit,tree:$source_tree},
+    contract:$contract,
+    toolchain:{
+      solc:$solc,
+      arc_foundry:{commit:$arc_foundry_commit,version_output:$arc_foundry_version},
+      forge_std_commit:$forge_std_commit,
+      openzeppelin_contracts_commit:$openzeppelin_commit
+    },
+    settings:{foundry_profile:"arc",network:"arc",optimizer:true,optimizer_runs:200},
+    creation_bytecode_hash:$creation_hash,
+    runtime_bytecode_hash:$runtime_hash,
+    source_hashes:{
+      assurance_vault_sha256:$source_sha256,
+      provider_output_eip712_sha256:$eip712_sha256,
+      foundry_toml_sha256:$foundry_toml_sha256,
+      remappings_sha256:$remappings_sha256
+    },
+    evidence_class:"LOCAL_BUILD_ARTIFACT",
+    live_deployment:false
+  }' > "$OUT_DIR/AssuranceVault.build-manifest.json"
+
+jq . "$OUT_DIR/AssuranceVault.build-manifest.json"
