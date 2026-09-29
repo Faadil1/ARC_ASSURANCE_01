@@ -367,3 +367,14 @@ t0_gate_detail:
     tests_executed_with_arc_foundry is true but mainnet_deployed through
     runtime_commit_bound are all false. LOCAL test evidence is explicitly NOT
     promoted to LIVE_GATEWAY. G1 remains ACTIVE and NOT PROVEN.
+
+
+t0_post_audit_revalidation:
+  status: BLOCKED
+  blocker: "Current T0 head changed after the 35/35 Arc Foundry run."
+  required:
+    - "Arc Foundry compile/test exact current head"
+    - "confirm protected deploy script signer path"
+    - "confirm expiry recovery tests"
+    - "confirm shell driver preflight/deploy/execute path"
+  rule: "Do not fund or broadcast mainnet until this becomes PROVEN."
