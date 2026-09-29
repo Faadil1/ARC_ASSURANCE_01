@@ -484,3 +484,60 @@ integrated_assurance_vault:
     G5_FINANCIAL_CAUSALITY: BLOCKED
     G6_INDEPENDENT_VERIFY: BLOCKED
     Live_Core_Loop: BLOCKED
+
+
+reproducible_build_deployment_gate_v1:
+  branch: chore/reproducible-build-gate
+  status: ACTIVE
+  source_status: PRODUCED
+  execution_status: BLOCKED_CLEAN_ROOM_RUN_REQUIRED
+  scope:
+    - "exact contract toolchain pinning"
+    - "independent double build"
+    - "runtime/creation bytecode hashing"
+    - "cross-language EIP-712/canary golden vector"
+    - "secret-free deployment manifest"
+    - "clean-room CI"
+  contract_toolchain:
+    arc_foundry:
+      repo: circlefin/arc-foundry
+      commit: d497beea7096ff2a8e583c8b307941f24a61b06b
+    solc: "0.8.24"
+    forge_std:
+      commit: 620536fa5277db4e3fd46772d5cbc1ea0696fb43
+    openzeppelin_contracts:
+      commit: 5fd1781b1454fd1ef8e722282f86f9293cacf256
+    foundry_profile: arc
+    expected_network: arc
+  javascript:
+    node_clean_room: "22.16.0"
+    viem: "2.56.9"
+    viem_source_commit: ec5403a7ebac5b564fb12e7513d061da1550a47f
+    package_lock_committed: false
+    status: BLOCKED_CANONICAL_LOCKFILE
+  evidence_outputs:
+    - build/out/AssuranceVault.build-manifest.json
+    - build/out/reproducibility-proof.json
+    - build/out/golden-js.json
+    - build/out/golden-solidity.json
+    - build/out/golden-comparison.json
+    - build/out/AssuranceVault.deployment-manifest.json
+    - build/out/package-lock.candidate.json
+    - build/out/npm-tree.json
+  deployment_manifest:
+    secrets_allowed: false
+    self_promote_chain_verification: false
+    statuses:
+      - PREDEPLOY_TEMPLATE
+      - PREDEPLOY_READY
+      - DEPLOYED_UNVERIFIED
+  human_actions:
+    mainnet_wallet: NOT_REQUIRED_FOR_THIS_GATE
+    private_key: NOT_REQUIRED_FOR_THIS_GATE
+    mainnet_deploy: BLOCKED
+  promotion_effect:
+    reproducible_contract_build: BLOCKED_PENDING_RUN
+    cross_language_golden_vector: BLOCKED_PENDING_RUN
+    runtime_commit_binding: BLOCKED_PENDING_BUILD_AND_LIVE_CODE_MATCH
+    G5_FINANCIAL_CAUSALITY: BLOCKED
+    G6_INDEPENDENT_VERIFY: BLOCKED
