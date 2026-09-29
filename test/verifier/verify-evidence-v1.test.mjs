@@ -123,6 +123,8 @@ async function buildPacket({
         name: "BatchCommitted",
         block_number: "100",
         log_index: "1",
+        policy_id: POLICY_ID,
+        batch_id: BATCH_ID,
         commitment,
       },
       {
@@ -137,18 +139,27 @@ async function buildPacket({
         output_hash: outputHash,
         scorer_id_hash: scorerIdHash,
         provider_digest: signed.digest,
+        provider: account.address,
       },
       {
         name: "CanaryRevealed",
         block_number: "102",
         log_index: "1",
+        policy_id: POLICY_ID,
+        batch_id: BATCH_ID,
+        work_id: WORK_ID,
+        input_hash: inputHash,
         expected_output_hash: expectedHash,
+        scorer_id_hash: scorerIdHash,
         canary_key: canaryKey,
       },
       {
         name: "BatchResolved",
         block_number: "103",
         log_index: "1",
+        policy_id: POLICY_ID,
+        batch_id: BATCH_ID,
+        work_id: WORK_ID,
         passed,
         directive,
       },
@@ -247,5 +258,92 @@ test("require-financial mode refuses to promote packet-only proof", async () => 
   assert.equal(
     result.verdict,
     "CORE_PROOF_VALID_FINANCIAL_CAUSALITY_NOT_PROVEN"
+  );
+});
+
+
+test("FAIL cannot be paired with PAY directive", async () => {
+  const wrongOutput = OUTPUT.replace(
+    "tax_minor:2763",
+    "tax_minor:2764"
+  ).replace(
+    "total_minor:21183",
+    "total_minor:21184"
+  );
+
+  const packet = await buildPacket({
+    actualOutput: wrongOutput,
+    directive: "PAY",
+    passed: false,
+  });
+
+  const result = await verifyEvidencePacketV1(packet);
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    result.error,
+    "INVALID_SETTLEMENT_DIRECTIVE"
+  );
+});
+
+test("BREAKER requires a breaker event between reveal and resolution", async () => {
+  const wrongOutput = OUTPUT.replace(
+    "tax_minor:2763",
+    "tax_minor:2764"
+  ).replace(
+    "total_minor:21183",
+    "total_minor:21184"
+  );
+
+  const packet = await buildPacket({
+    actualOutput: wrongOutput,
+    directive: "BREAKER",
+    passed: false,
+  });
+
+  const result = await verifyEvidencePacketV1(packet);
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    result.error,
+    "BREAKER_DIRECTIVE_REQUIRES_CIRCUIT_BREAKER_EVENT"
+  );
+
+  packet.chain_events.splice(
+    packet.chain_events.length - 1,
+    0,
+    {
+      name: "CircuitBreakerTriggered",
+      block_number: "102",
+      log_index: "2",
+    }
+  );
+
+  const withBreaker =
+    await verifyEvidencePacketV1(packet);
+
+  assert.equal(withBreaker.ok, true);
+  assert.equal(
+    withBreaker.settlement_directive,
+    "BREAKER"
+  );
+});
+
+test("packet cannot self-declare financial causality proven", async () => {
+  const packet = await buildPacket();
+  packet.financial_evidence = {
+    status: "PROVEN",
+    tx_hash: "0xnot-trusted-by-offline-verifier",
+  };
+
+  const result = await verifyEvidencePacketV1(
+    packet,
+    { requireFinancial: true }
+  );
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    result.financial_causality,
+    "NOT_PROVEN_PACKET_ONLY"
   );
 });
