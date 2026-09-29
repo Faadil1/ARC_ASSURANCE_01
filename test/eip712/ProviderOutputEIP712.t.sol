@@ -52,7 +52,7 @@ contract ProviderOutputEIP712Test is Test {
 
     function _signature(
         ProviderOutputEIP712.ProviderOutput memory output
-    ) internal view returns (bytes memory) {
+    ) internal returns (bytes memory) {
         bytes32 digest = harness.providerOutputDigest(output);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(
             PROVIDER_PK,
