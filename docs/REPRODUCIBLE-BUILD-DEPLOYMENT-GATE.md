@@ -51,9 +51,9 @@ The gate verifies the resolved config actually reports `network = arc` before re
 2. verifies exact dependency commits;
 3. verifies exact Arc Foundry source commit;
 4. builds with the Arc profile;
-5. extracts `AssuranceVault` creation and runtime bytecode;
-6. computes keccak256 for both;
-7. records the exact Git commit/tree and source hashes.
+5. extracts `AssuranceVault` creation/runtime bytecode plus compiler immutable-reference ranges;
+6. computes the creation-bytecode hash, runtime-template hash, and a normalized-runtime hash with immutable slots zeroed;
+7. records the exact Git commit/tree, immutable ranges and source hashes.
 
 Output:
 
@@ -69,7 +69,7 @@ The manifest intentionally contains no timestamp so identical inputs can compare
 - toolchain pins;
 - compiler settings;
 - creation bytecode hash;
-- runtime bytecode hash;
+- normalized runtime bytecode hash;
 - critical source/config hashes.
 
 Success produces:
@@ -143,7 +143,9 @@ States:
 It contains:
 
 - exact source commit/tree;
-- expected runtime code hash;
+- runtime template hash;
+- expected **normalized** runtime hash;
+- compiler-reported immutable byte ranges;
 - expected creation bytecode hash;
 - exact build toolchain;
 - constructor configuration;
@@ -166,3 +168,38 @@ Even a fully successful clean-room gate does **not** prove:
 - Live Core Loop.
 
 Those remain blocked until the integrated contract is deployed with bounded value and reconstructed from Arc RPC.
+
+
+## Immutable-aware runtime binding
+
+`AssuranceVault` uses Solidity `immutable` constructor values.
+
+Those values are patched into deployed runtime bytecode, so this comparison would be incorrect:
+
+```text
+keccak256(artifact deployedBytecode)
+==
+keccak256(on-chain runtime)
+```
+
+The gate instead records the compiler's immutable-reference byte ranges and computes:
+
+```text
+normalized runtime =
+runtime bytecode with immutable ranges zeroed
+
+keccak256(normalized build runtime)
+==
+keccak256(normalized on-chain runtime)
+```
+
+The chain verifier must then separately read and compare the public immutable getters:
+
+- `authority()`
+- `expectedChainId()`
+- `usdcErc20Interface()`
+- `deploymentSpendCap()`
+
+Only **normalized code equality + immutable getter equality** can advance runtime binding for this contract.
+
+Git commit provenance remains a separate reproducible-build requirement.
