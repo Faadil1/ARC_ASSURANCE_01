@@ -7,6 +7,7 @@ OUT_DIR="${BUILD_OUT_DIR:-$ROOT/build/out}"
 ARC_FORGE="${ARC_FORGE:-$ROOT/.tooling/bin/arc-forge}"
 ARC_CAST="${ARC_CAST:-$ROOT/.tooling/bin/arc-cast}"
 ARC_FOUNDRY_SOURCE_DIR="${ARC_FOUNDRY_SOURCE_DIR:-$ROOT/.tooling/arc-foundry-src}"
+ARC_FOUNDRY_BIN_DIR="${ARC_FOUNDRY_BIN_DIR:-$ROOT/.tooling/bin}"
 
 for cmd in git jq sha256sum; do
   command -v "$cmd" >/dev/null || { echo "$cmd is required" >&2; exit 1; }
@@ -38,7 +39,22 @@ ARC_SHA="$(jq -r '.contract_build.arc_foundry.commit' "$LOCK")"
 
 check_dep "$ROOT/lib/forge-std" "$FORGE_STD_SHA"
 check_dep "$ROOT/lib/openzeppelin-contracts" "$OZ_SHA"
-check_dep "$ARC_FOUNDRY_SOURCE_DIR" "$ARC_SHA"
+
+ARC_INSTALL_COMMIT_FILE="$ARC_FOUNDRY_BIN_DIR/arc-foundry-source-commit.txt"
+[ -f "$ARC_INSTALL_COMMIT_FILE" ] || {
+  echo "missing Arc Foundry provenance file: $ARC_INSTALL_COMMIT_FILE" >&2
+  exit 1
+}
+ARC_INSTALLED_SHA="$(cat "$ARC_INSTALL_COMMIT_FILE")"
+[ "$ARC_INSTALLED_SHA" = "$ARC_SHA" ] || {
+  echo "Arc Foundry installed source commit mismatch: $ARC_INSTALLED_SHA != $ARC_SHA" >&2
+  exit 1
+}
+
+ARC_RELEASE_TAG_FILE="$ARC_FOUNDRY_BIN_DIR/arc-foundry-release-tag.txt"
+ARC_RELEASE_TAG="$(cat "$ARC_RELEASE_TAG_FILE" 2>/dev/null || echo UNKNOWN)"
+ARC_RELEASE_ARCHIVE_SHA="$(cat "$ARC_FOUNDRY_BIN_DIR/arc-foundry-release-archive.sha256" 2>/dev/null || echo SOURCE_BUILD)"
+ARC_FORGE_BINARY_SHA="$(sha256sum "$ARC_FORGE" | awk '{print $1}')"
 
 mkdir -p "$OUT_DIR"
 
@@ -90,6 +106,9 @@ jq -n \
   --arg solc "$SOLC_PIN" \
   --arg arc_foundry_commit "$ARC_SHA" \
   --arg arc_foundry_version "$ARC_VERSION" \
+  --arg arc_foundry_release_tag "$ARC_RELEASE_TAG" \
+  --arg arc_foundry_release_archive_sha256 "$ARC_RELEASE_ARCHIVE_SHA" \
+  --arg arc_forge_binary_sha256 "$ARC_FORGE_BINARY_SHA" \
   --arg forge_std_commit "$FORGE_STD_SHA" \
   --arg openzeppelin_commit "$OZ_SHA" \
   --arg creation_hash "$CREATION_HASH" \
@@ -106,7 +125,13 @@ jq -n \
     contract:$contract,
     toolchain:{
       solc:$solc,
-      arc_foundry:{commit:$arc_foundry_commit,version_output:$arc_foundry_version},
+      arc_foundry:{
+        commit:$arc_foundry_commit,
+        version_output:$arc_foundry_version,
+        release_tag:$arc_foundry_release_tag,
+        release_archive_sha256:$arc_foundry_release_archive_sha256,
+        arc_forge_binary_sha256:$arc_forge_binary_sha256
+      },
       forge_std_commit:$forge_std_commit,
       openzeppelin_contracts_commit:$openzeppelin_commit
     },
