@@ -741,3 +741,69 @@ Still BLOCKED:
 - deployed runtime hash;
 - PASS / FAIL / BREAKER / refund Arc receipts;
 - G5 / G6 / Live Core Loop.
+
+
+## 24. T0 final source/supply-chain revalidation
+
+Opeyemi's T0 branch plus final supply-chain hardening is green on:
+
+`f7fdf4e1b592c9122d4680d5272635baa2afff3f`
+
+Workflow run:
+
+`36637646773`
+
+Observed:
+
+- Arc Foundry 1.7.1-dev;
+- Arc Foundry commit `d497beea7096ff2a8e583c8b307941f24a61b06b`;
+- official Linux x86_64 release asset SHA-256 verified:
+  `088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556`;
+- forge-std commit verified:
+  `3b20d60d14b343ee4f908cb8079495c07f5e8981`;
+- build PASS;
+- 40/40 tests PASS;
+- evidence artifact digest:
+  `sha256:0d00268c75c457eea074f88783767061547a783b46093d44c61eb7a5bf2db4c0`.
+
+This proves post-audit source revalidation only.
+
+G1 remains ACTIVE / NOT PROVEN until real Arc mainnet deploy -> fund -> payout -> refund receipts exist.
+
+## 25. Pre-Mainnet Deployment Package
+
+Branch:
+
+`ops/pre-mainnet-deployment-package`
+
+Bounded plan:
+
+```
+dedicated wallet ceiling = 5.00 USDC
+
+T0:
+fund   = 0.010
+payout = 0.002
+refund = 0.008
+hard contract cap = 0.050
+```
+
+The 5 USDC ceiling is wallet gas/operational headroom, not an agent budget and not intended contract custody.
+
+Required topology:
+
+- dedicated authority/funder wallet;
+- separate payout recipient EOA;
+- integrated provider signer separate from funder;
+- no mainnet private key in repo/CI/chat.
+
+A no-secret validator now checks public addresses and all bounded values without signing, broadcasting or moving funds.
+
+Current blockers before human funding:
+
+1. real public wallet addresses;
+2. read-only gas estimate;
+3. explicit review of the gas estimate against the 5 USDC ceiling;
+4. explicit human funding authorization.
+
+No wallet funding or mainnet action has occurred.
