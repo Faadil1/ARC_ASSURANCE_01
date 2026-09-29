@@ -96,6 +96,13 @@ function normalizeAddress(value) {
   return getAddress(requireString(value, "address"));
 }
 
+function requireBoolean(value, label) {
+  if (typeof value !== "boolean") {
+    throw new Error("INVALID_" + label.toUpperCase());
+  }
+  return value;
+}
+
 export function keccakUtf8V1(value) {
   return keccak256(stringToHex(requireString(value, "utf8")));
 }
@@ -351,6 +358,16 @@ export async function verifyEvidencePacketV1(
 
     const eventBindings = [
       [
+        "BatchCommitted.policy_id",
+        committedEvent.policy_id,
+        message.policyId,
+      ],
+      [
+        "BatchCommitted.batch_id",
+        committedEvent.batch_id,
+        message.batchId,
+      ],
+      [
         "BatchCommitted.commitment",
         committedEvent.commitment,
         commitment,
@@ -391,6 +408,36 @@ export async function verifyEvidencePacketV1(
         digest,
       ],
       [
+        "ProviderOutputLocked.provider",
+        lockedEvent.provider,
+        expectedProvider,
+      ],
+      [
+        "CanaryRevealed.policy_id",
+        revealedEvent.policy_id,
+        message.policyId,
+      ],
+      [
+        "CanaryRevealed.batch_id",
+        revealedEvent.batch_id,
+        message.batchId,
+      ],
+      [
+        "CanaryRevealed.work_id",
+        revealedEvent.work_id,
+        message.workId,
+      ],
+      [
+        "CanaryRevealed.input_hash",
+        revealedEvent.input_hash,
+        computedInputHash,
+      ],
+      [
+        "CanaryRevealed.scorer_id_hash",
+        revealedEvent.scorer_id_hash,
+        computedScorerIdHash,
+      ],
+      [
         "CanaryRevealed.expected_output_hash",
         revealedEvent.expected_output_hash,
         expectedOutputHash,
@@ -399,6 +446,21 @@ export async function verifyEvidencePacketV1(
         "CanaryRevealed.canary_key",
         revealedEvent.canary_key,
         canaryKey,
+      ],
+      [
+        "BatchResolved.policy_id",
+        resolvedEvent.policy_id,
+        message.policyId,
+      ],
+      [
+        "BatchResolved.batch_id",
+        resolvedEvent.batch_id,
+        message.batchId,
+      ],
+      [
+        "BatchResolved.work_id",
+        resolvedEvent.work_id,
+        message.workId,
       ],
     ];
 
@@ -437,18 +499,38 @@ export async function verifyEvidencePacketV1(
       computedOutputHash.toLowerCase() ===
       expectedOutputHash.toLowerCase();
 
-    const expectedDirective = passed
-      ? "PAY"
-      : String(resolvedEvent.directive);
+    const chainPassed = requireBoolean(
+      resolvedEvent.passed,
+      "resolved_passed"
+    );
+    const chainDirective = requireString(
+      resolvedEvent.directive,
+      "resolved_directive"
+    );
 
-    if (
-      Boolean(resolvedEvent.passed) !== passed
-    ) {
+    let directiveValid = false;
+    if (passed) {
+      directiveValid = chainDirective === "PAY";
+    } else {
+      directiveValid =
+        chainDirective === "WITHHOLD" ||
+        chainDirective === "BREAKER";
+    }
+
+    if (chainPassed !== passed) {
       checks.deterministic_verdict = fail(
         "RESOLVED_PASS_FLAG_MISMATCH",
         {
           computed_passed: passed,
-          chain_passed: resolvedEvent.passed,
+          chain_passed: chainPassed,
+        }
+      );
+    } else if (!directiveValid) {
+      checks.deterministic_verdict = fail(
+        "INVALID_SETTLEMENT_DIRECTIVE",
+        {
+          computed_passed: passed,
+          chain_directive: chainDirective,
         }
       );
     } else {
@@ -456,7 +538,7 @@ export async function verifyEvidencePacketV1(
         passed,
         expected_output_hash: expectedOutputHash,
         actual_output_hash: computedOutputHash,
-        directive: expectedDirective,
+        directive: chainDirective,
       });
     }
 
@@ -514,24 +596,64 @@ export async function verifyEvidencePacketV1(
     }
 
     const financial = packet.financial_evidence ?? null;
-    let financialCausality = "NOT_PROVEN";
+    const financialCausality =
+      "NOT_PROVEN_PACKET_ONLY";
 
     if (financial === null) {
       warnings.push(
         "No financial evidence supplied. Settlement directive is not a USDC receipt."
       );
-    } else if (
-      financial.status === "LIVE_ARC_MAINNET_VERIFIED"
-    ) {
-      financialCausality =
-        "CLAIMED_LIVE_REQUIRES_CHAIN_VERIFIER";
-      warnings.push(
-        "Packet-only verifier does not independently query Arc RPC yet; financial claim remains unpromoted."
-      );
     } else {
-      financialCausality = String(
-        financial.status ?? "NOT_PROVEN"
+      warnings.push(
+        "Financial fields in an offline packet are untrusted claims. Chain-native verification is required."
       );
+    }
+
+    if (chainDirective === "BREAKER") {
+      const breakerEvents = packet.chain_events.filter(
+        (event) =>
+          event.name === "CircuitBreakerTriggered"
+      );
+
+      if (breakerEvents.length !== 1) {
+        return {
+          ok: false,
+          verdict: "INVALID_EVIDENCE",
+          checks,
+          warnings,
+          error:
+            "BREAKER_DIRECTIVE_REQUIRES_CIRCUIT_BREAKER_EVENT",
+        };
+      }
+
+      const breakerPosition = positionOf(
+        breakerEvents[0]
+      );
+      const revealPosition = positionOf(
+        revealedEvent
+      );
+      const resolvedPosition = positionOf(
+        resolvedEvent
+      );
+
+      if (
+        !before(revealPosition, breakerPosition) ||
+        !before(breakerPosition, resolvedPosition)
+      ) {
+        return {
+          ok: false,
+          verdict: "INVALID_EVIDENCE",
+          checks,
+          warnings,
+          error:
+            "INVALID_CIRCUIT_BREAKER_EVENT_ORDER",
+        };
+      }
+
+      checks.circuit_breaker = pass({
+        block: breakerPosition.block.toString(),
+        log: breakerPosition.log.toString(),
+      });
     }
 
     const requireFinancial =
@@ -540,18 +662,14 @@ export async function verifyEvidencePacketV1(
     const proofVerdict = passed ? "PASS" : "FAIL";
 
     return {
-      ok:
-        !requireFinancial ||
-        financialCausality === "PROVEN",
+      ok: !requireFinancial,
       verdict:
         requireFinancial &&
         financialCausality !== "PROVEN"
           ? "CORE_PROOF_VALID_FINANCIAL_CAUSALITY_NOT_PROVEN"
           : "CORE_PROOF_VALID",
       deterministic_result: proofVerdict,
-      settlement_directive: String(
-        resolvedEvent.directive
-      ),
+      settlement_directive: chainDirective,
       financial_causality: financialCausality,
       provider_digest: digest,
       commitment,
