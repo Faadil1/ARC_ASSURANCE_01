@@ -68,7 +68,13 @@ contract DeployT0 is Script {
         if (maxSpendCap == 0) revert BadUint("T0_FUND_AMOUNT_WEI");
         if (unitPayout == 0 || unitPayout > maxSpendCap) revert InconsistentConfig();
         if (maxSpendCap > DEPLOYMENT_SPEND_CAP) revert InconsistentConfig();
-        if (expiry != 0 && expiry <= block.timestamp) revert InconsistentConfig();
+        // T0 requires a real future expiry so a funded policy always has an
+        // eventual fail-closed recovery path.
+        if (expiry == 0 || expiry <= block.timestamp) revert InconsistentConfig();
+        // The protected T0 run intentionally uses one human-controlled signer
+        // for both authority and funder. The contract itself remains capable of
+        // separating those roles in later product stages.
+        if (funder != authority) revert InconsistentConfig();
 
         // --- 4. explicit human confirmation -------------------------------
         if (vm.envOr("T0_CONFIRM_MAINNET", uint256(0)) != 1) revert MainnetNotConfirmed();
@@ -84,14 +90,15 @@ contract DeployT0 is Script {
         console.log("expiry           :", uint256(expiry));
         console.log("spend cap        :", DEPLOYMENT_SPEND_CAP);
 
-        // The policy is registered in the same broadcast, and registration is
-        // authority-only, so the broadcasting account must BE the authority.
-        // Splitting these two would silently produce an unregistrable policy.
-        address broadcaster = _envAddress("DEPLOYER_ADDRESS", address(0));
+        // Bind the actual broadcaster to PRIVATE_KEY explicitly. Foundry's
+        // startBroadcast(privateKey) overload makes signer selection part of
+        // the script instead of relying on an implicit CLI wallet.
+        uint256 broadcasterKey = vm.envUint("PRIVATE_KEY");
+        address broadcaster = vm.addr(broadcasterKey);
         if (broadcaster != authority) revert InconsistentConfig();
         console.log("broadcaster      :", broadcaster);
 
-        vm.startBroadcast();
+        vm.startBroadcast(broadcasterKey);
         vault = new PolicyCustody(authority, ARC_MAINNET_CHAIN_ID, usdc, DEPLOYMENT_SPEND_CAP);
         vault.createPolicy(policyId, funder, payoutRecipient, maxSpendCap, unitPayout, expiry);
         vm.stopBroadcast();
