@@ -432,6 +432,17 @@ export async function verifyT0CustodyFromArc(
       );
     }
 
+    if (
+      !sameHex(
+        args.refunded.recipient,
+        args.created.funder
+      )
+    ) {
+      throw new Error(
+        "T0_REFUND_RECIPIENT_BINDING_MISMATCH"
+      );
+    }
+
     const fundedAmount = BigInt(args.funded.amount);
     const paidAmount = BigInt(args.paid.amount);
     const refundedAmount = BigInt(args.refunded.amount);
@@ -451,6 +462,16 @@ export async function verifyT0CustodyFromArc(
     if (BigInt(args.paid.remaining) !== refundedAmount) {
       throw new Error(
         "T0_REMAINING_REFUND_MISMATCH"
+      );
+    }
+
+    if (
+      BigInt(args.funded.totalFunded) !== fundedAmount ||
+      BigInt(args.paid.totalPaidOut) !== paidAmount ||
+      BigInt(args.refunded.totalRefunded) !== refundedAmount
+    ) {
+      throw new Error(
+        "T0_EVENT_ACCOUNTING_TOTAL_MISMATCH"
       );
     }
 
@@ -643,6 +664,31 @@ export async function verifyAssuranceCoreFromArc(
 
     if (!directive) {
       throw new Error("UNKNOWN_SETTLEMENT_DIRECTIVE");
+    }
+
+    const failureCount = Number(
+      resolved.args.failureCount
+    );
+    const maxFailures = Number(
+      policyCreated.args.maxFailures
+    );
+
+    if (
+      directive === "WITHHOLD" &&
+      failureCount >= maxFailures
+    ) {
+      throw new Error(
+        "WITHHOLD_AT_OR_ABOVE_BREAKER_THRESHOLD"
+      );
+    }
+
+    if (
+      directive === "BREAKER" &&
+      failureCount < maxFailures
+    ) {
+      throw new Error(
+        "BREAKER_BELOW_POLICY_THRESHOLD"
+      );
     }
 
     const chainEvents = [
