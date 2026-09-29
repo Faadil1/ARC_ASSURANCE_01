@@ -341,3 +341,23 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Actual gas estimates for deployment and lifecycle operations.
 - Whether 5 USDC is sufficient for the intended live sequence after measured gas.
 - Any mainnet custody, payout or refund receipt.
+
+
+## Pre-mainnet package clean-room evidence — 2026-09-29
+
+### OBSERVED
+
+- Exact package head `e76bd480785d5a627499f7d6ea27ae55705f4df9` passed workflow run `36638119707`.
+- 58/58 JavaScript tests passed, including four no-secret pre-mainnet configuration tests.
+- 28/28 Solidity tests passed.
+- AssuranceVault creation bytecode remained unchanged at `0x29bdd71974b5943f8f3194272f6cb13568e5e4ce23865cf085c6242334163afd`.
+- No transaction was signed or broadcast by the package or CI.
+- No wallet was funded.
+
+### STILL BLOCKED
+
+- Real public addresses.
+- Read-only gas estimate.
+- Human review of the 5 USDC ceiling.
+- Human wallet funding.
+- T0 deploy and execute authorizations.
