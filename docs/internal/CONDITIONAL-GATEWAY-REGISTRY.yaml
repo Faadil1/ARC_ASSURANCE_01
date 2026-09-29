@@ -496,3 +496,53 @@ runtime_commit_binding_v2:
     source_commit_claim: PARTIAL
     reproducible_build_provenance: NOT_IMPLEMENTED
   rule: "A manifest Git SHA is not proof that the on-chain bytecode came from that commit."
+
+
+integrated_assurance_vault_gate:
+  status: BLOCKED
+  current_state: PRODUCED_REVALIDATION_REQUIRED
+  activation: "Load-bearing composition of deterministic assurance and real Arc custody."
+  source_invariants:
+    only_payout_path_is_resolve_pass: implemented
+    pass_payment_atomic_with_resolve: implemented
+    fail_batch_terminal_without_payment: implemented
+    breaker_blocks_future_batches: implemented
+    breaker_remainder_refundable: implemented
+    policy_liability_isolated_from_pool: implemented
+    payout_failure_recovery_after_expiry: implemented
+    wrong_chain_deployment_rejected: implemented
+  verification:
+    solidity_tests_authored: true
+    integrated_arc_verifier_authored: true
+    integrated_verifier_tests_authored: true
+    exact_head_test_execution: BLOCKED
+    live_arc_receipts: BLOCKED
+  required_before_proven:
+    - "Arc Foundry compile/test exact head."
+    - "Pinned Viem integrated verifier tests."
+    - "Cross-language EIP-712 and commitment golden vectors."
+    - "Opeyemi technical review."
+    - "Reproducible exact-commit -> deployed-bytecode hash binding."
+    - "Tiny-value Arc mainnet PASS -> payout."
+    - "Controlled WRONG_AMOUNT_VALID FAIL -> no-pay."
+    - "Second configured FAIL -> breaker."
+    - "Protected remainder refund."
+    - "Independent v3 reconstruction from Arc RPC."
+
+financial_causality_truth_boundary:
+  status: BLOCKED
+  rule: "Source-level load-bearing integration is now produced, but financial causality remains unproven until exact deployed Arc receipts show PASS/pay, FAIL/no-pay, and breaker/refund on the integrated vault."
+
+product_depth_integrated_candidate:
+  Load_Bearing_Integration:
+    status: BLOCKED
+    current: "source-level candidate produced; live proof absent"
+  Real_Consequence:
+    status: BLOCKED
+    current: "contract path authored; no mainnet consequence receipts"
+  Failure_Recovery:
+    status: BLOCKED
+    current: "expiry recovery source/tests authored; not live-proven"
+  Shared_Product_Core:
+    status: ACTIVE
+    current: "provider/scorer/EIP-712/vault/verifier are now designed around one integrated proof path"
