@@ -166,6 +166,7 @@ expanded_gates:
     status: ACTIVE
     activation: "Auditable runs."
     condition: "Events, receipts, verifier, and reproducible evidence must reconstruct the canonical run."
+    current: "Offline verifier source now reconstructs hashes/signature/commitment/order/verdict from an evidence packet; Arc RPC reconstruction remains blocked."
   Demo_Environment:
     status: BLOCKED
     activation: "Before judge/operator access."
@@ -430,3 +431,30 @@ assurance_core_v1_gate:
 financial_causality_truth_boundary:
   status: BLOCKED
   rule: "A PAY/WITHHOLD/BREAKER directive is not a financial consequence until real custody proves the corresponding USDC movement or non-movement."
+
+
+verifier_cli_v1_gate:
+  status: BLOCKED
+  current_state: PRODUCED_REVALIDATION_REQUIRED
+  mode: OFFLINE_EVIDENCE_PACKET
+  verifies:
+    - "recomputed input/output/scorer hashes"
+    - "EIP-712 provider signature"
+    - "hidden canary commitment"
+    - "canonical event ordering"
+    - "event-field binding"
+    - "deterministic PASS/FAIL"
+    - "directive consistency"
+  cannot_promote:
+    - "Arc mainnet provenance of supplied event data"
+    - "runtime/commit binding"
+    - "real USDC payment/non-payment/refund"
+  financial_packet_claims_trusted: false
+  require_financial_mode:
+    current_behavior: "non-zero exit until chain-native verifier exists"
+  required_before_G6_PROVEN:
+    - "Clean dependency install and exact-head test execution."
+    - "Golden vectors verified across JS/Solidity."
+    - "Direct Arc RPC log/receipt retrieval."
+    - "Deployed contract address + bytecode/commit binding."
+    - "Independent custody/payment/no-pay/breaker/refund reconstruction."
