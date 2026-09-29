@@ -21,64 +21,42 @@ contract GoldenVectorCrossLanguageTest is Test {
         string memory json =
             vm.readFile("fixtures/golden/provider-output-pass-v1.json");
 
-        uint256 chainId = vm.parseUint(
+        _assertEip712(json);
+        _assertCanaryCommitment(json);
+        _assertCanaryKey(json);
+    }
+
+    function _chainId(string memory json)
+        internal
+        view
+        returns (uint256)
+    {
+        return vm.parseUint(
             vm.parseJsonString(
                 json,
                 ".evidence_packet.network.chain_id"
             )
         );
-        address verifyingContract = vm.parseJsonAddress(
+    }
+
+    function _verifyingContract(string memory json)
+        internal
+        view
+        returns (address)
+    {
+        return vm.parseJsonAddress(
             json,
             ".evidence_packet.network.verifying_contract"
         );
+    }
+
+    function _assertEip712(string memory json)
+        internal
+        view
+    {
         address provider = vm.parseJsonAddress(
             json,
             ".evidence_packet.provider.expected_provider"
-        );
-
-        bytes32 policyId = vm.parseJsonBytes32(
-            json,
-            ".evidence_packet.reveal.policy_id"
-        );
-        bytes32 batchId = vm.parseJsonBytes32(
-            json,
-            ".evidence_packet.reveal.batch_id"
-        );
-        bytes32 workId = vm.parseJsonBytes32(
-            json,
-            ".evidence_packet.reveal.work_id"
-        );
-        bytes32 inputHash = vm.parseJsonBytes32(
-            json,
-            ".public_crypto_vector.input_hash"
-        );
-        bytes32 outputHash = vm.parseJsonBytes32(
-            json,
-            ".public_crypto_vector.output_hash"
-        );
-        bytes32 scorerIdHash = vm.parseJsonBytes32(
-            json,
-            ".public_crypto_vector.scorer_id_hash"
-        );
-        bytes32 expectedOutputHash = vm.parseJsonBytes32(
-            json,
-            ".evidence_packet.reveal.expected_output_hash"
-        );
-        bytes32 salt = vm.parseJsonBytes32(
-            json,
-            ".evidence_packet.reveal.salt"
-        );
-        uint256 nonce = vm.parseUint(
-            vm.parseJsonString(
-                json,
-                ".evidence_packet.provider.nonce"
-            )
-        );
-        uint256 deadline = vm.parseUint(
-            vm.parseJsonString(
-                json,
-                ".evidence_packet.provider.deadline"
-            )
         );
 
         bytes32 domainSeparator = keccak256(
@@ -86,8 +64,8 @@ contract GoldenVectorCrossLanguageTest is Test {
                 DOMAIN_TYPEHASH,
                 keccak256(bytes("ARC_ASSURANCE")),
                 keccak256(bytes("1")),
-                chainId,
-                verifyingContract
+                _chainId(json),
+                _verifyingContract(json)
             )
         );
 
@@ -95,14 +73,42 @@ contract GoldenVectorCrossLanguageTest is Test {
             abi.encode(
                 PROVIDER_OUTPUT_TYPEHASH,
                 provider,
-                policyId,
-                batchId,
-                workId,
-                inputHash,
-                outputHash,
-                scorerIdHash,
-                nonce,
-                deadline
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.policy_id"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.batch_id"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.work_id"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.input_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.output_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.scorer_id_hash"
+                ),
+                vm.parseUint(
+                    vm.parseJsonString(
+                        json,
+                        ".evidence_packet.provider.nonce"
+                    )
+                ),
+                vm.parseUint(
+                    vm.parseJsonString(
+                        json,
+                        ".evidence_packet.provider.deadline"
+                    )
+                )
             )
         );
 
@@ -123,29 +129,55 @@ contract GoldenVectorCrossLanguageTest is Test {
             "EIP-712 digest mismatch"
         );
 
-        bytes memory signature = vm.parseJsonBytes(
-            json,
-            ".public_crypto_vector.signature"
-        );
-
         assertEq(
-            ECDSA.recover(digest, signature),
+            ECDSA.recover(
+                digest,
+                vm.parseJsonBytes(
+                    json,
+                    ".public_crypto_vector.signature"
+                )
+            ),
             provider,
             "provider recovery mismatch"
         );
+    }
 
+    function _assertCanaryCommitment(
+        string memory json
+    ) internal view {
         bytes32 commitment = keccak256(
             abi.encode(
                 CANARY_TYPEHASH,
-                chainId,
-                verifyingContract,
-                policyId,
-                batchId,
-                workId,
-                inputHash,
-                expectedOutputHash,
-                scorerIdHash,
-                salt
+                _chainId(json),
+                _verifyingContract(json),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.policy_id"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.batch_id"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.work_id"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.input_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.expected_output_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.scorer_id_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.salt"
+                )
             )
         );
 
@@ -157,12 +189,25 @@ contract GoldenVectorCrossLanguageTest is Test {
             ),
             "canary commitment mismatch"
         );
+    }
 
+    function _assertCanaryKey(
+        string memory json
+    ) internal view {
         bytes32 canaryKey = keccak256(
             abi.encode(
-                inputHash,
-                expectedOutputHash,
-                scorerIdHash
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.input_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".evidence_packet.reveal.expected_output_hash"
+                ),
+                vm.parseJsonBytes32(
+                    json,
+                    ".public_crypto_vector.scorer_id_hash"
+                )
             )
         );
 
