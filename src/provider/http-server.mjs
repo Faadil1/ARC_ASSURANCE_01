@@ -7,6 +7,7 @@ import {
 } from "./extract-invoice.mjs";
 
 export const PROVIDER_ID = "ARC_ASSURANCE_PROVIDER_V1";
+export const ARC_MAINNET_CHAIN_ID = 5042;
 
 function json(res, status, body) {
   const payload = JSON.stringify(body);
@@ -52,10 +53,150 @@ async function readJsonBody(req) {
   }
 }
 
+function requireSigningBinding(body) {
+  if (
+    typeof body.binding !== "object" ||
+    body.binding === null ||
+    Array.isArray(body.binding)
+  ) {
+    throw new ProviderInputError(
+      "SIGNING_BINDING_REQUIRED",
+      "Signed mode requires binding metadata"
+    );
+  }
+
+  const required = [
+    "policy_id",
+    "batch_id",
+    "work_id",
+    "nonce",
+    "deadline",
+  ];
+
+  const missing = required.filter(
+    (key) =>
+      body.binding[key] === undefined ||
+      body.binding[key] === null ||
+      body.binding[key] === ""
+  );
+
+  if (missing.length > 0) {
+    throw new ProviderInputError(
+      "SIGNING_BINDING_REQUIRED",
+      "Missing signing binding field(s): " + missing.join(",")
+    );
+  }
+
+  let deadline;
+  try {
+    deadline = BigInt(String(body.binding.deadline));
+  } catch {
+    throw new ProviderInputError(
+      "INVALID_SIGNING_DEADLINE",
+      "deadline must be an unsigned integer unix timestamp"
+    );
+  }
+
+  const now = BigInt(Math.floor(Date.now() / 1000));
+  if (deadline <= now) {
+    throw new ProviderInputError(
+      "SIGNING_DEADLINE_EXPIRED",
+      "deadline must be in the future"
+    );
+  }
+
+  return body.binding;
+}
+
+async function maybeSignExtraction({
+  body,
+  extraction,
+  signing,
+}) {
+  if (!signing) {
+    return {
+      status: "DISABLED",
+      envelope: null,
+    };
+  }
+
+  if (extraction.canonical_output === null) {
+    return {
+      status: "ABSTAIN_MALFORMED",
+      envelope: null,
+    };
+  }
+
+  const binding = requireSigningBinding(body);
+  const { signProviderOutputV1 } = await import(
+    "../eip712/sign-provider-output-v1.mjs"
+  );
+
+  try {
+    const signed = await signProviderOutputV1({
+      privateKey: signing.privateKey,
+      chainId: signing.chainId,
+      verifyingContract: signing.verifyingContract,
+      policyId: binding.policy_id,
+      batchId: binding.batch_id,
+      workId: binding.work_id,
+      inputText: body.input_text,
+      canonicalOutput: extraction.canonical_output,
+      nonce: binding.nonce,
+      deadline: binding.deadline,
+    });
+
+    return {
+      status: "SIGNED_EIP712_V1",
+      envelope: {
+        signer: signed.signer,
+        signature: signed.signature,
+        digest: signed.digest,
+        typed_data: signed.typedDataJson,
+      },
+    };
+  } catch (error) {
+    if (
+      typeof error?.message === "string" &&
+      (
+        error.message.startsWith("INVALID_") ||
+        error.message.startsWith("ZERO_")
+      )
+    ) {
+      throw new ProviderInputError(
+        "INVALID_SIGNING_BINDING",
+        error.message
+      );
+    }
+    throw error;
+  }
+}
+
 export function createProviderServer(options = {}) {
   const {
     allowDemoFaults = false,
+    signing = null,
   } = options;
+
+  if (signing) {
+    if (signing.chainId !== ARC_MAINNET_CHAIN_ID) {
+      throw new Error(
+        "SIGNING_CHAIN_MUST_BE_" + ARC_MAINNET_CHAIN_ID
+      );
+    }
+    if (
+      typeof signing.verifyingContract !== "string" ||
+      signing.verifyingContract.length === 0
+    ) {
+      throw new Error("SIGNING_VERIFYING_CONTRACT_REQUIRED");
+    }
+    if (
+      typeof signing.privateKey !== "string" ||
+      signing.privateKey.length === 0
+    ) {
+      throw new Error("SIGNING_PRIVATE_KEY_REQUIRED");
+    }
+  }
 
   return http.createServer(async (req, res) => {
     const startedAt = Date.now();
@@ -68,7 +209,12 @@ export function createProviderServer(options = {}) {
           provider_id: PROVIDER_ID,
           schema_version: PROVIDER_SCHEMA_VERSION,
           demo_faults_enabled: allowDemoFaults,
-          signature_status: "NOT_IMPLEMENTED",
+          signature_status: signing
+            ? "EIP712_V1_ENABLED"
+            : "DISABLED",
+          signing_chain_id: signing?.chainId ?? null,
+          verifying_contract:
+            signing?.verifyingContract ?? null,
         });
       }
 
@@ -102,17 +248,24 @@ export function createProviderServer(options = {}) {
         allowDemoFaults,
       });
 
+      const signed = await maybeSignExtraction({
+        body,
+        extraction,
+        signing,
+      });
+
       return json(res, 200, {
         request_id: requestId,
         provider_id: PROVIDER_ID,
         schema_version: PROVIDER_SCHEMA_VERSION,
         result: extraction.result,
         canonical_output: extraction.canonical_output,
+        signature: signed.envelope,
         evidence: {
           execution: "REAL_COMPUTE",
           fault_mode: extraction.fault_mode,
           fault_injected: extraction.fault_injected,
-          signature_status: "NOT_IMPLEMENTED",
+          signature_status: signed.status,
         },
         timing: {
           duration_ms: Date.now() - startedAt,
@@ -126,7 +279,9 @@ export function createProviderServer(options = {}) {
           message: error.message,
           evidence: {
             execution: "REAL_COMPUTE",
-            signature_status: "NOT_IMPLEMENTED",
+            signature_status: signing
+              ? "EIP712_V1_NOT_SIGNED"
+              : "DISABLED",
           },
         });
       }
@@ -135,17 +290,46 @@ export function createProviderServer(options = {}) {
         request_id: requestId,
         error: "INTERNAL_ERROR",
         message: "Unexpected provider error",
+        evidence: {
+          signature_status: signing
+            ? "EIP712_V1_FAILED"
+            : "DISABLED",
+        },
       });
     }
   });
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (
+  process.argv[1] &&
+  import.meta.url === new URL("file://" + process.argv[1]).href
+) {
   const port = Number(process.env.PORT ?? 8787);
   const allowDemoFaults =
     process.env.ALLOW_DEMO_FAULTS === "true";
 
-  const server = createProviderServer({ allowDemoFaults });
+  const signingKey =
+    process.env.PROVIDER_SIGNING_KEY?.trim() || null;
+
+  const verifyingContract =
+    process.env.PROVIDER_VERIFYING_CONTRACT?.trim() || null;
+
+  const signing = signingKey
+    ? {
+        privateKey: signingKey,
+        chainId: Number(
+          process.env.PROVIDER_CHAIN_ID ??
+            ARC_MAINNET_CHAIN_ID
+        ),
+        verifyingContract,
+      }
+    : null;
+
+  const server = createProviderServer({
+    allowDemoFaults,
+    signing,
+  });
+
   server.listen(port, "0.0.0.0", () => {
     console.log(
       JSON.stringify({
@@ -153,6 +337,12 @@ if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).
         port,
         allow_demo_faults: allowDemoFaults,
         provider_id: PROVIDER_ID,
+        signature_status: signing
+          ? "EIP712_V1_ENABLED"
+          : "DISABLED",
+        signing_chain_id: signing?.chainId ?? null,
+        verifying_contract:
+          signing?.verifyingContract ?? null,
       })
     );
   });
