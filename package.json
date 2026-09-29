@@ -15,7 +15,11 @@
     "golden:generate": "node src/verifier/generate-golden-vector-v1.mjs",
     "verify:chain": "node src/verifier/chain-cli-v2.mjs",
     "test:chain-verifier": "node --test test/verifier/verify-arc-v2.test.mjs",
-    "test:integrated-verifier": "node --test test/verifier/verify-integrated-v3.test.mjs"
+    "test:integrated-verifier": "node --test test/verifier/verify-integrated-v3.test.mjs",
+    "golden:generate:js": "node src/verifier/generate-golden-vector-v1.mjs",
+    "golden:compare": "node script/compare-golden-vectors.mjs build/out/golden-js.json build/out/golden-solidity.json",
+    "deploy:manifest": "node script/generate-deployment-manifest.mjs build/out/AssuranceVault.build-manifest.json",
+    "deploy:manifest:verify": "node script/verify-deployment-manifest.mjs build/out/AssuranceVault.deployment-manifest.json"
   },
   "dependencies": {
     "viem": "2.56.9"
