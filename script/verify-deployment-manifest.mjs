@@ -49,13 +49,24 @@ if (!SHA_RE.test(manifest.source?.commit ?? "")) {
 
 if (
   !HASH_RE.test(
-    manifest.reproducible_build?.runtime_code_hash ?? ""
+    manifest.reproducible_build?.runtime_template_hash ?? ""
+  ) ||
+  !HASH_RE.test(
+    manifest.reproducible_build?.expected_normalized_runtime_hash ?? ""
   ) ||
   !HASH_RE.test(
     manifest.reproducible_build?.creation_bytecode_hash ?? ""
   )
 ) {
   throw new Error("INVALID_BYTECODE_HASH");
+}
+
+if (
+  !Array.isArray(
+    manifest.reproducible_build?.immutable_references
+  )
+) {
+  throw new Error("IMMUTABLE_REFERENCES_REQUIRED");
 }
 
 if (
