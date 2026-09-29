@@ -626,3 +626,61 @@ Status is `PRODUCED_REVALIDATION_REQUIRED`.
 No compile/test pass is claimed for the exact head.
 No integrated Arc deployment exists.
 No G5/G6/Live Core Loop promotion is allowed yet.
+
+
+## 22. Reproducible Build + Deployment Manifest Gate
+
+Branch:
+
+- `chore/reproducible-build-manifest`
+
+This workstream is now the only allowed path from PR #20 source to an integrated mainnet deployment.
+
+Implemented:
+
+- exact toolchain/direct dependency pins;
+- deterministic golden-vector generation;
+- Solidity cross-language golden-vector verification;
+- build manifest generator;
+- predeployment manifest generator;
+- creation/init-code cross-check test;
+- strict local clean-room script;
+- GitHub Actions clean-room evidence workflow;
+- integrated verifier support for deployment tx input / expected init-code binding;
+- pre-mainnet audit checklist.
+
+### Important provenance correction
+
+Because the integrated contract inherits EIP-712 and uses immutables, a generic precomputed runtime hash is not sufficient as the predeployment identity.
+
+Canonical binding is:
+
+```
+Git SHA
+→ deterministic creation bytecode
+→ exact constructor args
+→ init-code hash
+→ Arc deploy transaction input
+→ successful deployment receipt
+→ contract address
+→ observed runtime bytecode hash
+```
+
+### Current blocker
+
+No committed `package-lock.json` exists yet.
+
+Therefore Node's transitive dependency graph is not durably locked, and the reproducible-build gate remains BLOCKED even though direct versions are pinned.
+
+CI can generate a candidate lock artifact for review; it must be committed before promotion.
+
+### Mainnet rule
+
+No integrated deployment/funding until:
+
+1. package-lock committed;
+2. exact-head clean-room workflow green;
+3. JS + Solidity + cross-language tests green;
+4. Opeyemi review;
+5. T0 PR #6 green;
+6. protected deployment manifest approved.
