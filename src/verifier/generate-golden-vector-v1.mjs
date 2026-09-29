@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import {
-  generatePrivateKey,
+  keccak256,
+  stringToHex,
+} from "viem";
+import {
   privateKeyToAccount,
 } from "viem/accounts";
 import {
@@ -45,7 +48,11 @@ const canonicalOutput = [
 const scorerId =
   "ARC_ASSURANCE_SCORER_V1:invoice-exact-v1";
 
-const privateKey = generatePrivateKey();
+const PUBLIC_TEST_KEY_LABEL =
+  "ARC_ASSURANCE_GOLDEN_VECTOR_V1_PUBLIC_TEST_KEY";
+const privateKey = keccak256(
+  stringToHex(PUBLIC_TEST_KEY_LABEL)
+);
 const account = privateKeyToAccount(privateKey);
 
 const inputHash = keccakUtf8V1(inputText);
@@ -90,6 +97,10 @@ const vector = {
   warning:
     "Local cross-language vector only. Synthetic block/log positions are not Arc mainnet evidence.",
   provider_private_key_included: false,
+  public_test_key_derivation:
+    "keccak256(UTF8:" + PUBLIC_TEST_KEY_LABEL + ")",
+  warning_key:
+    "This is a deterministic PUBLIC TEST KEY. Never fund it or reuse it outside golden-vector tests.",
   evidence_packet: {
     version: EVIDENCE_VERSION,
     network: {
