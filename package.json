@@ -19,7 +19,8 @@
     "golden:generate:js": "node src/verifier/generate-golden-vector-v1.mjs",
     "golden:compare": "node script/compare-golden-vectors.mjs build/out/golden-js.json build/out/golden-solidity.json",
     "deploy:manifest": "node script/generate-deployment-manifest.mjs build/out/AssuranceVault.build-manifest.json",
-    "deploy:manifest:verify": "node script/verify-deployment-manifest.mjs build/out/AssuranceVault.deployment-manifest.json"
+    "deploy:manifest:verify": "node script/verify-deployment-manifest.mjs build/out/AssuranceVault.deployment-manifest.json",
+    "gate:reproducible": "bash script/run-reproducible-gate.sh"
   },
   "dependencies": {
     "viem": "2.56.9"
