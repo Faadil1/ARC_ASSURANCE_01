@@ -194,13 +194,28 @@ Likewise `WITHHOLD` is a directive until the custody layer proves that money tha
 ## 10. Required verification before promotion
 
 1. Install pinned Viem dependency.
-2. Install pinned OpenZeppelin 5.6.1 dependency.
-3. Run JS commitment tests.
+2. Install Foundry dependencies:
+   - forge-std v1.16.1
+   - OpenZeppelin Contracts v5.6.1
+3. Run JS commitment/signing/provider tests.
 4. Run Arc Foundry assurance/EIP-712 tests.
 5. Produce a JS/Solidity cross-language commitment vector.
 6. Produce the previously required EIP-712 golden vector.
 7. Opeyemi reviews the state-machine/settlement seam after T0 is green.
 8. Integrate with real custody only after both T0 and this core are verified.
+
+Recommended clean-room dependency commands:
+
+```bash
+npm install
+forge install foundry-rs/forge-std@v1.16.1
+forge install OpenZeppelin/openzeppelin-contracts@v5.6.1
+npm run test:all-js
+arc-forge test --match-path 'test/eip712/*.t.sol' -vv
+arc-forge test --match-path 'test/assurance/*.t.sol' -vv
+```
+
+No dependency installation result is claimed until those commands are actually executed on the exact branch head.
 
 ## 11. Next composition
 
