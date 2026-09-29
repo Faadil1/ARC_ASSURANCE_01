@@ -6,7 +6,26 @@
       "repository": "circlefin/arc-foundry",
       "commit": "d497beea7096ff2a8e583c8b307941f24a61b06b",
       "observed_version": "1.7.1-dev",
-      "provenance": "resolved from the exact Arc Foundry commit previously used for T0 local verification"
+      "provenance": "resolved from the exact Arc Foundry commit previously used for T0 local verification",
+      "release": {
+        "tag": "v0.8.0-2",
+        "tag_commit": "d497beea7096ff2a8e583c8b307941f24a61b06b",
+        "tag_matches_source_commit": true,
+        "assets": {
+          "x86_64-unknown-linux-gnu": {
+            "url": "https://github.com/circlefin/arc-foundry/releases/download/v0.8.0-2/arc-foundry-v0.8.0-2-x86_64-unknown-linux-gnu.tar.gz",
+            "sha256": "088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556"
+          },
+          "aarch64-unknown-linux-gnu": {
+            "url": "https://github.com/circlefin/arc-foundry/releases/download/v0.8.0-2/arc-foundry-v0.8.0-2-aarch64-unknown-linux-gnu.tar.gz",
+            "sha256": "6508a6425bfeab62188698702771478619d4229fda1db038fb01c1050476c805"
+          },
+          "aarch64-apple-darwin": {
+            "url": "https://github.com/circlefin/arc-foundry/releases/download/v0.8.0-2/arc-foundry-v0.8.0-2-aarch64-apple-darwin.tar.gz",
+            "sha256": "90e3eefbf7dd80652fd283a7562e9263301a48797bc2224cc21a3964e2d5db87"
+          }
+        }
+      }
     },
     "forge_std": {
       "repository": "foundry-rs/forge-std",
