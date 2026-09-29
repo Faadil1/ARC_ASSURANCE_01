@@ -283,6 +283,57 @@ export async function verifyIntegratedBatchFromArc(
       );
     }
 
+    preCommitFunding.sort((a, b) => {
+      const pa = pos(a);
+      const pb = pos(b);
+      if (pa.block < pb.block) return -1;
+      if (pa.block > pb.block) return 1;
+      return pa.log < pb.log ? -1 : pa.log > pb.log ? 1 : 0;
+    });
+
+    let fundedSum = 0n;
+    for (const funding of preCommitFunding) {
+      if (
+        !sameHex(
+          funding.args.funder,
+          policy.args.funder
+        )
+      ) {
+        throw new Error(
+          "FUNDING_FUNDER_BINDING_MISMATCH"
+        );
+      }
+      if (
+        Number(funding.args.chainId) !==
+        ARC_MAINNET_CHAIN_ID
+      ) {
+        throw new Error(
+          "FUNDING_EVENT_CHAIN_ID_MISMATCH"
+        );
+      }
+      fundedSum += BigInt(funding.args.amount);
+      if (
+        BigInt(funding.args.totalFunded) !==
+        fundedSum
+      ) {
+        throw new Error(
+          "FUNDING_TOTAL_MISMATCH"
+        );
+      }
+    }
+
+    const lastFunding =
+      preCommitFunding[preCommitFunding.length - 1];
+
+    if (
+      BigInt(lastFunding.args.remainingLiability) <
+      BigInt(policy.args.unitPayout)
+    ) {
+      throw new Error(
+        "INSUFFICIENT_LIABILITY_BEFORE_COMMIT"
+      );
+    }
+
     if (
       Number(policy.args.chainId) !==
       ARC_MAINNET_CHAIN_ID
@@ -714,6 +765,48 @@ export async function verifyIntegratedBatchFromArc(
       }
     }
 
+    const receiptLogs = [
+      policy,
+      ...preCommitFunding,
+      committed,
+      locked,
+      revealed,
+      resolved,
+      ...paymentLogs,
+      ...withheldLogs,
+      ...breakerLogs,
+    ];
+
+    const seenReceipts = new Set();
+    const causalReceipts = [];
+    for (const entry of receiptLogs) {
+      if (
+        !entry.transactionHash ||
+        seenReceipts.has(entry.transactionHash)
+      ) {
+        continue;
+      }
+      seenReceipts.add(entry.transactionHash);
+      const checked = await successfulReceipt(
+        publicClient,
+        entry.transactionHash
+      );
+      causalReceipts.push({
+        hash: checked.transactionHash,
+        block_number: String(
+          checked.blockNumber
+        ),
+        status: checked.status,
+        gas_used: String(checked.gasUsed),
+        effective_gas_price:
+          checked.effectiveGasPrice === undefined
+            ? null
+            : String(
+                checked.effectiveGasPrice
+              ),
+      });
+    }
+
     const receipt = await successfulReceipt(
       publicClient,
       resolved.transactionHash
@@ -742,6 +835,7 @@ export async function verifyIntegratedBatchFromArc(
             ? null
             : String(receipt.effectiveGasPrice),
       },
+      causal_receipts: causalReceipts,
       gate_note:
         "Live G5/G6 promotion still requires exact-head test execution and reproducible source-commit to deployed-bytecode provenance.",
     };
