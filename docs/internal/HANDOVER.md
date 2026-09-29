@@ -559,3 +559,70 @@ v2 fetches runtime bytecode from Arc and computes its keccak256 hash.
 If the manifest supplies an expected code hash, a mismatch fails closed.
 
 However an expected code hash plus a text Git SHA does not itself prove reproducible build provenance. Full Runtime/Commit Binding remains BLOCKED until exact commit -> build artifact -> deployed bytecode is reproducibly linked.
+
+
+## 21. Integrated AssuranceVault — load-bearing candidate
+
+Branch:
+
+- `feat/integrated-assurance-vault`
+
+This is the first source-level composition where assurance and custody are no longer separate primitives.
+
+Canonical path:
+
+```
+fund
+→ hidden precommit
+→ signed provider output
+→ reveal
+→ resolve
+   ├─ PASS -> native USDC payout
+   ├─ FAIL -> no payout / protected liability
+   └─ threshold FAIL -> breaker -> refund protected remainder
+```
+
+### Critical architectural change
+
+There is **no independent provider payout function**.
+
+The only provider payout path is `resolveBatch()`, and it can transfer the configured unit payout only when the signed output hash exactly equals the revealed/precommitted expected output hash.
+
+This is the intended load-bearing property.
+
+### Negative path
+
+A resolved FAIL is terminal for that batch and emits `PaymentWithheld`; no later function can release a payout for that resolved batch.
+
+Configured cumulative failures trigger the breaker, pause the policy, block future batch commits, and enable refund of the remaining policy liability to the immutable funder.
+
+### Recovery path
+
+Policies require a future expiry.
+
+If a payout recipient rejects native value, the PASS resolution transaction fully reverts. After expiry, the funder can cancel the unresolved batch and refund the protected remainder.
+
+### Verification
+
+Integrated verifier v3 requires Arc RPC evidence.
+
+PASS:
+- BatchResolved(PAY) and PaymentReleased in the same successful transaction.
+
+FAIL:
+- BatchResolved(WITHHOLD/BREAKER) and PaymentWithheld in the same successful transaction.
+- zero PaymentReleased events for the batch/work.
+
+BREAKER:
+- breaker event in the resolve transaction;
+- later exact protected-remainder refund;
+- policy close;
+- final value conservation.
+
+### Truth boundary
+
+Status is `PRODUCED_REVALIDATION_REQUIRED`.
+
+No compile/test pass is claimed for the exact head.
+No integrated Arc deployment exists.
+No G5/G6/Live Core Loop promotion is allowed yet.
