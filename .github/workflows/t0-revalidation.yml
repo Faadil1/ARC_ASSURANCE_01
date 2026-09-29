@@ -50,8 +50,17 @@ jobs:
           ARC_VER="${ARC_TAG#v}"
           ASSET="arc-foundry-v${ARC_VER}-x86_64-unknown-linux-gnu.tar.gz"
           URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_TAG}/${ASSET}"
+          EXPECTED_SHA256="088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556"
 
           curl -fsSL "$URL" -o /tmp/arc.tar.gz
+          ACTUAL_SHA256="$(sha256sum /tmp/arc.tar.gz | awk '{print $1}')"
+          [ "$ACTUAL_SHA256" = "$EXPECTED_SHA256" ] || {
+            echo "Arc Foundry checksum mismatch" >&2
+            echo "expected: $EXPECTED_SHA256" >&2
+            echo "actual  : $ACTUAL_SHA256" >&2
+            exit 1
+          }
+          echo "Arc Foundry asset sha256: $ACTUAL_SHA256"
           rm -rf /tmp/arcbin && mkdir -p /tmp/arcbin
           tar -xzf /tmp/arc.tar.gz -C /tmp/arcbin
 
@@ -95,13 +104,21 @@ jobs:
           # lib/ is gitignored, so a fresh checkout has no test dependencies.
           # Clone directly rather than relying on "forge install" flag support,
           # which varies across Foundry/arc-forge versions.
+          EXPECTED_FORGE_STD_COMMIT="3b20d60d14b343ee4f908cb8079495c07f5e8981"
           mkdir -p lib
           git clone --depth 1 --branch v1.9.6 \
             https://github.com/foundry-rs/forge-std.git lib/forge-std
           cd lib/forge-std
           git rev-parse HEAD > /tmp/forge-std-commit.txt
+          ACTUAL_FORGE_STD_COMMIT="$(cat /tmp/forge-std-commit.txt)"
+          [ "$ACTUAL_FORGE_STD_COMMIT" = "$EXPECTED_FORGE_STD_COMMIT" ] || {
+            echo "forge-std commit mismatch" >&2
+            echo "expected: $EXPECTED_FORGE_STD_COMMIT" >&2
+            echo "actual  : $ACTUAL_FORGE_STD_COMMIT" >&2
+            exit 1
+          }
           cd ../..
-          echo "forge-std commit: $(cat /tmp/forge-std-commit.txt)"
+          echo "forge-std commit: $ACTUAL_FORGE_STD_COMMIT"
 
       - name: Build
         run: |
