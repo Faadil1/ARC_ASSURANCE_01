@@ -15,16 +15,16 @@ See `docs/T0-MAINNET-RUNBOOK.md`.
 
 ## Current evidence status
 
-**CODE_READY_CANDIDATE / NOT LIVE-PROVEN**
+**REVALIDATION_REQUIRED / NOT LIVE-PROVEN**
 
-Source is produced and locally verified (35/35 under Arc Foundry), but no mainnet claim is valid until real receipts are written to `docs/evidence/T0-MAINNET-CUSTODY.md`.
+Opeyemi verified commit `18bf5d6` at 35/35 under Arc Foundry. The current head contains additional audit fixes and MUST be re-run under Arc Foundry before any mainnet action. No mainnet claim is valid until real receipts are written to `docs/evidence/T0-MAINNET-CUSTODY.md`.
 
 ## Files
 
 - `src/PolicyCustody.sol` — custody contract under test
 - `test/PolicyCustody.t.sol` — 35 lifecycle, negative-path, and security tests
 - `script/DeployT0.s.sol` — mainnet-only, fail-closed deploy + policy registration
-- `script/t0-mainnet-proof.sh` — `preflight` / `deploy` / `full` driver
+- `script/t0-mainnet-proof.sh` — `preflight` / `deploy` / `execute` protected driver
 - `foundry.toml` — Foundry configuration
 - `.env.example` — safe environment template
 - `docs/T0-MAINNET-RUNBOOK.md` — protected human execution steps
@@ -48,3 +48,6 @@ Use `arc-forge`, not generic `forge`, so the Arc VM configuration applies. Arc F
 Arc native USDC uses 18 decimals for native `msg.value`. The same balance is reachable as a 6-decimal ERC-20 at `0x3600000000000000000000000000000000000000`, which the contract records for evidence but never calls. The two representations differ by `1e12`.
 
 Funding a mainnet wallet, signing, and approving value movement are protected human actions.
+
+
+The T0 deployment/value flow is intentionally two-stage. There is no automatic deploy-then-spend path: the human inspects the deployed address before authorizing the value-movement leg.
