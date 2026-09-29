@@ -150,6 +150,10 @@ expanded_gates:
   Security_Secrets:
     status: ACTIVE
     activation: "Credentials, wallets, private canaries, deployment secrets."
+    current:
+      - "Provider EIP-712 signer must be distinct from T0 funder/deployer wallet."
+      - "Provider signer should not hold application funds by design."
+      - ".env and node_modules are ignored on the EIP-712 branch."
   Legal_Compliance_Boundary:
     status: ACTIVE
     activation: "Competition/payment context."
@@ -222,6 +226,7 @@ expanded_gates:
     status: ACTIVE
     activation: "Always."
     rule: "Produced != Working != Verified != Live."
+    current_example: "EIP-712 provider binding is PRODUCED but not yet LOCAL_VERIFIED."
   External_Skill_Ingestion:
     status: N/A
     activation: "When importing external skills/agent code."
@@ -364,3 +369,24 @@ provider_service_gate_detail:
   eip712_signed_output: false
   live_request_response_evidence: false
   canonical_real_work_gate: BLOCKED
+
+
+eip712_provider_output_gate:
+  status: BLOCKED
+  activation: "Provider output must be cryptographically bound before canary reveal."
+  current_state: PRODUCED_REVALIDATION_REQUIRED
+  domain:
+    chain_id: 5042
+    verifying_contract_bound: true
+  replay:
+    exact_digest_consumption: implemented_in_module
+    semantic_workid_uniqueness: BLOCKED_PENDING_ASSURANCE_STATE_MACHINE
+  malformed_output:
+    action: ABSTAIN
+    financial_fail_claim_allowed: false
+  required_before_proven:
+    - "Run pinned Viem JS sign/verify tests."
+    - "Run OpenZeppelin-backed Solidity tests under Arc Foundry."
+    - "Produce cross-language JS/Solidity golden digest vector."
+    - "Review integration with final assurance contract."
+    - "Bind one workId to one financially consequential resolution."
