@@ -305,6 +305,9 @@ contract AssuranceVault is ProviderOutputEIP712 {
         if (expectedChainId_ == 0 || deploymentSpendCap_ == 0) {
             revert ZeroAmount();
         }
+        if (expectedChainId_ != block.chainid) {
+            revert WrongChain(expectedChainId_, block.chainid);
+        }
 
         authority = authority_;
         expectedChainId = expectedChainId_;
