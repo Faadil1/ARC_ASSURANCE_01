@@ -178,7 +178,7 @@ test("valid PASS core proof verifies but finance remains unproven", async () => 
   assert.equal(result.settlement_directive, "PAY");
   assert.equal(
     result.financial_causality,
-    "NOT_PROVEN"
+    "NOT_PROVEN_PACKET_ONLY"
   );
 });
 
