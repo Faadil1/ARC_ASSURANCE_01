@@ -219,3 +219,25 @@ t0_mainnet_custody:
     - "runtime/commit binding"
   gate_status: "G1 T0_MAINNET_CUSTODY is ACTIVE and NOT PROVEN. Local test success does not satisfy the gate."
   protected_action: "Human-controlled mainnet signing/funding required."
+
+
+t0_post_opeyemi_audit:
+  date: "2026-09-29"
+  opeyemi_commit: "18bf5d61fc60059533e0870caae8c35672f0b6a3"
+  prior_local_verification:
+    arc_foundry: "1.7.1-dev d497beea"
+    tests_passed: 35
+    tests_failed: 0
+    applies_to_commit: "18bf5d6"
+  current_head_status: REVALIDATION_REQUIRED
+  audit_fixes:
+    - "explicit private-key signer binding in DeployT0"
+    - "remove unsafe verify-or-redeploy path"
+    - "two-stage deploy then execute checkpoint"
+    - "single protected signer for authority/funder in T0"
+    - "future non-zero expiry required by T0 deploy script"
+    - "expired Funded policy cancellation/refund recovery"
+    - "unknown-policy state/remaining reads revert"
+    - "policy cap no longer reserves deployment lifetime capacity"
+    - "broken tiny-value shell guard removed"
+  promotion_rule: "No mainnet action until Arc Foundry revalidation of exact current head."
