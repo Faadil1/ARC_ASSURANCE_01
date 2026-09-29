@@ -288,11 +288,28 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Generic predeployment runtime hash is not treated as sufficient identity because constructor/address-dependent immutables may affect deployed runtime.
 - The canonical predeployment identity is creation bytecode + exact constructor args + init-code hash.
 
-### UNKNOWN / BLOCKED
+### CLEAN-ROOM PROOF OBSERVED
 
-- No committed package-lock yet.
-- Exact-head clean-room CI result not yet observed.
-- No reviewed candidate package-lock artifact yet.
-- No integrated deployment transaction.
-- No postdeployment runtime hash.
-- Runtime/Commit Binding remains BLOCKED.
+- A committed npm lock now exists and matches the prior green candidate artifact hash:
+  `c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea`.
+- Exact branch head `a88d08a3a5fef63dac7b5093100fdb2d2c609cd7` passed workflow run `36625411255`.
+- 54/54 JavaScript tests passed.
+- Solidity build with solc 0.8.24 passed.
+- 28/28 Solidity tests passed.
+- Deterministic golden-vector double-generation passed.
+- JS/Solidity EIP-712 and canary vector equality passed.
+- Reproducible build and CI deployment manifests were generated.
+- The evidence artifact name is `reproducible-build-a88d08a3a5fef63dac7b5093100fdb2d2c609cd7`.
+- Foundry observed in the clean-room run was 1.8.3, commit `cae51ad458f6abb64852b7709eb784352429825d`.
+
+### STILL UNKNOWN / BLOCKED
+
+- Opeyemi technical review of the integrated candidate.
+- T0 PR #6 completion.
+- Real integrated deployment transaction.
+- Deployment transaction input -> approved real init-code binding.
+- Postdeployment runtime hash.
+- Real PASS -> payout receipt.
+- Real FAIL -> no-pay receipt.
+- Real breaker -> protected refund receipt.
+- Full Runtime/Commit Binding remains BLOCKED until real deployment evidence exists.
