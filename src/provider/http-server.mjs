@@ -54,10 +54,9 @@ function requireSigningBinding(body) {
   return body.binding;
 }
 
-async function maybeSignExtraction({ body, extraction, signing }) {
+async function maybeSignExtraction({ body, binding, extraction, signing }) {
   if (!signing) return { status: "DISABLED", envelope: null };
   if (extraction.canonical_output === null) return { status: "ABSTAIN_MALFORMED", envelope: null };
-  const binding = requireSigningBinding(body);
   const { signProviderOutputV1 } = await import("../eip712/sign-provider-output-v1.mjs");
   try {
     const signed = await signProviderOutputV1({
@@ -94,6 +93,7 @@ export function createProviderServer(options = {}) {
   return http.createServer(async (req, res) => {
     const startedAt = Date.now();
     const requestId = randomUUID();
+    let computeStarted = false;
     try {
       if (req.method === "GET" && req.url === "/health") {
         return json(res, 200, {
@@ -111,12 +111,14 @@ export function createProviderServer(options = {}) {
       if (typeof body !== "object" || body === null || Array.isArray(body) || typeof body.input_text !== "string") {
         throw new ProviderInputError("INVALID_REQUEST", "Expected JSON object with input_text string");
       }
+      const binding = signing ? requireSigningBinding(body) : null;
       const requestedFault = String(req.headers["x-demo-fault"] ?? "NONE").toUpperCase();
+      computeStarted = true;
       const extraction = extractInvoiceV1(body.input_text, { faultMode: requestedFault, allowDemoFaults });
-      const signed = await maybeSignExtraction({ body, extraction, signing });
+      const signed = await maybeSignExtraction({ body, binding, extraction, signing });
       return json(res, 200, {
         request_id: requestId, provider_id: PROVIDER_ID, schema_version: PROVIDER_SCHEMA_VERSION,
-        result: extraction.result, canonical_output: extraction.canonical_output, signature: signed.envelope,
+        binding, result: extraction.result, canonical_output: extraction.canonical_output, signature: signed.envelope,
         evidence: { execution: "REAL_COMPUTE", fault_mode: extraction.fault_mode, fault_injected: extraction.fault_injected, signature_status: signed.status },
         timing: { duration_ms: Date.now() - startedAt },
       });
@@ -124,7 +126,7 @@ export function createProviderServer(options = {}) {
       if (error instanceof ProviderInputError) {
         return json(res, 400, {
           request_id: requestId, error: error.code, message: error.message,
-          evidence: { execution: "REAL_COMPUTE", signature_status: signing ? "EIP712_V1_NOT_SIGNED" : "DISABLED" },
+          evidence: { execution: computeStarted ? "REAL_COMPUTE" : "NOT_RUN", signature_status: signing ? "EIP712_V1_NOT_SIGNED" : "DISABLED" },
         });
       }
       return json(res, 500, {
