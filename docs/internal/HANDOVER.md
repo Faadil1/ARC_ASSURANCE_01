@@ -684,3 +684,60 @@ No integrated deployment/funding until:
 4. Opeyemi review;
 5. T0 PR #6 green;
 6. protected deployment manifest approved.
+
+
+## 23. Clean-room reproducibility proof — 2026-09-29
+
+The reproducible-build workflow reached a fully green run on exact branch head:
+
+`a88d08a3a5fef63dac7b5093100fdb2d2c609cd7`
+
+Workflow run:
+
+`36625411255`
+
+Observed results:
+
+- committed `package-lock.json` accepted by `npm ci`;
+- deterministic golden vector generated twice with byte-for-byte equality;
+- **54/54 JavaScript tests passed**;
+- Solidity compilation succeeded with solc 0.8.24;
+- reproducible build manifest generated;
+- deterministic predeployment manifest generated;
+- **28/28 Solidity tests passed**;
+- JS/Solidity EIP-712 + canary vector cross-check passed;
+- creation/init-code manifest cross-check passed;
+- evidence artifact uploaded;
+- Node 22.16.0;
+- npm 10.9.2;
+- Foundry 1.8.3 / commit `cae51ad458f6abb64852b7709eb784352429825d`.
+
+Package-lock SHA-256:
+
+`c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea`
+
+Observed AssuranceVault build at that proof point:
+
+- creation bytecode keccak256:
+  `0x29bdd71974b5943f8f3194272f6cb13568e5e4ce23865cf085c6242334163afd`;
+- creation bytecode size: 16,776 bytes;
+- runtime-template hash:
+  `0xb7674d9c13d716f5ae2fb26126d037c069ccae74db14386a143325eee7b06010`
+  (**informational only before deployment**).
+
+The CI workflow now checks out the exact PR branch head rather than GitHub's synthetic merge SHA and uses the committed lockfile instead of generating one.
+
+### Promotion boundary
+
+This proves the source/build reproducibility layer, not Arc deployment.
+
+Still BLOCKED:
+
+- Opeyemi technical review after T0;
+- T0 PR #6 completion;
+- final real constructor/policy values;
+- protected mainnet deployment;
+- deploy tx input -> expected init-code proof;
+- deployed runtime hash;
+- PASS / FAIL / BREAKER / refund Arc receipts;
+- G5 / G6 / Live Core Loop.
