@@ -626,8 +626,9 @@ export async function verifyEvidencePacketV1(
         };
       }
 
+      const breakerEvent = breakerEvents[0];
       const breakerPosition = positionOf(
-        breakerEvents[0]
+        breakerEvent
       );
       const revealPosition = positionOf(
         revealedEvent
@@ -636,9 +637,32 @@ export async function verifyEvidencePacketV1(
         resolvedEvent
       );
 
+      const breakerBeforeResolve =
+        before(breakerPosition, resolvedPosition);
+      const breakerAfterResolve =
+        before(resolvedPosition, breakerPosition);
+
+      const breakerTx =
+        breakerEvent.transaction_hash ??
+        breakerEvent.transactionHash ??
+        null;
+      const resolvedTx =
+        resolvedEvent.transaction_hash ??
+        resolvedEvent.transactionHash ??
+        null;
+
+      const afterResolveIsAtomic =
+        breakerAfterResolve &&
+        breakerTx !== null &&
+        resolvedTx !== null &&
+        breakerTx === resolvedTx;
+
       if (
         !before(revealPosition, breakerPosition) ||
-        !before(breakerPosition, resolvedPosition)
+        !(
+          breakerBeforeResolve ||
+          afterResolveIsAtomic
+        )
       ) {
         return {
           ok: false,
@@ -653,6 +677,10 @@ export async function verifyEvidencePacketV1(
       checks.circuit_breaker = pass({
         block: breakerPosition.block.toString(),
         log: breakerPosition.log.toString(),
+        ordering:
+          breakerBeforeResolve
+            ? "BEFORE_RESOLVE"
+            : "AFTER_RESOLVE_SAME_TX",
       });
     }
 
