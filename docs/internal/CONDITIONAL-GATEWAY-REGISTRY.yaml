@@ -546,3 +546,49 @@ product_depth_integrated_candidate:
   Shared_Product_Core:
     status: ACTIVE
     current: "provider/scorer/EIP-712/vault/verifier are now designed around one integrated proof path"
+
+
+reproducible_build_gate:
+  status: BLOCKED
+  current_state: SOURCE_AND_CI_PRODUCED
+  required_for:
+    - Runtime_Commit_Binding
+    - G5_FINANCIAL_CAUSALITY
+    - G6_INDEPENDENT_VERIFY
+    - Live_Core_Loop
+    - Integrated_Mainnet_Deployment
+  pins:
+    node: "22.16.0"
+    viem: "2.56.9"
+    solc: "0.8.24"
+    forge_std: "v1.16.1"
+    openzeppelin_contracts: "v5.6.1"
+  produced:
+    deterministic_golden_vector: true
+    solidity_cross_language_test: true
+    build_manifest_generator: true
+    deployment_manifest_generator: true
+    clean_room_ci: true
+    deployment_tx_input_binding_verifier: true
+    pre_mainnet_audit: true
+  blockers:
+    - "package-lock.json not yet committed"
+    - "exact-head clean-room workflow not yet green"
+    - "Opeyemi technical review pending after T0"
+    - "integrated mainnet deployment not authorized"
+  truth_rule: "Direct version pins are not equivalent to a locked transitive dependency graph."
+
+runtime_commit_binding_gate:
+  status: BLOCKED
+  predeploy_proof:
+    creation_bytecode_hash: IMPLEMENTED
+    constructor_args: IMPLEMENTED
+    init_code_hash: IMPLEMENTED
+  postdeploy_proof:
+    deploy_tx_input_hash_check: IMPLEMENTED
+    receipt_contract_address_check: IMPLEMENTED
+    observed_runtime_hash: IMPLEMENTED
+  remaining:
+    - "clean-room exact commit artifact must be green"
+    - "committed transitive dependency lock"
+    - "real Arc deployment transaction"
