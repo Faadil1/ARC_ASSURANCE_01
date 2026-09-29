@@ -9,7 +9,7 @@
     "test:core": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/eip712/provider-output-v1.test.mjs",
     "test:eip712": "node --test test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
     "test:assurance": "node --test test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
-    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs",
+    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/runtime-provenance-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs",
     "verify": "node src/verifier/cli.mjs",
     "test:verifier": "node --test test/verifier/verify-evidence-v1.test.mjs",
     "golden:generate": "node src/verifier/generate-golden-vector-v1.mjs",
@@ -20,7 +20,8 @@
     "golden:compare": "node script/compare-golden-vectors.mjs build/out/golden-js.json build/out/golden-solidity.json",
     "deploy:manifest": "node script/generate-deployment-manifest.mjs build/out/AssuranceVault.build-manifest.json",
     "deploy:manifest:verify": "node script/verify-deployment-manifest.mjs build/out/AssuranceVault.deployment-manifest.json",
-    "gate:reproducible": "bash script/run-reproducible-gate.sh"
+    "gate:reproducible": "bash script/run-reproducible-gate.sh",
+    "test:runtime-provenance": "node --test test/verifier/runtime-provenance-v1.test.mjs"
   },
   "dependencies": {
     "viem": "2.56.9"
