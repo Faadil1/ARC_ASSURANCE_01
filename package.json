@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": "22.16.0"
   },
   "scripts": {
     "test:core": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/eip712/provider-output-v1.test.mjs",
@@ -15,7 +15,11 @@
     "golden:generate": "node src/verifier/generate-golden-vector-v1.mjs",
     "verify:chain": "node src/verifier/chain-cli-v2.mjs",
     "test:chain-verifier": "node --test test/verifier/verify-arc-v2.test.mjs",
-    "test:integrated-verifier": "node --test test/verifier/verify-integrated-v3.test.mjs"
+    "test:integrated-verifier": "node --test test/verifier/verify-integrated-v3.test.mjs",
+    "golden:write": "mkdir -p fixtures/golden && node src/verifier/generate-golden-vector-v1.mjs > fixtures/golden/provider-output-pass-v1.json",
+    "build:manifest": "node script/generate-repro-build-manifest.mjs",
+    "deploy:manifest": "node script/generate-deployment-manifest.mjs",
+    "test:repro": "npm run golden:write && npm run test:all-js && forge build && npm run build:manifest && forge test -vv"
   },
   "dependencies": {
     "viem": "2.56.9"
