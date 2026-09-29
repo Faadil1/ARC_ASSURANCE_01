@@ -358,6 +358,72 @@ contract PolicyCustodyTest is Test {
         vault.fund{value: 1 ether}(PID2);
     }
 
+    function test_ExpiredFundedPolicyCanCancelAndRecover() public {
+        uint64 soon = uint64(block.timestamp + 1 hours);
+        vault.createPolicy(PID2, funder, address(recipient), CAP, UNIT, soon);
+
+        vm.prank(funder);
+        vault.fund{value: 1 ether}(PID2);
+
+        vm.warp(soon + 1);
+        uint256 before = funder.balance;
+
+        vm.prank(funder);
+        vault.cancelExpiredAndRefund(PID2);
+
+        assertEq(funder.balance, before + 1 ether, "full funded liability recovered");
+        assertEq(address(vault).balance, 0, "custody drained");
+        assertEq(vault.totalLiability(), 0, "liability cleared");
+        assertEq(
+            uint8(vault.stateOf(PID2)),
+            uint8(PolicyCustody.State.Cancelled),
+            "terminal Cancelled state"
+        );
+    }
+
+    function test_RevertWhen_CancelBeforeExpiry() public {
+        uint64 future = uint64(block.timestamp + 1 days);
+        vault.createPolicy(PID2, funder, address(recipient), CAP, UNIT, future);
+
+        vm.prank(funder);
+        vault.fund{value: 1 ether}(PID2);
+
+        vm.prank(funder);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                PolicyCustody.PolicyNotExpired.selector,
+                future,
+                uint64(block.timestamp)
+            )
+        );
+        vault.cancelExpiredAndRefund(PID2);
+    }
+
+    function test_RevertWhen_UnknownPolicyIsReadAsState() public {
+        vm.expectRevert(PolicyCustody.InvalidPolicy.selector);
+        vault.stateOf(keccak256("unknown-policy"));
+    }
+
+    function test_RevertWhen_UnknownPolicyRemainingIsRead() public {
+        vm.expectRevert(PolicyCustody.InvalidPolicy.selector);
+        vault.remainingFor(keccak256("unknown-policy"));
+    }
+
+    function test_PolicyCapDoesNotReserveDeploymentLifetimeCapacity() public {
+        _fund(1 ether);
+
+        vault.createPolicy(
+            PID2,
+            funder,
+            address(recipient),
+            CAP,
+            UNIT,
+            farFuture
+        );
+
+        assertTrue(vault.policyExists(PID2), "second policy registered");
+    }
+
     function test_RevertWhen_WrongChain() public {
         vm.chainId(1);
         vm.deal(funder, 10 ether);
