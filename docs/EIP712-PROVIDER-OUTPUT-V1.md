@@ -208,10 +208,23 @@ JavaScript signing:
 
 Solidity verification:
 
-- use the current audited OpenZeppelin Contracts stable release during integration;
-- do not vendor an unpinned development branch.
+- OpenZeppelin Contracts **v5.6.1** is the pinned audited stable integration target;
+- do not use the v5.7.x development channel on the critical proof path;
+- do not vendor an unpinned branch.
 
-Before merge into the live assurance contract, install and lock the exact OpenZeppelin tag and run Arc Foundry on the merged commit.
+Install:
+
+```bash
+forge install OpenZeppelin/openzeppelin-contracts@v5.6.1
+```
+
+The repository remapping is:
+
+```text
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+```
+
+Before merge into the live assurance contract, run Arc Foundry on the exact merged commit.
 
 ## 13. Verification commands
 
