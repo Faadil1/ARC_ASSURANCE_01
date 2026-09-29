@@ -9,12 +9,13 @@
     "test:core": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/eip712/provider-output-v1.test.mjs",
     "test:eip712": "node --test test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
     "test:assurance": "node --test test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
-    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs",
+    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs",
     "verify": "node src/verifier/cli.mjs",
     "test:verifier": "node --test test/verifier/verify-evidence-v1.test.mjs",
     "golden:generate": "node src/verifier/generate-golden-vector-v1.mjs",
     "verify:chain": "node src/verifier/chain-cli-v2.mjs",
-    "test:chain-verifier": "node --test test/verifier/verify-arc-v2.test.mjs"
+    "test:chain-verifier": "node --test test/verifier/verify-arc-v2.test.mjs",
+    "test:integrated-verifier": "node --test test/verifier/verify-integrated-v3.test.mjs"
   },
   "dependencies": {
     "viem": "2.56.9"
