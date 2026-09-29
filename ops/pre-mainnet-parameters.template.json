@@ -1,0 +1,55 @@
+{
+  "schema": "ARC_ASSURANCE_PREMAINNET_V1",
+  "status": "TEMPLATE_NOT_AUTHORIZED",
+  "network": {
+    "chain_id": 5042,
+    "rpc": "https://rpc.mainnet.arc.io",
+    "usdc_erc20_interface": "0x3600000000000000000000000000000000000000",
+    "native_decimals": 18
+  },
+  "wallet_budget": {
+    "dedicated_wallet_required": true,
+    "max_wallet_topup_usdc": "5.00",
+    "max_wallet_topup_wei": "5000000000000000000",
+    "private_key_location": "LOCAL_ONLY_NEVER_REPO_NEVER_CI"
+  },
+  "t0": {
+    "source_pr": 6,
+    "required_green_head": "PENDING_FINAL_CHECKSUM_REVALIDATION_HEAD",
+    "authority_address": null,
+    "funder_address": null,
+    "payout_recipient_address": null,
+    "payout_recipient_must_differ_from_funder": true,
+    "policy_id": null,
+    "fund_amount_wei": "10000000000000000",
+    "unit_payout_wei": "2000000000000000",
+    "expected_refund_wei": "8000000000000000",
+    "hard_contract_value_cap_wei": "50000000000000000",
+    "expiry_rule": "AT_EXECUTION_SET_AT_LEAST_24H_IN_FUTURE",
+    "mainnet_confirm_required": true
+  },
+  "integrated": {
+    "source_pr": 24,
+    "reproducible_source_head": "16732fa1866bf895651d8630317ad0d6df7d2b9f",
+    "authority_address": null,
+    "funder_address": null,
+    "provider_address": null,
+    "payout_recipient_address": null,
+    "scorer_id": "ARC_ASSURANCE_SCORER_V1:invoice-exact-v1",
+    "max_failures": 2,
+    "deployment_spend_cap_wei": "50000000000000000",
+    "policy_max_spend_cap_wei": "20000000000000000",
+    "initial_fund_amount_wei": "10000000000000000",
+    "unit_payout_wei": "2000000000000000",
+    "expected_remainder_after_one_pass_wei": "8000000000000000",
+    "expiry_rule": "AT_EXECUTION_SET_AT_LEAST_24H_IN_FUTURE"
+  },
+  "human_authorization": {
+    "wallet_funded": false,
+    "addresses_reviewed": false,
+    "gas_estimate_reviewed": false,
+    "t0_deploy_authorized": false,
+    "t0_execute_authorized": false,
+    "integrated_deploy_authorized": false
+  }
+}

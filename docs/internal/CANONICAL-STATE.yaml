@@ -519,3 +519,81 @@ reproducible_build_and_deploy_gate:
     generic_precomputed_runtime_hash_allowed: false
   mainnet_integrated_deploy: BLOCKED
   reason: "Source reproducibility is clean-room verified; Opeyemi technical review, T0 completion, approved live constructor values, and real Arc deployment receipts remain required before protected deploy."
+
+
+t0_post_audit_revalidation_2026_09_29:
+  branch: feat/t0-mainnet-custody
+  exact_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+  status: PROVEN
+  workflow_run: 36637646773
+  arc_foundry:
+    version: 1.7.1-dev
+    commit: d497beea7096ff2a8e583c8b307941f24a61b06b
+    release_asset_sha256: 088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556
+    checksum_verified_in_ci: true
+  forge_std:
+    commit: 3b20d60d14b343ee4f908cb8079495c07f5e8981
+    commit_verified_in_ci: true
+  result:
+    build: PASS
+    tests: "40 passed / 0 failed / 0 skipped"
+    artifact_digest: "sha256:0d00268c75c457eea074f88783767061547a783b46093d44c61eb7a5bf2db4c0"
+  truth_boundary:
+    source_revalidation: PROVEN
+    G1_MAINNET_CUSTODY: ACTIVE_NOT_PROVEN
+    live_transactions: NOT_EXECUTED
+
+pre_mainnet_deployment_package:
+  branch: ops/pre-mainnet-deployment-package
+  status: PRODUCED_VALIDATION_PENDING
+  wallet_budget:
+    dedicated_wallet_required: true
+    topup_ceiling_usdc: "5.00"
+    topup_ceiling_wei: "5000000000000000000"
+    unrelated_assets_allowed: false
+  t0_value_plan:
+    fund_wei: "10000000000000000"
+    payout_wei: "2000000000000000"
+    expected_refund_wei: "8000000000000000"
+    hard_contract_cap_wei: "50000000000000000"
+    authority_equals_funder: true
+    payout_recipient_distinct_from_funder: true
+  integrated_value_plan:
+    initial_fund_wei: "10000000000000000"
+    unit_payout_wei: "2000000000000000"
+    expected_remainder_after_one_pass_wei: "8000000000000000"
+    policy_cap_wei: "20000000000000000"
+    deployment_cap_wei: "50000000000000000"
+    max_failures: 2
+  human_actions:
+    real_wallet_addresses: BLOCKED
+    gas_estimate_review: BLOCKED
+    wallet_funding: BLOCKED
+    t0_deploy_authorization: BLOCKED
+    t0_execute_authorization: BLOCKED
+    integrated_deploy_authorization: BLOCKED
+  safety:
+    private_keys_in_repo: false
+    private_keys_in_ci: false
+    readiness_validator_signs: false
+    readiness_validator_broadcasts: false
+    readiness_validator_moves_funds: false
+
+
+pre_mainnet_package_clean_room:
+  proof_head: e76bd480785d5a627499f7d6ea27ae55705f4df9
+  workflow_run: 36638119707
+  status: PROVEN_FOR_PACKAGE_SOURCE
+  results:
+    javascript_tests: "58 passed / 0 failed"
+    solidity_tests: "28 passed / 0 failed"
+    build: PASS
+    artifact_digest: "sha256:d2a849fcdabae06015c388ccca0b6ea90924eb9a3fc0eb0914db298ed3c3f1ab"
+    creation_bytecode_keccak256: "0x29bdd71974b5943f8f3194272f6cb13568e5e4ce23865cf085c6242334163afd"
+    creation_bytecode_bytes: 16776
+    package_lock_sha256: "c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea"
+  remaining_before_human_funding:
+    - "real public wallet addresses"
+    - "read-only gas estimate"
+    - "human review that 5 USDC ceiling is sufficient"
+    - "explicit funding authorization"

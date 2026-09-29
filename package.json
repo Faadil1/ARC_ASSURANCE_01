@@ -9,7 +9,7 @@
     "test:core": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/eip712/provider-output-v1.test.mjs",
     "test:eip712": "node --test test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
     "test:assurance": "node --test test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
-    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs",
+    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs test/ops/pre-mainnet-readiness.test.mjs",
     "verify": "node src/verifier/cli.mjs",
     "test:verifier": "node --test test/verifier/verify-evidence-v1.test.mjs",
     "golden:generate": "node src/verifier/generate-golden-vector-v1.mjs",
@@ -19,7 +19,9 @@
     "golden:write": "mkdir -p fixtures/golden && node src/verifier/generate-golden-vector-v1.mjs > fixtures/golden/provider-output-pass-v1.json",
     "build:manifest": "node script/generate-repro-build-manifest.mjs",
     "deploy:manifest": "node script/generate-deployment-manifest.mjs",
-    "test:repro": "npm run golden:write && npm run test:all-js && forge build && npm run build:manifest && forge test -vv"
+    "test:repro": "npm run golden:write && npm run test:all-js && forge build && npm run build:manifest && forge test -vv",
+    "premainnet:check": "node script/pre-mainnet-readiness.mjs",
+    "test:premainnet": "node --test test/ops/pre-mainnet-readiness.test.mjs"
   },
   "dependencies": {
     "viem": "2.56.9"

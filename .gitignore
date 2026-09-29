@@ -12,3 +12,4 @@ build/*.json
 !build/DEPENDENCY-PINS.json
 fixtures/golden/*.json
 !fixtures/golden/.gitkeep
+ops/pre-mainnet-parameters.local.json
