@@ -216,7 +216,7 @@ provider_service:
     failed: 0
   runtime_semantics:
     execution_label: REAL_COMPUTE
-    provider_signature: NOT_IMPLEMENTED
+    provider_signature: PRODUCED_REVALIDATION_REQUIRED
     deployed_runtime: NOT_IMPLEMENTED
     fault_injection:
       default: disabled
@@ -230,3 +230,50 @@ provider_service:
       - "No deployed provider runtime yet."
       - "Provider output is not yet EIP-712 signed."
       - "No runtime/commit binding evidence yet."
+
+
+eip712_provider_output:
+  branch: feat/eip712-provider-binding
+  status: PRODUCED_REVALIDATION_REQUIRED
+  domain:
+    name: ARC_ASSURANCE
+    version: "1"
+    chain_id: 5042
+    verifying_contract: "runtime-configured final assurance contract"
+  primary_type: ProviderOutput
+  signed_fields:
+    - provider
+    - policyId
+    - batchId
+    - workId
+    - inputHash
+    - outputHash
+    - scorerIdHash
+    - nonce
+    - deadline
+  implementation:
+    schema: src/eip712/provider-output-v1.mjs
+    signer: src/eip712/sign-provider-output-v1.mjs
+    solidity_module: src/eip712/ProviderOutputEIP712.sol
+    spec: docs/EIP712-PROVIDER-OUTPUT-V1.md
+    integration_plan: docs/SCORER-PROVIDER-CONTRACT-INTEGRATION.md
+  dependencies:
+    viem: "2.56.9 pinned; install/test pending"
+    openzeppelin_contracts: "use audited stable release during Solidity integration; install/lock pending"
+  provider_key_boundary:
+    t0_wallet_key_reuse: forbidden
+    application_funds_on_provider_signer: forbidden_by_design
+  evidence:
+    schema_tests_authored: 6
+    js_signing_tests_authored: 3
+    http_signing_tests_authored: 4
+    solidity_tests_authored: 6
+    executed_on_exact_head: false
+    cross_language_digest_vector: BLOCKED
+  promotion_boundary:
+    signed_output_gate: BLOCKED
+    blockers:
+      - "Node crypto dependency not installed/executed in current agent environment."
+      - "OpenZeppelin Foundry dependency not installed/executed on this branch."
+      - "JS and Solidity digest equality golden vector not yet produced."
+      - "Final assurance contract address/state-machine integration does not exist yet."
