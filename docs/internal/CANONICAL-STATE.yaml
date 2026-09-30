@@ -641,3 +641,31 @@ read_only_gas_budget_gate:
     - "fresh Arc fee snapshot at decision time"
     - "human review of 5 USDC sufficiency"
     - "explicit human funding authorization"
+
+
+pre_mainnet_static_warning_audit:
+  branch: fix/pre-mainnet-static-hardening
+  status: ACTIVE
+  trigger_workflow: 36670714112
+  observed_warning_classes:
+    - block-timestamp
+    - reentrancy-events
+    - unsafe-typecast
+    - non-reentrant-not-first
+    - reentrancy-eth
+    - arbitrary-send-eth
+    - environment-read-across-mutation
+  source_fixes:
+    non_reentrant_first: implemented
+    all_mutating_external_entries_guarded: implemented
+    canonical_events_before_external_value_call: implemented
+    timestamp_safe_cast: implemented
+    malicious_recipient_reentry_test: implemented
+  intentional_reviewed_categories:
+    - block-timestamp
+    - arbitrary-send-eth
+    - environment-read-across-mutation
+  blockers:
+    - "exact-head clean-room CI after hardening"
+    - "post-fix lint warning review"
+  mainnet_effect: "No deploy/funding promotion until this audit is PROVEN."
