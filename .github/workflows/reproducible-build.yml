@@ -81,6 +81,11 @@ jobs:
       - name: Run Solidity tests and cross-language checks
         run: forge test -vv
 
+      - name: Record exact-head gas report
+        run: |
+          mkdir -p build
+          forge test --gas-report | tee build/gas-report.txt
+
       - name: Record tool versions
         run: |
           node -v > build/tool-versions.txt
@@ -98,4 +103,5 @@ jobs:
             build/reproducible-build-manifest.json
             build/deployment-manifest.ci.json
             build/tool-versions.txt
+            build/gas-report.txt
             out/AssuranceVault.sol/AssuranceVault.json
