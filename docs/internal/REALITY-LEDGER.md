@@ -415,3 +415,35 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Timestamp comparisons remain part of deadline/expiry semantics, not randomness or scoring.
 - Native value must be sent to policy-bound recipients by product design.
 - Test-only vm.warp diagnostics do not describe runtime contract behavior.
+
+
+## Static warning audit proof — 2026-09-30
+
+### PROVEN
+
+- Exact head `b5b8918c89fecd4abc5a8249270b8e5424531643` passed workflow `36671113993`.
+- 63/63 JavaScript tests passed.
+- 29/29 Solidity tests passed.
+- `test_PayoutRecipientCannotReenterStateMutations` passed.
+- The raw unsafe timestamp cast warning disappeared.
+- The nonReentrant modifier-order warning disappeared.
+- New AssuranceVault creation bytecode hash:
+  `0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57`.
+- Evidence artifact digest:
+  `sha256:d9d9492a9c9052256056646674c086c820b72d573faaa03754896629379f8e34`.
+
+### REVIEWED REMAINING WARNINGS
+
+- Timestamp comparisons are intentional deadline/expiry checks.
+- Native-value send warnings correspond to immutable policy-bound recipients.
+- Reentrancy is mitigated by effects-before-interaction, global mutation guards and an adversarial recipient callback test.
+- Remaining reentrancy-event diagnostics also occur on cryptographic helper/event paths without an uncontrolled external value call.
+- The environment-read-across-mutation warning is confined to test code.
+
+### CONSEQUENCE
+
+The previous creation-bytecode hash is superseded. Any future real deployment manifest must be generated from the new exact hardening head or a later separately green head.
+
+Static Warning Audit = PROVEN.
+
+Mainnet deployment, gas-budget sufficiency, wallet funding, G5, G6 and Live Core Loop remain unproven.
