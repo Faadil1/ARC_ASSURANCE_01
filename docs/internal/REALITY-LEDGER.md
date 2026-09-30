@@ -85,3 +85,41 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 ### NOT PROVEN BY THIS DELTA
 
 - G1 T0_MAINNET_CUSTODY remains ACTIVE. Local test success is LOCAL evidence and does not satisfy the gate.
+
+
+## T0 funding-readiness reality delta — 2026-09-30
+
+### OBSERVED
+
+- T0 exact source revalidation is green at 40/40 tests.
+- Exact-head T0 gas rehearsal measured a 2,925,559 gas planning floor after adding six transaction intrinsic floors.
+- Recovery `cancelExpiredAndRefund` measured 85,230 gas max and is tracked separately.
+- Arc read-only fee workflow `36682054936` observed chain id 5042, block 23,501,187 and gas price 20,000,000,000 wei/gas.
+- With 1.25× gas-unit and 2× gas-price safety, the contingency peak requirement including 0.010 USDC principal was 0.16158948 USDC.
+- The 5.00 USDC hard wallet ceiling is therefore sufficient for that time-bound snapshot.
+- A 0.50 USDC initial top-up candidate was prepared.
+- The candidate rule requires a fresh contingency peak <= 0.25 USDC.
+- The latest snapshot satisfies that rule.
+- CI explicitly reports funding_authorized=false.
+- No wallet has been created, funded, signed with, or used by these workflows.
+- No private key has entered repo, CI, issue, PR, artifact or chat.
+
+### INFERRED
+
+- A 0.50 USDC initial top-up provides substantial operational headroom over the current conservative contingency estimate while keeping capital exposure very small.
+- The previous 5 USDC number is better treated as a hard ceiling than a funding target.
+
+### STILL UNKNOWN / BLOCKED
+
+- Dedicated T0 wallet public address.
+- Whether that wallet is a fresh EOA with pending nonce 0.
+- Wallet balance after any future funding.
+- Fee state immediately before the actual protected deploy.
+- Any real Arc deploy/fund/payout/refund/complete receipt.
+- G1 remains NOT PROVEN.
+
+### PROTECTED NEXT ACTION
+
+Create a dedicated Arc mainnet EOA locally and provide only its public address for read-only inspection.
+
+Do not provide the private key or seed phrase.
