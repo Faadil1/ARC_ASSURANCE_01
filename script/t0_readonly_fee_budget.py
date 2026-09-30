@@ -23,7 +23,11 @@ def rpc_call(rpc_url, method, params=None):
     request = urllib.request.Request(
         rpc_url,
         data=payload,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "ARC_ASSURANCE_01-readonly/1.0",
+        },
         method="POST",
     )
     with urllib.request.urlopen(request, timeout=20) as response:
