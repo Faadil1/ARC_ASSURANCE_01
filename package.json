@@ -9,7 +9,7 @@
     "test:core": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/eip712/provider-output-v1.test.mjs",
     "test:eip712": "node --test test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
     "test:assurance": "node --test test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs",
-    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs test/ops/pre-mainnet-readiness.test.mjs test/ops/read-only-gas-budget.test.mjs test/ops/gas-unit-evidence.test.mjs",
+    "test:all-js": "node --test test/scorer/invoice-v1.test.mjs test/provider/provider-v1.test.mjs test/canary/commitment-v1.test.mjs test/eip712/provider-output-v1.test.mjs test/eip712/provider-output-signing-v1.test.mjs test/eip712/provider-http-signing-v1.test.mjs test/verifier/verify-evidence-v1.test.mjs test/verifier/verify-arc-v2.test.mjs test/verifier/verify-integrated-v3.test.mjs test/ops/pre-mainnet-readiness.test.mjs test/ops/read-only-gas-budget.test.mjs test/ops/gas-unit-evidence.test.mjs test/ops/exact-predeploy-gas-snapshot.test.mjs",
     "verify": "node src/verifier/cli.mjs",
     "test:verifier": "node --test test/verifier/verify-evidence-v1.test.mjs",
     "golden:generate": "node src/verifier/generate-golden-vector-v1.mjs",
@@ -26,7 +26,9 @@
     "gas:budget": "node script/read-only-gas-budget.mjs wallet-budget",
     "test:gas-budget": "node --test test/ops/read-only-gas-budget.test.mjs",
     "gas:evidence": "node script/parse-gas-unit-evidence.mjs",
-    "test:gas-evidence": "node --test test/ops/gas-unit-evidence.test.mjs"
+    "test:gas-evidence": "node --test test/ops/gas-unit-evidence.test.mjs",
+    "gas:predeploy": "node script/exact-predeploy-gas-snapshot.mjs",
+    "test:predeploy-gas": "node --test test/ops/exact-predeploy-gas-snapshot.test.mjs"
   },
   "dependencies": {
     "viem": "2.56.9"
