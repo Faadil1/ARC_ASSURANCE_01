@@ -298,3 +298,90 @@ Key corrections:
 8. policy caps no longer reserve deployment capacity before value is actually funded.
 
 **Critical truth boundary:** Opeyemi's 35/35 result applies to `18bf5d6`, not the new head. T0 is now `REVALIDATION_REQUIRED` and no mainnet execution should occur until Opeyemi/Arc Foundry re-runs the exact current head.
+
+
+## T0 funding readiness — 2026-09-30
+
+The pre-funding technical work is now complete enough to reach a protected human checkpoint.
+
+### Exact source proof
+
+T0 source head:
+
+`f7fdf4e1b592c9122d4680d5272635baa2afff3f`
+
+Arc Foundry source revalidation:
+
+```
+40 passed / 0 failed / 0 skipped
+```
+
+### Gas evidence
+
+Machine-readable exact-head gas evidence is green on:
+
+`46cd44ef0cc11e84bfed97900180318dc7342349`
+
+Canonical planning floor:
+
+```text
+deploy PolicyCustody                2,160,427
+createPolicy                          217,532
+fund                                  131,090
+releaseConfiguredPayout               160,713
+refundRemaining                        84,222
+complete                               45,575
+6 × tx intrinsic floor                126,000
+---------------------------------------------
+T0 planning floor                   2,925,559 gas
+```
+
+Recovery `cancelExpiredAndRefund` is tracked separately at 85,230 gas max observed.
+
+### Live read-only Arc fee snapshot
+
+Workflow `36682054936` observed:
+
+- Arc chain id 5042;
+- block 23,501,187;
+- gas price 20,000,000,000 wei/gas.
+
+After 1.25× gas-unit safety and 2× gas-price safety:
+
+- happy-path peak incl. 0.010 USDC principal: **0.15627796 USDC**;
+- contingency peak incl. recovery reserve: **0.16158948 USDC**.
+
+Therefore the **5 USDC hard ceiling is proven sufficient for this time-bound snapshot**.
+
+### Candidate funding envelope
+
+Prepared but not authorized:
+
+```text
+candidate initial top-up = 0.50 USDC
+hard ceiling             = 5.00 USDC
+fresh contingency rule   = <= 0.25 USDC
+```
+
+The latest fresh snapshot satisfies the rule and CI returns:
+
+`CANDIDATE_ENVELOPE_READY_FOR_HUMAN_REVIEW`
+
+with `funding_authorized = false`.
+
+### Next protected human checkpoint
+
+Faadil creates a **dedicated Arc mainnet EOA** and shares **only the public address**.
+
+Before any funding, the address will be checked read-only for:
+
+- chain 5042;
+- no contract bytecode;
+- pending nonce 0;
+- current balance.
+
+Never share the private key or seed phrase.
+
+After the public-wallet gate passes, refresh the fee snapshot once more and request explicit human approval before funding 0.50 USDC.
+
+G1 remains ACTIVE / NOT PROVEN until real deploy → fund → payout → refund → complete receipts exist.
