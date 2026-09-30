@@ -51,7 +51,7 @@ function extractVaultSection(report) {
   const nextContract = tail
     .slice(marker.length)
     .search(
-      /(?:src/|test/)[^\n|]* Contract \|/
+      /(?:src\\/|test\\/)[^\n|]* Contract \\|/
     );
 
   if (nextContract < 0) return tail;
