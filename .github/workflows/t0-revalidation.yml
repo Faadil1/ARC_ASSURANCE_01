@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - feat/t0-mainnet-custody
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -146,6 +147,15 @@ jobs:
             exit 1
           }
 
+      - name: Gas report
+        run: |
+          set -o pipefail
+          arc-forge test --gas-report 2>&1 | tee gas-report.log || {
+            echo "### GAS REPORT FAILED" >> "$GITHUB_STEP_SUMMARY"
+            tail -120 gas-report.log >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          }
+
       - name: Summarise
         if: always()
         run: |
@@ -173,6 +183,7 @@ jobs:
           path: |
             build.log
             test.log
+            gas-report.log
             /tmp/arcforge-version.txt
           if-no-files-found: warn
           retention-days: 90
