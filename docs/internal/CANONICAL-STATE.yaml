@@ -645,7 +645,7 @@ read_only_gas_budget_gate:
 
 pre_mainnet_static_warning_audit:
   branch: fix/pre-mainnet-static-hardening
-  status: ACTIVE
+  status: PROVEN
   trigger_workflow: 36670714112
   observed_warning_classes:
     - block-timestamp
@@ -665,7 +665,26 @@ pre_mainnet_static_warning_audit:
     - block-timestamp
     - arbitrary-send-eth
     - environment-read-across-mutation
-  blockers:
-    - "exact-head clean-room CI after hardening"
-    - "post-fix lint warning review"
-  mainnet_effect: "No deploy/funding promotion until this audit is PROVEN."
+  proof:
+    exact_head: b5b8918c89fecd4abc5a8249270b8e5424531643
+    workflow_run: 36671113993
+    javascript_tests: "63 passed / 0 failed"
+    solidity_tests: "29 passed / 0 failed"
+    malicious_recipient_reentry_test: PASS
+    new_creation_bytecode_keccak256: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+    artifact_digest: "sha256:d9d9492a9c9052256056646674c086c820b72d573faaa03754896629379f8e34"
+  remaining_warning_classes_reviewed:
+    - block-timestamp
+    - reentrancy-events
+    - reentrancy-eth
+    - arbitrary-send-eth
+    - environment-read-across-mutation
+  mainnet_effect: "Static warning audit closed; public-address, gas-budget, funding, deployment and live-evidence gates remain blocked."
+
+
+latest_integrated_build_identity:
+  exact_head: b5b8918c89fecd4abc5a8249270b8e5424531643
+  workflow_run: 36671113993
+  assurance_vault_creation_bytecode_keccak256: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+  previous_creation_bytecode_hash_status: SUPERSEDED
+  rule: "Only the latest exact-head clean-room artifact may seed a future deployment manifest."
