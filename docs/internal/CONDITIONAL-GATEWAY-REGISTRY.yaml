@@ -726,3 +726,24 @@ pre_mainnet_static_warning_audit_gate:
   protected_actions:
     wallet_funding: BLOCKED_BY_OTHER_GATES
     mainnet_deploy: BLOCKED_BY_OTHER_GATES
+
+
+gas_unit_evidence_manifest_gate:
+  status: PROVEN
+  scope: EXECUTION_REHEARSAL_ONLY
+  proof:
+    exact_head: 70f4fd1b1181ee933c4876b266bb28169919cbea
+    workflow_run: 36672057005
+    javascript_tests: "67/67"
+    solidity_tests: "29/29"
+    artifact_digest: "sha256:1c12cb9b7544a833ad3cea6dff3fe7f6ce5331b3d03a95c85f3a3448c2c4e1d9"
+  observed_max_sum_gas:
+    pass_first_batch: 1035420
+    one_batch: 653529
+    full_hero_pass_fail_breaker_refund: 2426871
+  deployment:
+    foundry_reported_gas: 0
+    accepted: false
+    status: BLOCKED
+    next_gate: EXACT_INIT_CODE_ETH_ESTIMATE_GAS
+  rule: "Execution rehearsal evidence may feed planning; deployment gas must come from a separate exact init-code estimate."
