@@ -447,3 +447,31 @@ The previous creation-bytecode hash is superseded. Any future real deployment ma
 Static Warning Audit = PROVEN.
 
 Mainnet deployment, gas-budget sufficiency, wallet funding, G5, G6 and Live Core Loop remain unproven.
+
+
+## Gas-unit evidence proof — 2026-09-30
+
+### PROVEN FOR LOCAL EXECUTION REHEARSAL
+
+- Exact head `70f4fd1b1181ee933c4876b266bb28169919cbea` passed workflow `36672057005`.
+- 67/67 JavaScript tests passed.
+- 29/29 Solidity tests passed.
+- The parser selected only the AssuranceVault gas-report table.
+- Required lifecycle functions were present.
+- Max-observed function gas was used; averages were not used.
+- Derived first-PASS lifecycle sum: 1,035,420 gas.
+- Derived one-batch sum: 653,529 gas.
+- Derived full hero PASS→FAIL→BREAKER→refund sum: 2,426,871 gas.
+- Evidence artifact digest:
+  `sha256:1c12cb9b7544a833ad3cea6dff3fe7f6ce5331b3d03a95c85f3a3448c2c4e1d9`.
+
+### DEPLOYMENT REMAINS BLOCKED
+
+Foundry reported zero deployment gas. That value was rejected rather than interpreted.
+
+Required next:
+exact init-code `eth_estimateGas` tied to a public deployer address and nonce snapshot.
+
+### TRUTH BOUNDARY
+
+These values are local exact-head EVM rehearsal evidence. They are not Arc receipts, a permanent fee quote, or funding authorization.

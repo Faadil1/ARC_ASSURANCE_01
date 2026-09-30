@@ -688,3 +688,31 @@ latest_integrated_build_identity:
   assurance_vault_creation_bytecode_keccak256: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
   previous_creation_bytecode_hash_status: SUPERSEDED
   rule: "Only the latest exact-head clean-room artifact may seed a future deployment manifest."
+
+
+gas_unit_evidence_manifest:
+  branch: ops/gas-unit-evidence-manifest
+  status: PROVEN_FOR_EXECUTION_REHEARSAL
+  exact_head: 70f4fd1b1181ee933c4876b266bb28169919cbea
+  workflow_run: 36672057005
+  evidence_artifact_digest: "sha256:1c12cb9b7544a833ad3cea6dff3fe7f6ce5331b3d03a95c85f3a3448c2c4e1d9"
+  tests:
+    javascript: "67 passed / 0 failed"
+    solidity: "29 passed / 0 failed"
+  source:
+    command: "forge test --gas-report"
+    contract: "src/assurance/AssuranceVault.sol:AssuranceVault"
+  execution_gas:
+    pass_first_batch_max_sum_gas: 1035420
+    one_batch_max_sum_gas: 653529
+    full_hero_one_pass_two_fail_breaker_refund_max_sum_gas: 2426871
+    evidence_class: LOCAL_EXACT_HEAD_REHEARSAL
+  deployment_gas:
+    reported_foundry_value: 0
+    status: BLOCKED_REPORTED_ZERO_NOT_ACCEPTED
+    required_next: "exact init-code eth_estimateGas tied to public deployer + nonce snapshot"
+  truth_boundary:
+    arc_mainnet_receipt: false
+    permanent_fee_quote: false
+    execution_gas_planning_input: true
+    deployment_gas_proven: false

@@ -86,6 +86,14 @@ jobs:
           mkdir -p build
           forge test --gas-report | tee build/gas-report.txt
 
+      - name: Generate machine-readable gas evidence
+        env:
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node script/parse-gas-unit-evidence.mjs \
+            build/gas-report.txt \
+            build/gas-unit-evidence.json
+
       - name: Record tool versions
         run: |
           node -v > build/tool-versions.txt
@@ -104,4 +112,5 @@ jobs:
             build/deployment-manifest.ci.json
             build/tool-versions.txt
             build/gas-report.txt
+            build/gas-unit-evidence.json
             out/AssuranceVault.sol/AssuranceVault.json
