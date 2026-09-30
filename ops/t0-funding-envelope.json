@@ -1,0 +1,21 @@
+{
+  "schema": "ARC_ASSURANCE_T0_FUNDING_ENVELOPE_V1",
+  "status": "CANDIDATE_PENDING_HUMAN_APPROVAL",
+  "candidate_topup_wei": "500000000000000000",
+  "candidate_topup_usdc": "0.50",
+  "hard_wallet_ceiling_wei": "5000000000000000000",
+  "hard_wallet_ceiling_usdc": "5.00",
+  "fresh_snapshot_max_contingency_peak_wei": "250000000000000000",
+  "fresh_snapshot_max_contingency_peak_usdc": "0.25",
+  "t0_principal_wei": "10000000000000000",
+  "t0_principal_usdc": "0.010",
+  "requirements": {
+    "fresh_fee_snapshot_required": true,
+    "candidate_topup_requires_explicit_human_approval": true,
+    "wallet_must_be_dedicated": true,
+    "wallet_must_be_eoa": true,
+    "wallet_pending_nonce_before_first_deploy": 0,
+    "private_key_must_never_enter_repo_ci_or_chat": true
+  },
+  "reasoning": "0.50 USDC is over 3x the observed contingency peak requirement of ~0.16159 USDC, while remaining far below the 5 USDC hard ceiling. Funding remains a protected human action."
+}
