@@ -1,0 +1,23 @@
+{
+  "schema": "ARC_ASSURANCE_T0_FEE_BUDGET_INPUT_V1",
+  "network": {
+    "chain_id": 5042,
+    "rpc": "https://rpc.mainnet.arc.io",
+    "native_decimals": 18
+  },
+  "provenance": {
+    "t0_contract_source_head": "f7fdf4e1b592c9122d4680d5272635baa2afff3f",
+    "gas_evidence_head": "46cd44ef0cc11e84bfed97900180318dc7342349",
+    "gas_evidence_workflow_run": 36681323838
+  },
+  "gas": {
+    "happy_path_planning_floor": 2925559,
+    "recovery_extra_floor": 106230,
+    "gas_unit_safety_bps": 12500,
+    "gas_price_safety_bps": 20000
+  },
+  "value": {
+    "peak_t0_principal_wei": "10000000000000000",
+    "wallet_topup_ceiling_wei": "5000000000000000000"
+  }
+}
