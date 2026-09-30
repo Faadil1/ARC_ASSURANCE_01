@@ -630,7 +630,7 @@ t0_post_audit_revalidation_gate:
 
 pre_mainnet_deployment_package_gate:
   status: BLOCKED
-  current_state: PRODUCED_VALIDATION_PENDING
+  current_state: PACKAGE_SOURCE_PROVEN_PUBLIC_INPUTS_PENDING
   bounded_budget:
     wallet_topup_ceiling_usdc: "5.00"
     t0_fund_usdc: "0.010"
@@ -643,8 +643,8 @@ pre_mainnet_deployment_package_gate:
     readiness_tests: true
     protected_execution_runbook: true
   blockers:
-    - "exact-head package clean-room CI"
     - "real public wallet addresses"
+    - "exact-head gas-unit rehearsal evidence"
     - "read-only gas estimate"
     - "human review of 5 USDC sufficiency"
     - "explicit wallet funding authorization"
@@ -668,3 +668,27 @@ pre_mainnet_package_source_subgate:
     - wallet_funding
     - mainnet_deploy
     - mainnet_value_movement
+
+
+read_only_gas_budget_gate:
+  status: BLOCKED
+  current_state: SOURCE_PRODUCED_PUBLIC_INPUTS_REQUIRED
+  activation: "Before any wallet funding or protected Arc mainnet authorization."
+  fee_snapshot:
+    source: "Arc mainnet JSON-RPC"
+    chain_id_required: 5042
+    time_bound: true
+    requires_private_key: false
+  gas_unit_inputs:
+    guessed_values_allowed: false
+    deploy_gas_units: BLOCKED_PENDING_EXACT_HEAD_REHEARSAL
+    execution_gas_units: BLOCKED_PENDING_EXACT_HEAD_REHEARSAL
+  safety:
+    gas_units_multiplier_bps: 12500
+    gas_price_multiplier_bps: 20000
+    wallet_topup_ceiling_wei: "5000000000000000000"
+  protected_actions:
+    wallet_funding: BLOCKED
+    deploy: BLOCKED
+    execute: BLOCKED
+  rule: "A fee snapshot plus guessed gas units is not a valid gas budget. Both fee observation and exact-head gas-unit evidence are required."
