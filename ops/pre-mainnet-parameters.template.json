@@ -51,5 +51,15 @@
     "t0_deploy_authorized": false,
     "t0_execute_authorized": false,
     "integrated_deploy_authorized": false
+  },
+  "gas_budget": {
+    "status": "VERIFIED_GAS_UNITS_REQUIRED",
+    "gas_price_safety_bps": "20000",
+    "gas_units_safety_bps": "12500",
+    "deploy_gas_units": null,
+    "execution_gas_units": null,
+    "principal_outflow_wei": "10000000000000000",
+    "source_evidence": null,
+    "rule": "Do not populate gas-unit values from guesses; use exact-head rehearsal evidence."
   }
 }
