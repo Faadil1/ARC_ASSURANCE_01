@@ -241,3 +241,55 @@ t0_post_opeyemi_audit:
     - "policy cap no longer reserves deployment lifetime capacity"
     - "broken tiny-value shell guard removed"
   promotion_rule: "No mainnet action until Arc Foundry revalidation of exact current head."
+
+
+t0_funding_readiness_2026_09_30:
+  branch: ops/t0-funding-readiness
+  status: READY_FOR_HUMAN_REVIEW
+  contract_source:
+    exact_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    arc_foundry_revalidation: PROVEN
+    tests: "40 passed / 0 failed / 0 skipped"
+  gas_evidence:
+    exact_head: 46cd44ef0cc11e84bfed97900180318dc7342349
+    workflow_run: 36681323838
+    evidence_class: LOCAL_EXACT_HEAD_REHEARSAL
+    deployment_gas: 2160427
+    execution_function_max_sum_gas: 639132
+    transaction_intrinsic_floor_gas: 126000
+    planning_floor_before_safety_gas: 2925559
+    recovery_cancel_expired_max_gas: 85230
+  fee_snapshot:
+    exact_head: f8367f42e6ea6152c7f2ccec0244bc68f993b86c
+    workflow_run: 36682054936
+    chain_id: 5042
+    block_number: 23501187
+    observed_gas_price_wei: "20000000000"
+    gas_unit_safety_bps: 12500
+    gas_price_safety_bps: 20000
+    happy_peak_required_usdc: "0.15627796"
+    contingency_peak_required_usdc: "0.16158948"
+    five_usdc_ceiling_sufficient: true
+  funding_envelope:
+    status: CANDIDATE_PENDING_HUMAN_APPROVAL
+    candidate_topup_usdc: "0.50"
+    hard_ceiling_usdc: "5.00"
+    fresh_snapshot_rule_max_contingency_usdc: "0.25"
+    validation_status: CANDIDATE_ENVELOPE_READY_FOR_HUMAN_REVIEW
+    funding_authorized: false
+  public_wallet_gate:
+    status: BLOCKED_PENDING_PUBLIC_ADDRESS
+    requirements:
+      - "dedicated EOA"
+      - "pending nonce 0 before first deploy"
+      - "public address only"
+      - "private key/seed never repo, CI, issue, PR, artifact or chat"
+  protected_human_action:
+    next: "Create dedicated Arc mainnet EOA and provide only its public address for read-only readiness inspection."
+    wallet_funding: BLOCKED_PENDING_EXPLICIT_APPROVAL
+    deploy: BLOCKED
+    execute: BLOCKED
+  truth_boundary:
+    - "Fee snapshot is time-bound and must be refreshed before funding/deploy."
+    - "0.50 USDC is a candidate envelope, not an authorization."
+    - "G1 remains ACTIVE / NOT PROVEN until real Arc receipts exist."
