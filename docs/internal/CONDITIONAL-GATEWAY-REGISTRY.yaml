@@ -692,3 +692,28 @@ read_only_gas_budget_gate:
     deploy: BLOCKED
     execute: BLOCKED
   rule: "A fee snapshot plus guessed gas units is not a valid gas budget. Both fee observation and exact-head gas-unit evidence are required."
+
+
+pre_mainnet_static_warning_audit_gate:
+  status: ACTIVE
+  activation: "Any security/lint warning observed on the mainnet candidate."
+  fixes_pending_ci:
+    non_reentrant_not_first: FIXED_SOURCE_PENDING_PROOF
+    reentrancy_events: FIXED_SOURCE_PENDING_PROOF
+    unsafe_typecast: FIXED_SOURCE_PENDING_PROOF
+    reentrancy_eth: MITIGATED_SOURCE_AND_TEST_PENDING_PROOF
+  intentional_reviewed:
+    block_timestamp:
+      rationale: "deadline/expiry only; no randomness/scoring/sub-block ordering"
+    arbitrary_send_eth:
+      rationale: "destination immutable and policy-bound; caller cannot redirect at transfer time"
+    environment_read_across_mutation:
+      rationale: "test-only vm.warp diagnostic"
+  required_before_proven:
+    - "Exact-head clean-room build/tests green."
+    - "Malicious-recipient reentry test green."
+    - "Post-fix warning classes reviewed."
+    - "No new unexplained warning class."
+  protected_actions:
+    wallet_funding: BLOCKED
+    mainnet_deploy: BLOCKED
