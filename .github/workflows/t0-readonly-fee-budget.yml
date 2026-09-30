@@ -22,7 +22,9 @@ jobs:
           fetch-depth: 0
 
       - name: Run deterministic budget tests
-        run: python3 test/test_t0_readonly_fee_budget.py
+        run: |
+          python3 test/test_t0_readonly_fee_budget.py
+          python3 test/test_t0_funding_envelope.py
 
       - name: Capture Arc read-only fee budget
         run: |
@@ -30,10 +32,19 @@ jobs:
             ops/t0-fee-budget-input.json \
             t0-fee-budget-snapshot.json
 
+      - name: Validate candidate funding envelope
+        run: |
+          python3 script/validate_t0_funding_envelope.py \
+            ops/t0-funding-envelope.json \
+            t0-fee-budget-snapshot.json \
+            t0-funding-envelope-validation.json
+
       - name: Upload snapshot
         uses: actions/upload-artifact@v5
         with:
-          name: t0-readonly-fee-budget-${{ github.event.pull_request.head.sha || github.sha }}
-          path: t0-fee-budget-snapshot.json
+          name: t0-funding-readiness-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            t0-fee-budget-snapshot.json
+            t0-funding-envelope-validation.json
           if-no-files-found: error
           retention-days: 30
