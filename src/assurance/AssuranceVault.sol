@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {ProviderOutputEIP712} from "../eip712/ProviderOutputEIP712.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 /// @title AssuranceVault
 /// @notice Integrated Arc-native custody + hidden-canary assurance state machine.
@@ -17,6 +18,7 @@ import {ProviderOutputEIP712} from "../eip712/ProviderOutputEIP712.sol";
 ///      This is a BUILD CANDIDATE until exact-head tests and real Arc mainnet
 ///      receipts prove the behavior.
 contract AssuranceVault is ProviderOutputEIP712 {
+    using SafeCast for uint256;
     enum BatchState {
         None,
         Committed,
@@ -325,7 +327,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         uint256 maxSpendCap,
         uint256 unitPayout,
         uint64 expiry
-    ) external onlyAuthority onExpectedChain {
+    ) external nonReentrant onlyAuthority onExpectedChain {
         if (policyId == bytes32(0)) revert ZeroIdentifier();
         if (_policies[policyId].exists) {
             revert PolicyAlreadyExists(policyId);
@@ -348,7 +350,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
             revert SpendCapExceeded(maxSpendCap, deploymentSpendCap);
         }
         if (expiry == 0 || expiry <= block.timestamp) {
-            revert PolicyExpired(expiry, uint64(block.timestamp));
+            revert PolicyExpired(expiry, block.timestamp.toUint64());
         }
 
         _policies[policyId] = Policy({
@@ -361,7 +363,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
             maxSpendCap: maxSpendCap,
             unitPayout: unitPayout,
             expiry: expiry,
-            createdAt: uint64(block.timestamp),
+            createdAt: block.timestamp.toUint64(),
             fundedAt: 0,
             totalFunded: 0,
             totalPaidOut: 0,
@@ -396,8 +398,8 @@ contract AssuranceVault is ProviderOutputEIP712 {
     function fund(bytes32 policyId)
         external
         payable
-        onExpectedChain
         nonReentrant
+        onExpectedChain
         policyExists(policyId)
         onlyFunder(policyId)
     {
@@ -424,7 +426,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         }
 
         policy.totalFunded = fundedTotal;
-        policy.fundedAt = uint64(block.timestamp);
+        policy.fundedAt = block.timestamp.toUint64();
         totalCustodyReceived = deploymentTotal;
         totalLiability += msg.value;
 
@@ -446,6 +448,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         bytes32 commitment
     )
         external
+        nonReentrant
         onExpectedChain
         policyExists(policyId)
         onlyFunder(policyId)
@@ -491,6 +494,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         bytes calldata signature
     )
         external
+        nonReentrant
         onExpectedChain
         policyExists(output.policyId)
         returns (bytes32 digest)
@@ -563,6 +567,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         bytes32 salt
     )
         external
+        nonReentrant
         onExpectedChain
         policyExists(policyId)
         onlyFunder(policyId)
@@ -647,8 +652,8 @@ contract AssuranceVault is ProviderOutputEIP712 {
     /// @dev This is the ONLY provider payout path in the contract.
     function resolveBatch(bytes32 policyId, bytes32 batchId)
         external
-        onExpectedChain
         nonReentrant
+        onExpectedChain
         policyExists(policyId)
         returns (SettlementDirective directive)
     {
@@ -709,8 +714,6 @@ contract AssuranceVault is ProviderOutputEIP712 {
                 block.number
             );
 
-            _send(policy.payoutRecipient, amount);
-
             emit PaymentReleased(
                 policyId,
                 batchId,
@@ -723,6 +726,11 @@ contract AssuranceVault is ProviderOutputEIP712 {
                 block.number,
                 block.timestamp
             );
+
+            // Effects and canonical vault events are finalized before the
+            // recipient interaction. If the native transfer fails, the whole
+            // transaction reverts, including these state changes and logs.
+            _send(policy.payoutRecipient, amount);
         } else {
             unchecked {
                 policy.failureCount += 1;
@@ -785,6 +793,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         bytes32 batchId
     )
         external
+        nonReentrant
         onExpectedChain
         policyExists(policyId)
         onlyFunder(policyId)
@@ -794,7 +803,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         if (block.timestamp <= policy.expiry) {
             revert PolicyNotExpired(
                 policy.expiry,
-                uint64(block.timestamp)
+                block.timestamp.toUint64()
             );
         }
         if (policy.activeBatchId != batchId) {
@@ -835,8 +844,8 @@ contract AssuranceVault is ProviderOutputEIP712 {
     /// @notice Refund all remaining policy liability after breaker or expiry.
     function refundProtectedRemainder(bytes32 policyId)
         external
-        onExpectedChain
         nonReentrant
+        onExpectedChain
         policyExists(policyId)
         onlyFunder(policyId)
     {
@@ -981,7 +990,7 @@ contract AssuranceVault is ProviderOutputEIP712 {
         if (block.timestamp > policy.expiry) {
             revert PolicyExpired(
                 policy.expiry,
-                uint64(block.timestamp)
+                block.timestamp.toUint64()
             );
         }
     }
@@ -1016,8 +1025,6 @@ contract AssuranceVault is ProviderOutputEIP712 {
         policy.totalRefunded += amount;
         totalLiability -= amount;
 
-        _send(policy.funder, amount);
-
         emit ProtectedRemainderRefunded(
             policyId,
             policy.funder,
@@ -1036,6 +1043,10 @@ contract AssuranceVault is ProviderOutputEIP712 {
             policy.totalRefunded,
             block.number
         );
+
+        // The refund recipient is the immutable policy funder. Any failed
+        // transfer reverts the complete close/refund transaction.
+        _send(policy.funder, amount);
     }
 
     function _send(address recipient, uint256 amount)

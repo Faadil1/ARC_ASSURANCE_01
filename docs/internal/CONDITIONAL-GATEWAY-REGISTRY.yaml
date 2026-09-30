@@ -692,3 +692,37 @@ read_only_gas_budget_gate:
     deploy: BLOCKED
     execute: BLOCKED
   rule: "A fee snapshot plus guessed gas units is not a valid gas budget. Both fee observation and exact-head gas-unit evidence are required."
+
+
+pre_mainnet_static_warning_audit_gate:
+  status: PROVEN
+  activation: "Any security/lint warning observed on the mainnet candidate."
+  fixes_pending_ci:
+    non_reentrant_not_first: FIXED_SOURCE_PENDING_PROOF
+    reentrancy_events: FIXED_SOURCE_PENDING_PROOF
+    unsafe_typecast: FIXED_SOURCE_PENDING_PROOF
+    reentrancy_eth: MITIGATED_SOURCE_AND_TEST_PENDING_PROOF
+  intentional_reviewed:
+    block_timestamp:
+      rationale: "deadline/expiry only; no randomness/scoring/sub-block ordering"
+    arbitrary_send_eth:
+      rationale: "destination immutable and policy-bound; caller cannot redirect at transfer time"
+    environment_read_across_mutation:
+      rationale: "test-only vm.warp diagnostic"
+  proof:
+    exact_head: b5b8918c89fecd4abc5a8249270b8e5424531643
+    workflow_run: 36671113993
+    javascript_tests: "63/63"
+    solidity_tests: "29/29"
+    malicious_recipient_reentry_test: PASS
+    unsafe_typecast_warning: ELIMINATED
+    non_reentrant_not_first_warning: ELIMINATED
+  remaining_warning_classes:
+    block_timestamp: REVIEWED_INTENTIONAL
+    reentrancy_events: REVIEWED_CONSERVATIVE_DIAGNOSTIC
+    reentrancy_eth: REVIEWED_MITIGATED_AND_TESTED
+    arbitrary_send_eth: REVIEWED_POLICY_BOUND_DESTINATION
+    environment_read_across_mutation: REVIEWED_TEST_ONLY
+  protected_actions:
+    wallet_funding: BLOCKED_BY_OTHER_GATES
+    mainnet_deploy: BLOCKED_BY_OTHER_GATES
