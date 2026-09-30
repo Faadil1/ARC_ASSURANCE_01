@@ -1,0 +1,39 @@
+name: T0 Read-Only Fee Budget
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Run deterministic budget tests
+        run: python3 test/test_t0_readonly_fee_budget.py
+
+      - name: Capture Arc read-only fee budget
+        run: |
+          python3 script/t0_readonly_fee_budget.py \
+            ops/t0-fee-budget-input.json \
+            t0-fee-budget-snapshot.json
+
+      - name: Upload snapshot
+        uses: actions/upload-artifact@v5
+        with:
+          name: t0-readonly-fee-budget-${{ github.event.pull_request.head.sha || github.sha }}
+          path: t0-fee-budget-snapshot.json
+          if-no-files-found: error
+          retention-days: 30
