@@ -378,3 +378,55 @@ t0_post_audit_revalidation:
     - "confirm expiry recovery tests"
     - "confirm shell driver preflight/deploy/execute path"
   rule: "Do not fund or broadcast mainnet until this becomes PROVEN."
+
+
+t0_funding_readiness_gate:
+  status: BLOCKED
+  current_state: READY_FOR_HUMAN_REVIEW
+  source_revalidation:
+    status: PROVEN
+    exact_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    tests: "40/40"
+  gas_rehearsal:
+    status: PROVEN
+    exact_head: 46cd44ef0cc11e84bfed97900180318dc7342349
+    planning_floor_gas: 2925559
+    recovery_extra_max_gas: 85230
+  fee_ceiling_snapshot:
+    status: PROVEN_TIME_BOUND
+    workflow_run: 36682054936
+    chain_id: 5042
+    block_number: 23501187
+    observed_gas_price_wei: "20000000000"
+    contingency_peak_required_usdc: "0.16158948"
+    five_usdc_ceiling_sufficient: true
+  candidate_funding:
+    amount_usdc: "0.50"
+    hard_ceiling_usdc: "5.00"
+    fresh_snapshot_rule_max_contingency_usdc: "0.25"
+    candidate_validation: READY_FOR_HUMAN_REVIEW
+    authorized: false
+  blockers:
+    - "dedicated public wallet address not yet supplied"
+    - "public wallet EOA/nonce/balance readiness not yet checked"
+    - "fresh fee snapshot required immediately before funding"
+    - "explicit human funding approval"
+  protected_actions:
+    wallet_creation: HUMAN
+    wallet_funding: BLOCKED
+    private_key_handling: HUMAN_LOCAL_ONLY
+    mainnet_deploy: BLOCKED
+    mainnet_value_movement: BLOCKED
+  rule: "Green CI may prepare a funding candidate but can never infer funding authorization."
+
+t0_g1_mainnet_custody_gate:
+  status: ACTIVE
+  source_ready: true
+  funding_ready_candidate: true
+  live_deployment: false
+  real_custody: false
+  real_payout: false
+  real_refund: false
+  real_completion: false
+  runtime_commit_binding: false
+  promotion_condition: "Real Arc receipts for deploy/fund/payout/refund/complete bound to the approved exact commit."
