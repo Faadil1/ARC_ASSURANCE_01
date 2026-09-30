@@ -147,6 +147,9 @@ jobs:
             exit 1
           }
 
+      - name: Gas evidence parser tests
+        run: python3 test/test_t0_gas_evidence.py
+
       - name: Gas report
         run: |
           set -o pipefail
@@ -155,6 +158,14 @@ jobs:
             tail -120 gas-report.log >> "$GITHUB_STEP_SUMMARY"
             exit 1
           }
+
+      - name: Generate T0 gas evidence
+        env:
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 script/parse_t0_gas_report.py \
+            gas-report.log \
+            t0-gas-unit-evidence.json
 
       - name: Summarise
         if: always()
@@ -184,6 +195,7 @@ jobs:
             build.log
             test.log
             gas-report.log
+            t0-gas-unit-evidence.json
             /tmp/arcforge-version.txt
           if-no-files-found: warn
           retention-days: 90
