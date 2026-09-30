@@ -390,3 +390,28 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Fresh Arc fee snapshot at the actual decision point.
 - Human review that 5 USDC is sufficient.
 - Explicit human wallet-funding authorization.
+
+
+## Pre-mainnet static warning audit delta — 2026-09-30
+
+### OBSERVED
+
+- Clean-room run `36670714112` passed 63/63 JavaScript tests and 28/28 Solidity tests but emitted Foundry lint warnings.
+- Warning classes included reentrancy-related diagnostics, raw timestamp downcasts, timestamp comparisons, native sends and a test-only vm.warp diagnostic.
+- Source hardening now places the non-reentrancy guard first on every state-mutating external entrypoint.
+- Previously unguarded mutation paths such as commit/lock/reveal/cancel are now protected during payout/refund callbacks.
+- Payment/refund/close events are emitted before the external value interaction; a failed transfer still reverts the complete transaction and all logs.
+- Raw uint64 timestamp casts were replaced with OpenZeppelin SafeCast.
+- A malicious recipient test now attempts state mutation during payout.
+
+### STILL REQUIRES PROOF
+
+- Exact-head compile/tests after these source changes.
+- Confirmation that reentrancy/typecast/event-order warning classes are removed or reduced as expected.
+- Review of any remaining warning class.
+
+### INTENTIONAL WARNINGS
+
+- Timestamp comparisons remain part of deadline/expiry semantics, not randomness or scoring.
+- Native value must be sent to policy-bound recipients by product design.
+- Test-only vm.warp diagnostics do not describe runtime contract behavior.
