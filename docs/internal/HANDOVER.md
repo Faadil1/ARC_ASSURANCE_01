@@ -954,3 +954,61 @@ New canonical creation-bytecode hash:
 The prior integrated bytecode hash is superseded and must not be used in a deployment manifest.
 
 This closes the static-warning subgate only. Mainnet/public-address/gas/funding/live-receipt gates remain blocked.
+
+
+## 30. Gas Unit Evidence Manifest — execution rehearsal PROVEN
+
+Exact head:
+
+`70f4fd1b1181ee933c4876b266bb28169919cbea`
+
+Workflow:
+
+`36672057005`
+
+Observed:
+
+- 67/67 JavaScript tests PASS;
+- 29/29 Solidity tests PASS;
+- machine-readable gas-unit evidence generated;
+- artifact digest:
+  `sha256:1c12cb9b7544a833ad3cea6dff3fe7f6ce5331b3d03a95c85f3a3448c2c4e1d9`.
+
+Exact-head local maxima aggregate to:
+
+```text
+first PASS lifecycle      = 1,035,420 gas
+one assurance batch      =   653,529 gas
+full hero execution      = 2,426,871 gas
+```
+
+The full hero planning sequence is:
+
+```text
+createPolicy
+→ fund
+→ PASS batch
+→ FAIL/WITHHOLD batch
+→ FAIL/BREAKER batch
+→ refundProtectedRemainder
+```
+
+These are LOCAL_EXACT_HEAD_REHEARSAL values and still receive the separate gas-unit safety multiplier in the wallet-budget gate.
+
+### Deployment gas remains blocked
+
+Foundry reported deployment cost `0` for AssuranceVault. The parser explicitly rejected that value.
+
+Next required evidence:
+
+```text
+exact creation bytecode
++ exact constructor args
++ public deployer address
++ current deployer nonce
+→ eth_estimateGas(contract creation)
+→ predicted contract address
+→ time-bound predeploy gas snapshot
+```
+
+No private key is needed for that next step.
