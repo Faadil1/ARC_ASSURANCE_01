@@ -361,3 +361,32 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 - Human review of the 5 USDC ceiling.
 - Human wallet funding.
 - T0 deploy and execute authorizations.
+
+
+## Read-only gas budget reality delta — 2026-09-30
+
+### OBSERVED
+
+- A no-secret Arc gas-budget tool now exists.
+- It can read Arc chain ID, current block and current gas price without signing.
+- It can read a public wallet balance without consuming a private key.
+- Budget math includes separate safety multipliers for gas units and gas price.
+- The 5 USDC wallet ceiling is enforced as an upper bound.
+- The template leaves deploy and lifecycle gas-unit inputs null by default.
+- Missing verified gas-unit inputs produce a BLOCKED result rather than an inferred estimate.
+- No transaction signing, broadcasting or value movement is implemented in this gate.
+
+### IMPORTANT TRUTH BOUNDARY
+
+- A gas-price snapshot is time-bound.
+- A point-in-time gas price is not a guarantee of future fees.
+- State-dependent lifecycle gas units must come from exact-head rehearsal evidence; they are not guessed from generic EVM expectations.
+- A green gas-budget result still does not authorize wallet funding.
+
+### STILL BLOCKED
+
+- Real public authority/funder address.
+- Exact-head T0/integrated lifecycle gas-unit evidence.
+- Fresh Arc fee snapshot at the actual decision point.
+- Human review that 5 USDC is sufficient.
+- Explicit human wallet-funding authorization.

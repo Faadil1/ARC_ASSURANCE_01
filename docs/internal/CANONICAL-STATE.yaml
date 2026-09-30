@@ -545,7 +545,7 @@ t0_post_audit_revalidation_2026_09_29:
 
 pre_mainnet_deployment_package:
   branch: ops/pre-mainnet-deployment-package
-  status: PRODUCED_VALIDATION_PENDING
+  status: PROVEN_FOR_PACKAGE_SOURCE
   wallet_budget:
     dedicated_wallet_required: true
     topup_ceiling_usdc: "5.00"
@@ -581,14 +581,14 @@ pre_mainnet_deployment_package:
 
 
 pre_mainnet_package_clean_room:
-  proof_head: e76bd480785d5a627499f7d6ea27ae55705f4df9
-  workflow_run: 36638119707
+  proof_head: e9d952014417bc1afd967f036226da9f68b2088e
+  workflow_run: 36638273730
   status: PROVEN_FOR_PACKAGE_SOURCE
   results:
     javascript_tests: "58 passed / 0 failed"
     solidity_tests: "28 passed / 0 failed"
     build: PASS
-    artifact_digest: "sha256:d2a849fcdabae06015c388ccca0b6ea90924eb9a3fc0eb0914db298ed3c3f1ab"
+    artifact_digest: "sha256:81c4bb5ad39408e9a202c94f36a1768feec1dbceaf610323ae0150e38070ec4e"
     creation_bytecode_keccak256: "0x29bdd71974b5943f8f3194272f6cb13568e5e4ce23865cf085c6242334163afd"
     creation_bytecode_bytes: 16776
     package_lock_sha256: "c8d1896dbde5a9701a6b30883e533ad95d92a55350a0d3d842cb7ec968db61ea"
@@ -597,3 +597,47 @@ pre_mainnet_package_clean_room:
     - "read-only gas estimate"
     - "human review that 5 USDC ceiling is sufficient"
     - "explicit funding authorization"
+
+
+read_only_gas_budget_gate:
+  branch: ops/read-only-gas-budget-gate
+  status: BLOCKED
+  current_state: SOURCE_PRODUCED_PUBLIC_INPUTS_REQUIRED
+  implementation:
+    script: script/read-only-gas-budget.mjs
+    tests: test/ops/read-only-gas-budget.test.mjs
+    spec: docs/READ-ONLY-GAS-BUDGET-GATE.md
+  modes:
+    fee_snapshot:
+      requires_private_key: false
+      checks:
+        - "Arc chain id == 5042"
+        - "current block number"
+        - "current gas price"
+      durability: TIME_BOUND
+    wallet_budget:
+      requires_private_key: false
+      requires:
+        - "real public authority/funder address"
+        - "verified deploy gas units"
+        - "verified lifecycle execution gas units"
+      formula:
+        safe_gas_units: "(deploy + execution) * gas_units_safety"
+        safe_gas_price: "observed gas price * gas_price_safety"
+        peak_required: "safe gas reserve + peak principal outflow"
+      default_safety:
+        gas_units_bps: 12500
+        gas_price_bps: 20000
+      wallet_ceiling_wei: "5000000000000000000"
+  truth_boundary:
+    gas_price_snapshot_is_guarantee: false
+    guessed_gas_units_allowed: false
+    signs_transactions: false
+    broadcasts_transactions: false
+    moves_funds: false
+  blockers:
+    - "real public wallet addresses"
+    - "exact-head gas-unit rehearsal evidence"
+    - "fresh Arc fee snapshot at decision time"
+    - "human review of 5 USDC sufficiency"
+    - "explicit human funding authorization"
