@@ -48,14 +48,16 @@ function extractVaultSection(report) {
   }
 
   const tail = report.slice(start);
-  const nextContract = tail
-    .slice(marker.length)
-    .search(
-      /(?:src\\/|test\\/)[^\n|]* Contract \\|/
-    );
+  const afterMarker = tail.slice(marker.length);
 
-  if (nextContract < 0) return tail;
+  const candidates = [
+    afterMarker.indexOf("\n| src/"),
+    afterMarker.indexOf("\n| test/"),
+  ].filter((index) => index >= 0);
 
+  if (candidates.length === 0) return tail;
+
+  const nextContract = Math.min(...candidates);
   return tail.slice(0, marker.length + nextContract);
 }
 
