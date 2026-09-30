@@ -11,6 +11,41 @@ contract RejectingRecipient {
     }
 }
 
+contract ReentrantRecipient {
+    AssuranceVault public immutable vault;
+    bytes32 public policyId;
+    bytes32 public batchId;
+    bytes32 public commitment;
+    bool public attempted;
+    bool public reentrySucceeded;
+
+    constructor(AssuranceVault vault_) {
+        vault = vault_;
+    }
+
+    function configure(
+        bytes32 policyId_,
+        bytes32 batchId_,
+        bytes32 commitment_
+    ) external {
+        policyId = policyId_;
+        batchId = batchId_;
+        commitment = commitment_;
+    }
+
+    receive() external payable {
+        attempted = true;
+        (reentrySucceeded, ) = address(vault).call(
+            abi.encodeWithSelector(
+                AssuranceVault.commitBatch.selector,
+                policyId,
+                batchId,
+                commitment
+            )
+        );
+    }
+}
+
 contract AssuranceVaultTest is Test {
     uint256 internal constant PROVIDER_PK = 0xA11CE;
     uint256 internal constant WRONG_PROVIDER_PK = 0xB0B;
@@ -798,6 +833,99 @@ contract AssuranceVaultTest is Test {
             BATCH_1,
             commitment
         );
+    }
+
+
+    function test_PayoutRecipientCannotReenterStateMutations()
+        public
+    {
+        bytes32 policy2 = keccak256("policy-reentrant");
+        bytes32 batch2 = keccak256("batch-reentrant");
+        bytes32 work2 = keccak256("work-reentrant");
+        bytes32 input2 = keccak256("input-reentrant");
+        bytes32 expected2 = keccak256("expected-reentrant");
+        bytes32 salt2 = keccak256("salt-reentrant");
+
+        ReentrantRecipient recipient =
+            new ReentrantRecipient(vault);
+
+        vault.createPolicy(
+            policy2,
+            funder,
+            provider,
+            address(recipient),
+            SCORER_ID_HASH,
+            2,
+            POLICY_CAP,
+            UNIT_PAYOUT,
+            expiry
+        );
+
+        _fund(policy2, FUND_AMOUNT);
+
+        bytes32 commitment =
+            vault.computeCanaryCommitment(
+                policy2,
+                batch2,
+                work2,
+                input2,
+                expected2,
+                SCORER_ID_HASH,
+                salt2
+            );
+
+        vm.prank(funder);
+        vault.commitBatch(
+            policy2,
+            batch2,
+            commitment
+        );
+
+        ProviderOutputEIP712.ProviderOutput memory output =
+            _output(
+                policy2,
+                batch2,
+                work2,
+                input2,
+                expected2,
+                20
+            );
+
+        vault.lockProviderOutput(
+            output,
+            _sign(output, PROVIDER_PK)
+        );
+
+        vm.prank(funder);
+        vault.revealCanary(
+            policy2,
+            batch2,
+            work2,
+            input2,
+            expected2,
+            salt2
+        );
+
+        bytes32 attackBatch =
+            keccak256("attack-batch");
+        bytes32 attackCommitment =
+            keccak256("attack-commitment");
+
+        recipient.configure(
+            policy2,
+            attackBatch,
+            attackCommitment
+        );
+
+        vault.resolveBatch(policy2, batch2);
+
+        assertTrue(recipient.attempted());
+        assertFalse(recipient.reentrySucceeded());
+
+        AssuranceVault.Policy memory policy =
+            vault.getPolicy(policy2);
+        assertEq(policy.activeBatchId, bytes32(0));
+        assertEq(policy.totalPaidOut, UNIT_PAYOUT);
     }
 
     function test_DirectFundingIsRejected() public {
