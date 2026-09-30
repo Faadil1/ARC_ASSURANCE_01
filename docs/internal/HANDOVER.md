@@ -833,3 +833,64 @@ Observed:
 The additional four JS tests are the pre-mainnet bounded-configuration checks.
 
 This proof does not authorize funding. The next gate is human/public configuration + read-only gas estimation.
+
+
+## 27. Read-Only Gas Budget Gate
+
+Branch:
+
+- `ops/read-only-gas-budget-gate`
+
+This gate is intentionally split into two evidence classes.
+
+### A. Fee snapshot
+
+Public Arc RPC only:
+
+```
+chain id
++ block number
++ gas price
+```
+
+No address secret and no signer are needed.
+
+The result is time-bound and must be refreshed immediately before a protected mainnet action.
+
+### B. Wallet budget
+
+The budget combines:
+
+```
+verified deploy gas units
++ verified lifecycle gas units
+→ gas-unit safety multiplier
+× fresh observed gas price
+→ gas-price safety multiplier
++ peak principal outflow
+→ peak required wallet balance
+```
+
+Canonical defaults:
+
+- gas-unit safety: 1.25x;
+- gas-price safety: 2.00x;
+- dedicated wallet ceiling: 5.00 native USDC.
+
+The script refuses to invent missing gas-unit values. The template therefore carries those inputs as `null` until exact-head rehearsal evidence exists.
+
+### Human boundary
+
+A green gas-budget result still does not authorize wallet funding.
+
+Required sequence:
+
+```
+real public addresses
+→ exact-head gas-unit rehearsal
+→ fresh Arc fee snapshot
+→ 5 USDC ceiling review
+→ explicit human funding authorization
+```
+
+No private key, signing or broadcasting is part of this gate.
