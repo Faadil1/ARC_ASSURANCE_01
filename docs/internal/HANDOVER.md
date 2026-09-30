@@ -894,3 +894,28 @@ real public addresses
 ```
 
 No private key, signing or broadcasting is part of this gate.
+
+
+## 28. Pre-Mainnet Static Warning Hardening
+
+Branch:
+
+- `fix/pre-mainnet-static-hardening`
+
+Clean-room run `36670714112` was green but exposed Foundry lint classes that must not be silently ignored before mainnet.
+
+Material hardening now applied:
+
+- global non-reentrancy across all state-mutating external entrypoints;
+- `nonReentrant` moved to first modifier position;
+- payout/refund canonical events emitted before external native-value interaction;
+- OpenZeppelin SafeCast for timestamp downcasts;
+- malicious payout recipient test attempts reentrant `commitBatch()`.
+
+Intentionally retained semantics:
+
+- `block.timestamp` for deadline/expiry only;
+- native send to immutable policy-bound payout/refund destinations;
+- test-only `vm.warp` warning.
+
+Promotion remains blocked until exact-head CI is green and post-fix warnings are re-reviewed.
