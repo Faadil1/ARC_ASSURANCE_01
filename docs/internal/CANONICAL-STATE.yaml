@@ -1,8 +1,8 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-01T12:15:00-04:00"
+updated_at: "2026-10-01T16:52:00-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_PRETRANSFER_RECONCILED
+phase: ACTIVE_DESIGN_T0_WALLET_TOPUP_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -14,6 +14,9 @@ repository:
   default_branch: main
   bootstrap_main_sha: b874462d3dac4970e5149198a631d9b4c034f7c7
   prd_branch: docs/prd-v0.1
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  default_branch_note: "Until G0 is merged, main is bootstrap history and MUST NOT be treated as the current project state."
 
 program:
   name: Arc Microgrants
@@ -30,8 +33,8 @@ concept_lock:
   core_flow: "PRECOMMIT TEST -> REAL WORK -> HIDDEN CANARY -> DETERMINISTIC VERIFY -> PAY / BLOCK / CIRCUIT BREAKER"
   vertical: "structured document extraction"
   original_prooftender_procurement_layer: DEAD
-  revalidation_required_before_deliver: true
-  revalidation_reason: "Pre-Build Reality still lacks external user/operator + concrete negative-event evidence."
+  revalidation_required_before_deliver: false
+  revalidation_reason: "Pre-Build Reality problem evidence was proven in PR #8; DELIVER remains blocked by G0 and live product-depth gates, not by problem reality."
 
 promoted_invariants:
   - id: INV-01
@@ -107,6 +110,7 @@ current_gate:
     been merged, so the whole PR stack is unmerged.
 
 next_gate:
+  scope: PRODUCT_GATE
   id: G1_T0_MAINNET_CUSTODY
   owner: opeblow
   required_proof:
@@ -119,6 +123,14 @@ next_gate:
     Arc wallet controlled by Faadil. Code readiness does not advance this gate.
   review_queue_for_opeblow:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
+
+operational_next_gate:
+  id: T0_WALLET_TOPUP
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  prerequisite: "T0_FINAL_PRE_TRANSFER_REVALIDATION is PROVEN on execution head 4f7f3b254a29e6023d539a85e5b126a7f21e1955."
+  machine_boundary: "Automation must not move funds. After the external human action, only a read-only POST_FUNDING_WALLET_RECEIPT check is allowed before a separate deployment authorization."
 
 collaboration:
   faadil:
@@ -172,12 +184,19 @@ product_depth_live_reality:
   current_external_user_operator_evidence: BLOCKED
   current_post_vertical_slice_depth_review: BLOCKED
 
-prebuild_reality_gap:
-  status: BLOCKED
-  missing:
-    - "external real user/operator evidence"
-    - "concrete real negative event with observable impact"
-  promotion_rule: "T0 technical spike may proceed in DESIGN; DELIVER promotion may not."
+prebuild_reality:
+  status: PROVEN
+  evidence: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+  proves:
+    - "real external operator problem"
+    - "concrete external negative events"
+    - "observable financial/operational impact"
+  does_not_prove:
+    - "product demand"
+    - "external-user product validation"
+    - "provider acceptance"
+    - "adoption or willingness to pay"
+  separation_rule: "Pre-Build Reality must not be conflated with External User/Operator Product Evidence, which remains BLOCKED."
 
 
 t0_mainnet_custody:
@@ -230,7 +249,7 @@ t0_post_opeyemi_audit:
     tests_passed: 35
     tests_failed: 0
     applies_to_commit: "18bf5d6"
-  current_head_status: REVALIDATION_REQUIRED
+  current_head_status: SUPERSEDED_BY_LATER_40_OF_40_REVALIDATION
   audit_fixes:
     - "explicit private-key signer binding in DeployT0"
     - "remove unsafe verify-or-redeploy path"
@@ -241,7 +260,7 @@ t0_post_opeyemi_audit:
     - "unknown-policy state/remaining reads revert"
     - "policy cap no longer reserves deployment lifetime capacity"
     - "broken tiny-value shell guard removed"
-  promotion_rule: "No mainnet action until Arc Foundry revalidation of exact current head."
+  promotion_rule: "Historical exact-head revalidation blocker is closed; protected operational gates still govern any future mainnet action."
 
 
 t0_funding_readiness_2026_09_30:
@@ -352,11 +371,11 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_FINAL_PRE_TRANSFER_REVALIDATION
+  exact_next_gate: T0_WALLET_TOPUP
   exact_next_action: >-
-    Re-run exact-head T0 build/test, quality preflight, public-wallet check and
-    fee-envelope check after this reconciliation. If green, human performs only
-    the already-authorized 0.50 USDC wallet top-up.
+    Await the already-authorized external human wallet top-up only. Automation
+    performs no value movement. After the external action, run only the read-only
+    POST_FUNDING_WALLET_RECEIPT check, record evidence, then stop for separate deployment authorization.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -394,13 +413,33 @@ system_control_plane_reconciliation_2026_10_01:
     invariant: "Evidence from one line cannot promote the other line's live claims."
   unresolved_upstream:
     G0_PRD_READY: "NOT_PROVEN; PR #1 remains open/unmerged."
-    Pre_Build_Reality: "BLOCKED; external user/operator and concrete negative-event evidence missing."
-    DELIVER: "BLOCKED."
+    Pre_Build_Reality: "PROVEN in PR #8 for problem reality."
+    External_User_Operator_Product_Evidence: "BLOCKED; no external product trial/evidence yet."
+    DELIVER: "BLOCKED by G0 plus live product-depth/runtime gates."
   protected_action:
     wallet_topup_authorized_usdc: "0.50"
     authorization_scope: INITIAL_WALLET_TOPUP_ONLY
     deployment_authorized: false
     contract_execution_authorized: false
+
+
+state_precedence_2026_10_01:
+  status: PROVEN
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
+  reading_order:
+    - docs/internal/CANONICAL-STATE.yaml
+    - docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
+    - docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml
+    - docs/internal/HANDOVER.md
+    - docs/internal/REALITY-LEDGER.md
+  execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  first_state_recording_commit_after_execution: 90d79ee7d2f891366a9962af90f440768b4347e3
+  current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
+  historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
+  prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
+  next_gate_rule: "Operational next gate is T0_WALLET_TOPUP; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
