@@ -1,0 +1,70 @@
+name: T0 Deployment Readiness
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      T0_PUBLIC_WALLET_ADDRESS: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Validate public deployment configuration
+        run: |
+          python3 -m py_compile script/t0_validate_deployment_config.py
+          python3 script/t0_validate_deployment_config.py \
+            ops/t0-deployment-config.json \
+            ops/t0-deployment-public.env \
+            | tee t0-deployment-config-check.json
+
+      - name: Verify funded wallet remains deploy-ready
+        run: |
+          python3 script/t0_post_funding_wallet_receipt.py \
+            "$ARC_MAINNET_RPC_URL" \
+            "$T0_PUBLIC_WALLET_ADDRESS" \
+            "0.50" \
+            "5.00" \
+            | tee t0-deployment-wallet-readiness.json
+
+      - name: Verify original top-up receipt remains canonical
+        run: |
+          python3 script/t0_verify_topup_receipt.py \
+            "$ARC_MAINNET_RPC_URL" \
+            ops/t0-topup-receipt-input.json \
+            | tee t0-topup-receipt-recheck.json
+
+      - name: Refresh fee budget
+        run: |
+          python3 script/t0_readonly_fee_budget.py \
+            ops/t0-fee-budget-input.json \
+            t0-deployment-fee-budget.json
+          python3 script/validate_t0_funding_envelope.py \
+            ops/t0-funding-envelope.json \
+            t0-deployment-fee-budget.json \
+            t0-deployment-fee-envelope-check.json
+
+      - name: Upload readiness evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: t0-deployment-readiness-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            t0-deployment-config-check.json
+            t0-deployment-wallet-readiness.json
+            t0-topup-receipt-recheck.json
+            t0-deployment-fee-budget.json
+            t0-deployment-fee-envelope-check.json
+          if-no-files-found: error
+          retention-days: 90
