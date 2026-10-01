@@ -68,34 +68,32 @@ This workstream establishes:
 
 No consequential product build should be treated as promoted until G0 is merged/reviewed.
 
-## 5. Immediate blocker
+## 5. Immediate structural state
 
 The collaborator invitation is **ACCEPTED**; GitHub reports write permission for `opeblow`.
 
-Current blocking state:
+Current repository reality:
 
-- `main` is still at the bootstrap commit `b874462`. **Nothing has been merged.**
-- PR #1 (`docs/prd-v0.1`) is still open, and PRs #6, #7, #8, #10 are all stacked on top of it.
-- Because nothing is merged, a merge-ordering decision is needed before any further stacked work is meaningful.
+- `main` is still the bootstrap line at `b874462`; it is **not** the current project-state surface.
+- formal G0 remains unproven because PR #1 is still open/unmerged.
+- active operational state is carried by PR #44 on `ops/t0-funding-readiness`.
+- stacked PR history remains relevant, but a reader must resolve the active PR branch before interpreting current state.
 
-Recommended merge order: #1, then #8, then #7, then #6, then #10. Each is stacked on the previous.
+This does not block the already-approved DESIGN technical spike. It does block treating `main` as canonical current state or promoting formal G0/DELIVER. Merge ordering remains an administrative integration task before mainline promotion.
 
-## 6. Next gate
+## 6. Next gates — operational vs product
 
-**G1 — T0_MAINNET_CUSTODY**
+**Operational next gate: `T0_WALLET_TOPUP` — ACTIVE / HUMAN / PROTECTED.**
 
-Owner: Opeyemi.
+`T0_FINAL_PRE_TRANSFER_REVALIDATION` is already PROVEN on execution head `4f7f3b254a29e6023d539a85e5b126a7f21e1955`.
 
-Before UI work, prove with a minimal contract on Arc mainnet:
+Automation must not move funds. After the external human top-up, the next machine action is only the read-only `POST_FUNDING_WALLET_RECEIPT` check, evidence recording, then STOP for separate deployment authorization.
 
-```
-real USDC
-→ contract custody
-→ configured payout
-→ remaining-funds refund
-```
+**Product-level gate: G1 — T0_MAINNET_CUSTODY — ACTIVE / NOT PROVEN.**
 
-Capture real transaction references and balances.
+Owner for contract/runtime work: Opeyemi.
+
+G1 still requires real Arc receipts for deploy → custody → configured payout → remaining-funds refund → completion, bound to the approved source/runtime.
 
 Do not claim the broader product is mainnet-proven merely because T0 succeeds. T0 proves only the custody/payment primitive.
 
@@ -177,12 +175,11 @@ Every meaningful PR must state whether it changes any gateway status. Scope/arch
 
 ### Current material gap
 
-Pre-Build Reality is currently **BLOCKED**, not PROVEN:
+Pre-Build Reality problem evidence is **PROVEN** via PR #8 and `docs/research/PRE-BUILD-REALITY-EVIDENCE.md`.
 
-- real external user/operator evidence is still missing;
-- a concrete external negative event with observable impact is still missing.
+That proof covers a real external operator problem, concrete negative events, and observable impact. It does **not** prove product demand or adoption.
 
-This does not undo the current Concept Lock, but it blocks promotion into DELIVER. T0 remains permitted as a DESIGN technical-risk spike.
+The separate `External User/Operator Product Evidence` gate remains **BLOCKED** because no external product trial/evidence exists yet. DELIVER also remains blocked by formal G0 and live product-depth/runtime gates. Do not conflate these gates.
 
 ## 12. Product Depth & Live Reality v1.2.1
 
@@ -478,8 +475,9 @@ backdated.
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 
-The current T0 spike may continue inside DESIGN even though Pre-Build Reality
-still blocks DELIVER.
+The current T0 spike may continue inside DESIGN. Pre-Build Reality problem
+evidence is PROVEN; DELIVER remains blocked by formal G0 plus live
+product-depth/runtime gates.
 
 ### Last genuinely proven state
 
@@ -540,8 +538,8 @@ change.
 ### Contradictions preserved explicitly
 
 1. Downstream code success does not retroactively prove G0.
-2. Pre-Build Reality remains blocked on external user/operator + concrete
-   negative-event evidence.
+2. Pre-Build Reality problem evidence is PROVEN in PR #8; External User/Operator
+   Product Evidence remains separately BLOCKED.
 3. T0 and integrated AssuranceVault are separate open PR stacks; T0 receipts
    cannot promote integrated product claims.
 4. The old T0 post-audit revalidation blocker is stale versus the later 40/40
@@ -549,19 +547,58 @@ change.
 5. Historical machine snapshots with `funding_authorized=false` remain true;
    the later human authorization is a separate protected decision.
 
-### Exact next gate
+### Exact next gate — corrected after final revalidation
 
-`T0_FINAL_PRE_TRANSFER_REVALIDATION`
+`T0_FINAL_PRE_TRANSFER_REVALIDATION` is **PROVEN** on execution head
+`4f7f3b254a29e6023d539a85e5b126a7f21e1955` with runs `36891632445` and
+`36891632622`.
 
-Required after the final reconciliation head:
+Operational next gate:
 
-- T0 tests and bounded quality preflight green;
-- wallet still EOA;
-- pending nonce still 0;
-- balance still 0;
-- fresh contingency peak <= 0.25 USDC;
-- destination address exact.
+`T0_WALLET_TOPUP` — **ACTIVE / HUMAN / PROTECTED**.
 
-If green, the next action is the already-authorized **human** transfer of
-0.50 USDC to the dedicated Arc wallet only. Contract deployment remains a
-separate protected action.
+After the external human action, automation performs only the read-only
+`POST_FUNDING_WALLET_RECEIPT` check, records the Evidence Graph receipt, and
+stops. Contract deployment remains a separate protected authorization.
+
+G1 remains **ACTIVE / NOT PROVEN**.
+
+
+## 34. Ambiguity resolution — canonical precedence
+
+This section supersedes older contradictory current-state prose without rewriting
+historical receipts.
+
+### State source
+
+- active state branch: `ops/t0-funding-readiness`
+- active state PR: **#44**
+- default branch `main`: bootstrap-only until formal G0 is merged
+- current branch head: resolve dynamically from PR #44
+
+### Head semantics
+
+- **execution evidence head:** `4f7f3b254a29e6023d539a85e5b126a7f21e1955`
+- **first state-recording commit after execution:** `90d79ee7d2f891366a9962af90f440768b4347e3`
+- later documentation-only commits do not become the execution evidence head unless executable T0 inputs change
+
+### Gate semantics
+
+- Pre-Build Reality: **PROVEN**
+- External User/Operator Product Evidence: **BLOCKED**
+- T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
+- operational next gate: **T0_WALLET_TOPUP**
+- G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
+- DELIVER: **BLOCKED**
+- Product Exploitation Loop: **NOT YET TRIGGERED**
+
+### Reading order
+
+1. `docs/internal/CANONICAL-STATE.yaml`
+2. `docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml`
+3. `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`
+4. this HANDOVER
+5. `docs/internal/REALITY-LEDGER.md`
+
+If an older section conflicts with the state above, treat the older statement as
+historical context, not current state.
