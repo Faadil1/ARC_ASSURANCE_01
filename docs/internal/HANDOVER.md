@@ -83,7 +83,7 @@ This does not block the already-approved DESIGN technical spike. It does block t
 
 ## 6. Next gates — operational vs product
 
-**Operational next gate: `T0_DEPLOYMENT_AUTHORIZATION` — ACTIVE / HUMAN / PROTECTED.**
+**Operational next gate: `T0_DEPLOYMENT_EXECUTION` — ACTIVE / HUMAN SIGNER / PROTECTED.**
 
 `T0_FINAL_PRE_TRANSFER_REVALIDATION` is already PROVEN on execution head `4f7f3b254a29e6023d539a85e5b126a7f21e1955`.
 
@@ -636,3 +636,27 @@ Result: `POST_FUNDING_WALLET_RECEIPT = PROVEN`.
 Next checkpoint: `T0_DEPLOYMENT_AUTHORIZATION` — HUMAN / PROTECTED / NOT YET GRANTED.
 
 No deployment or contract execution is authorized by the wallet-funding approval.
+
+
+## 37. T0 deployment authorization — 2026-10-01
+
+The human repo owner explicitly authorized the next protected checkpoint.
+
+Scope authorized:
+- deploy `PolicyCustody` once on Arc mainnet;
+- register the single configured T0 policy in that same deployment broadcast.
+
+Still not authorized:
+- contract funding;
+- payout;
+- refund;
+- complete;
+- any second/retry deployment without review.
+
+Public config is locked in:
+- `ops/t0-deployment-config.json`
+- `ops/t0-deployment-public.env`
+
+The signer remains `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`; the private key remains human-local only.
+
+Next: `T0_DEPLOYMENT_EXECUTION`. After deployment, capture receipts and STOP before any value-movement leg.
