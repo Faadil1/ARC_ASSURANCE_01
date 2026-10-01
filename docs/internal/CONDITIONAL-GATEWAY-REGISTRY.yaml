@@ -453,3 +453,22 @@ t0_public_wallet_readiness_gate:
     name: HUMAN_FUNDING_AUTHORIZATION
     candidate_amount_usdc: "0.50"
   rule: "Public-wallet readiness does not authorize funding."
+
+
+t0_human_funding_authorization_gate:
+  status: PROVEN
+  authorized_amount_usdc: "0.50"
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  scope: INITIAL_WALLET_TOPUP_ONLY
+  does_not_authorize:
+    - mainnet_contract_deploy
+    - contract_funding
+    - payout
+    - refund
+    - complete
+  final_pre_transfer_gate:
+    status: ACTIVE
+    requirements:
+      - "Fresh public-wallet readiness remains true."
+      - "Fresh contingency peak <= 0.25 USDC."
+      - "Destination address exact match."
