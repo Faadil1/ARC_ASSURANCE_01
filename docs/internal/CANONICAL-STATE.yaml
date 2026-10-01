@@ -2,7 +2,7 @@ project: ARC_ASSURANCE_01
 updated_at: "2026-10-01T18:58:00-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_DEPLOYMENT_AUTHORIZATION_BOUNDARY
+phase: ACTIVE_DESIGN_T0_DEPLOYMENT_EXECUTION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,13 +125,12 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_DEPLOYMENT_AUTHORIZATION
+  id: T0_DEPLOYMENT_EXECUTION
   status: ACTIVE
-  owner: HUMAN
+  owner: HUMAN_SIGNER
   protected_action: true
-  authorization_granted: false
-  prerequisite: "POST_FUNDING_WALLET_RECEIPT is PROVEN."
-  machine_boundary: "No deployment, createPolicy, contract funding, payout, refund or completion until separate explicit human authorization."
+  prerequisite: "T0_DEPLOYMENT_AUTHORIZATION is PROVEN."
+  machine_boundary: "Assistant may prepare and verify configuration, but the human-local signer must authorize/broadcast the deploy transaction. This authorization does not cover fund/payout/refund/complete."
 
 collaboration:
   faadil:
@@ -372,11 +371,12 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_DEPLOYMENT_AUTHORIZATION
+  exact_next_gate: T0_DEPLOYMENT_EXECUTION
   exact_next_action: >-
-    POST_FUNDING_WALLET_RECEIPT is proven. STOP until the human explicitly
-    authorizes mainnet contract deployment. No protected deployment or execution
-    action is authorized by prior wallet-funding approval.
+    Human deployment authorization is now explicit for deploy + policy registration
+    only. Prepare and revalidate the exact deployment configuration, then the
+    human-local signer may broadcast deploy --confirm. STOP after deployment receipt
+    capture; fund/payout/refund/complete remain separately unauthorized.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -443,7 +443,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_WALLET_TOPUP and POST_FUNDING_WALLET_RECEIPT are PROVEN. Operational next gate is T0_DEPLOYMENT_AUTHORIZATION; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
+  next_gate_rule: "T0_DEPLOYMENT_AUTHORIZATION is PROVEN for deploy + policy registration only. Operational next gate is T0_DEPLOYMENT_EXECUTION; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -559,3 +559,35 @@ t0_wallet_topup_execution_2026_10_01:
     - payout
     - refund
     - complete
+
+
+t0_deployment_authorization_2026_10_01:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorization_interpretation: "User explicitly said 'Ok allons y' at the deployment-authorization checkpoint."
+  authorized_scope:
+    - "Deploy PolicyCustody on Arc mainnet."
+    - "Register exactly one T0 policy in the deployment broadcast."
+  not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+    - any additional deployment
+  deployment_config:
+    artifact: ops/t0-deployment-config.json
+    public_env: ops/t0-deployment-public.env
+    authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    payout_recipient: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    fund_amount_usdc: "0.010"
+    unit_payout_usdc: "0.001"
+    expected_refund_usdc: "0.009"
+    expiry_utc: "2026-10-15T04:00:00Z"
+    truth_boundary: "Same-wallet payout proves configured payout mechanics, not payment to an independent external provider."
+  private_key_boundary: "Private key remains human-local and must never enter repo, CI, issue, PR, artifact, or chat."
+  next_gate:
+    id: T0_DEPLOYMENT_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
