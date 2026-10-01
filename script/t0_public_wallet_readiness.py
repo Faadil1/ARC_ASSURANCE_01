@@ -49,6 +49,15 @@ def inspect_public_wallet(rpc_url, address):
     )
     code = rpc_call(rpc_url, "eth_getCode", [address, "latest"])
 
+    is_eoa = code in ("0x", "0x0", "0x00")
+    is_fresh_nonce = pending_nonce == 0
+    is_zero_balance = balance == 0
+    prefunding_ready = (
+        is_eoa
+        and is_fresh_nonce
+        and is_zero_balance
+    )
+
     return {
         "schema": "ARC_ASSURANCE_T0_PUBLIC_WALLET_READINESS_V1",
         "chain_id": chain_id,
@@ -56,8 +65,15 @@ def inspect_public_wallet(rpc_url, address):
         "balance_wei": str(balance),
         "pending_nonce": pending_nonce,
         "code": code,
-        "is_eoa": code in ("0x", "0x0", "0x00"),
-        "is_fresh_nonce": pending_nonce == 0,
+        "is_eoa": is_eoa,
+        "is_fresh_nonce": is_fresh_nonce,
+        "is_zero_balance_before_funding": is_zero_balance,
+        "prefunding_ready": prefunding_ready,
+        "verdict": (
+            "PUBLIC_WALLET_READY_FOR_FUNDING_REVIEW"
+            if prefunding_ready
+            else "PUBLIC_WALLET_NOT_READY_FOR_FUNDING"
+        ),
         "safety": {
             "private_key_consumed": False,
             "transaction_signed": False,
@@ -79,4 +95,7 @@ if __name__ == "__main__":
             file=sys.stderr
         )
         raise SystemExit(2)
-    print(json.dumps(inspect_public_wallet(sys.argv[1], sys.argv[2]), indent=2))
+    result = inspect_public_wallet(sys.argv[1], sys.argv[2])
+    print(json.dumps(result, indent=2))
+    if not result["prefunding_ready"]:
+        raise SystemExit(1)
