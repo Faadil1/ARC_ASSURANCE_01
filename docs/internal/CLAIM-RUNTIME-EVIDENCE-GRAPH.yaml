@@ -1,0 +1,134 @@
+version: 1.0.0
+template: CLAIM_RUNTIME_EVIDENCE_GRAPH
+policy: EVIDENCE-GRAPH-POLICY.yaml
+project: ARC_ASSURANCE_01
+updated_at: "2026-10-01T12:12:00-04:00"
+
+claims:
+  - claim_id: T0_LOCAL_REVALIDATED
+    statement: "The T0 PolicyCustody path is locally build/test verified under the pinned Arc Foundry workflow."
+    evidence_class: LOCAL
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_LOCAL_REVALIDATION]
+  - claim_id: T0_READONLY_PREFUNDING_STATE
+    statement: "The dedicated Arc wallet and fee envelope passed the latest read-only pre-funding checks."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_READONLY_PREFUNDING]
+  - claim_id: T0_MAINNET_CUSTODY
+    statement: "Real Arc deployment and deploy→fund→payout→refund→complete receipts are bound to the approved T0 source."
+    evidence_class: NOT_IMPLEMENTED
+    truth_state: UNKNOWN
+    graph_status: MISSING
+    scenario_ids: [SC_T0_MAINNET_SUCCESS]
+  - claim_id: INTEGRATED_LOCAL_LOAD_BEARING
+    statement: "The separate integrated AssuranceVault line locally demonstrates load-bearing PASS/FAIL/breaker behavior."
+    evidence_class: LOCAL
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_INTEGRATED_LOCAL]
+  - claim_id: INTEGRATED_LIVE_FINANCIAL_CAUSALITY
+    statement: "The integrated vault is live on Arc and PASS→pay, FAIL→no-pay, breaker→refund are proven by live receipts."
+    evidence_class: NOT_IMPLEMENTED
+    truth_state: UNKNOWN
+    graph_status: MISSING
+    scenario_ids: [SC_INTEGRATED_LIVE]
+
+scenarios:
+  - scenario_id: SC_T0_LOCAL_REVALIDATION
+    scenario_type: SUCCESS
+    preconditions: ["Pinned Arc Foundry", "No broadcast"]
+    expected_consequence: "Build and 40/40 tests pass."
+    runtime_execution_ids: [RUN_T0_LOCAL]
+  - scenario_id: SC_T0_READONLY_PREFUNDING
+    scenario_type: BOUNDARY
+    preconditions: ["Arc chain 5042", "Read-only public chain checks"]
+    expected_consequence: "Wallet state and contingency fee budget remain within configured boundary."
+    runtime_execution_ids: [RUN_T0_READONLY]
+  - scenario_id: SC_T0_MAINNET_SUCCESS
+    scenario_type: SUCCESS
+    preconditions: ["Wallet funded", "Separate deployment authorization"]
+    expected_consequence: "Real Arc deploy/fund/payout/refund/complete receipts."
+    runtime_execution_ids: []
+  - scenario_id: SC_INTEGRATED_LOCAL
+    scenario_type: SUCCESS
+    preconditions: ["Integrated branch clean-room build"]
+    expected_consequence: "Local PASS/FAIL/breaker/recovery tests pass."
+    runtime_execution_ids: [RUN_INTEGRATED_LOCAL]
+  - scenario_id: SC_INTEGRATED_LIVE
+    scenario_type: SUCCESS
+    preconditions: ["Integrated vault deployed on Arc"]
+    expected_consequence: "Live financial causality and recovery are independently reconstructed."
+    runtime_execution_ids: []
+
+runtime_executions:
+  - execution_id: RUN_T0_LOCAL
+    runtime: "GitHub Actions / Arc Foundry local EVM"
+    observed_at: "2026-10-01T16:10:00Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_FOUNDRY_LOCAL]
+    receipt_ids: [RCPT_T0_REVALIDATION]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 387d786de48ac4c544ea5cc977a45e70e7ba2eb4
+    deployment_id: none
+  - execution_id: RUN_T0_READONLY
+    runtime: "Arc mainnet JSON-RPC read-only"
+    observed_at: "2026-10-01T16:10:05Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_READONLY]
+    receipt_ids: [RCPT_T0_REVALIDATION, RCPT_T0_FEE]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 387d786de48ac4c544ea5cc977a45e70e7ba2eb4
+    deployment_id: none
+  - execution_id: RUN_INTEGRATED_LOCAL
+    runtime: "GitHub Actions clean-room / local EVM"
+    observed_at: "2026-09-30"
+    result: PASS
+    dependency_ids: [DEP_INTEGRATED_LOCAL]
+    receipt_ids: [RCPT_INTEGRATED_AUDIT]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: db69aef45af9ef1bf6a1efb90c9f69bc199bd537
+    deployment_id: none
+
+dependencies:
+  - dependency_id: DEP_ARC_FOUNDRY_LOCAL
+    role: "Pinned T0 compile/test runtime"
+    live_or_stub: LOCAL
+    load_bearing: false
+  - dependency_id: DEP_ARC_MAINNET_READONLY
+    role: "Public chain state observation"
+    live_or_stub: LIVE
+    load_bearing: false
+  - dependency_id: DEP_ARC_MAINNET_SETTLEMENT
+    role: "Future live custody and settlement"
+    live_or_stub: LIVE
+    load_bearing: true
+  - dependency_id: DEP_INTEGRATED_LOCAL
+    role: "Integrated local verification"
+    live_or_stub: LOCAL
+    load_bearing: false
+
+receipts:
+  - receipt_id: RCPT_T0_REVALIDATION
+    artifact_pointer: "GitHub Actions run 36889901531"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+  - receipt_id: RCPT_T0_FEE
+    artifact_pointer: "GitHub Actions run 36889901547"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+  - receipt_id: RCPT_INTEGRATED_AUDIT
+    artifact_pointer: "PR #30 / GitHub Actions run 36671284825"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+
+deployments: []
+
+unresolved_edges:
+  - "T0_MAINNET_CUSTODY: live runtime execution missing."
+  - "T0_MAINNET_CUSTODY: live receipts missing."
+  - "T0_MAINNET_CUSTODY: commit→deployment binding missing."
+  - "INTEGRATED_LIVE_FINANCIAL_CAUSALITY: live runtime/receipt/deployment edges missing."
+terminal_claims_allowed: false
