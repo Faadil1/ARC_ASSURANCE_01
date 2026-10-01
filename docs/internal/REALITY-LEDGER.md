@@ -259,3 +259,19 @@ execution evidence unless executable T0 inputs change.
 ### CURRENT BOUNDARY
 
 `POST_FUNDING_WALLET_RECEIPT = ACTIVE` until the transaction reference is bound to the funded-wallet state. After that, STOP for a separate deployment authorization.
+
+
+## Post-funding Arc receipt closure — 2026-10-01
+
+### OBSERVED
+
+- Transaction hash: `0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d`.
+- Wallet UI reports Confirmed on Arc, 0.51 USDC sent to the dedicated T0 wallet.
+- Arc RPC verification succeeded in GitHub Actions run `36938737314`.
+- Companion read-only and T0 revalidation runs `36938737292` and `36938737258` also succeeded on the same head `4a81dd80edb9e4408b04f70d73ebe43163f34d5f`.
+
+### CONSEQUENCE
+
+`POST_FUNDING_WALLET_RECEIPT = PROVEN`.
+
+The next state is `T0_DEPLOYMENT_AUTHORIZATION`. No deployment is authorized yet.
