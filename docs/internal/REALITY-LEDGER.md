@@ -150,3 +150,18 @@ The public-wallet gate is PROVEN.
 The next unresolved gate is explicit human funding authorization.
 
 No private key, signature, broadcast or funds were used to obtain this proof.
+
+
+## Human funding authorization — 2026-10-01
+
+### OBSERVED
+
+- Faadil explicitly authorized an initial **0.50 USDC** top-up to the dedicated Arc wallet:
+  `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`.
+- The authorization is limited to the wallet top-up.
+- It does not authorize deployment or any contract execution.
+- A fresh exact-head wallet/fee validation remains required immediately before transfer.
+
+### PROTECTED BOUNDARY
+
+Private key and seed phrase remain human-local and must not be shared.
