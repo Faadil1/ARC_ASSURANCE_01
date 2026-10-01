@@ -430,3 +430,26 @@ t0_g1_mainnet_custody_gate:
   real_completion: false
   runtime_commit_binding: false
   promotion_condition: "Real Arc receipts for deploy/fund/payout/refund/complete bound to the approved exact commit."
+
+
+t0_public_wallet_readiness_gate:
+  status: PROVEN
+  proof:
+    wallet_address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    exact_head: 9b773f21163f5e6e85060b340a068dedcc551dcd
+    workflow_run: 36845314961
+    chain_id: 5042
+    is_eoa: true
+    pending_nonce: 0
+    balance_wei: "0"
+    bytecode: "0x"
+    prefunding_ready: true
+  fresh_fee_snapshot:
+    block_number: 23690527
+    contingency_peak_required_usdc: "0.16158948432030018"
+    five_usdc_ceiling_sufficient: true
+  next_gate:
+    status: BLOCKED
+    name: HUMAN_FUNDING_AUTHORIZATION
+    candidate_amount_usdc: "0.50"
+  rule: "Public-wallet readiness does not authorize funding."
