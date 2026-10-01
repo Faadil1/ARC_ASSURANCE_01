@@ -123,3 +123,30 @@ A screenshot, replay, static fixture, or recorded transaction is evidence only f
 Create a dedicated Arc mainnet EOA locally and provide only its public address for read-only inspection.
 
 Do not provide the private key or seed phrase.
+
+
+## Public wallet readiness proof — 2026-10-01
+
+### OBSERVED
+
+- Dedicated public address checked read-only on Arc:
+  `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`.
+- Arc chain id returned 5042.
+- `eth_getCode` returned `0x`; the address is an EOA.
+- Pending nonce returned 0.
+- Native Arc balance returned 0.
+- Wallet readiness verdict:
+  `PUBLIC_WALLET_READY_FOR_FUNDING_REVIEW`.
+- The same workflow refreshed fees at block 23,690,527.
+- Observed gas price was 20,000,000,570 wei/gas.
+- Conservative contingency peak was 0.16158948432030018 USDC.
+- The 0.50 USDC candidate envelope passed numerical review.
+- CI still records `funding_authorized = false`.
+
+### CONSEQUENCE
+
+The public-wallet gate is PROVEN.
+
+The next unresolved gate is explicit human funding authorization.
+
+No private key, signature, broadcast or funds were used to obtain this proof.
