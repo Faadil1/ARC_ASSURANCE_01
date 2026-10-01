@@ -1,0 +1,67 @@
+version: 0.1.1
+manifest: BUILD_LIFECYCLE_COVERAGE
+status: ACTIVE_RECONCILED
+project: ARC_ASSURANCE_01
+project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
+repository: Faadil1/ARC_ASSURANCE_01
+current_stage: DESIGN__T0_PREMAINNET
+exact_next_gate: T0_FINAL_PRE_TRANSFER_REVALIDATION
+exact_next_action: "Re-run exact-head T0 validation after reconciliation."
+last_updated: "2026-10-01T12:10:00-04:00"
+bootstrap:
+  faadil_system_router_activated: true
+  project_profile_resolved: true
+  lifecycle_manifest_created_at_first_material_build_touch: false
+  chat_memory_used_as_only_gate_source: false
+capabilities:
+  - capability: faadil_system_router
+    owner: faadil-agent-system
+    status: RECONSTRUCTED_FROM_CANONICAL_EVIDENCE
+    evidence_pointer: "Faadil1/faadil-agent-system@main"
+  - capability: problem_worthiness_or_problem_reality
+    owner: project
+    status: MISSING
+    evidence_pointer: "docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml"
+  - capability: negative_event_gate
+    owner: project
+    status: MISSING
+    evidence_pointer: "docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml"
+  - capability: living_PRD
+    owner: Faadil
+    status: SATISFIED
+    evidence_pointer: product/PRD.md
+  - capability: evidence_and_evaluation
+    owner: project
+    status: SATISFIED
+    evidence_pointer: docs/internal/REALITY-LEDGER.md
+  - capability: engineering_quality_assurance
+    owner: project
+    status: SATISFIED
+    evidence_pointer: "T0 revalidation workflow 36889901531"
+  - capability: design_experience_assurance
+    owner: trace
+    status: NOT_APPLICABLE_WITH_REASON
+    not_applicable_reason: "No evaluator-facing product UI in current T0 transition."
+  - capability: competitive_collision
+    owner: hackathon_opportunity_intelligence
+    status: SATISFIED
+    evidence_pointer: "Competitive_Novelty_Kill = PROVEN"
+  - capability: terminal_assurance
+    owner: project_finisher
+    status: NOT_APPLICABLE_WITH_REASON
+    not_applicable_reason: "Not at terminal readiness."
+product_depth_and_live_reality:
+  applicable: true
+  live_core_loop: MISSING
+  load_bearing_integration: MISSING
+  real_consequence: MISSING
+  real_user_surface: MISSING
+  external_user_or_operator_evidence: MISSING
+  reality_ledger: SATISFIED
+  post_vertical_slice_depth_gap_review: NOT_APPLICABLE_WITH_REASON
+missing:
+  - "Formal G0 PRD_READY remains unproven."
+  - "External user/operator evidence."
+  - "Concrete external negative event."
+  - "Real Arc G1 receipts."
+terminal_completeness_allowed: false
