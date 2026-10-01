@@ -1,6 +1,6 @@
 # ARC_ASSURANCE_01 — Reality Ledger
 
-Updated: 2026-09-29
+Updated: 2026-10-01
 
 This ledger records what is **OBSERVED**, **INFERRED**, or **UNKNOWN**. It is not a marketing document.
 
@@ -175,3 +175,65 @@ Current reconciliation details are recorded in
 `docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml`.
 
 Historical evidence classes remain unchanged.
+
+
+## Pre-Build Reality / product-evidence separation — 2026-10-01
+
+### OBSERVED
+
+PR #8 and `docs/research/PRE-BUILD-REALITY-EVIDENCE.md` contain external
+problem evidence covering:
+
+- a real external operator problem;
+- concrete negative events;
+- observable financial/operational impact.
+
+Therefore **Pre-Build Reality = PROVEN** for problem reality.
+
+### STILL UNKNOWN / BLOCKED
+
+This does not prove that an external user has used ARC_ASSURANCE_01, that a real
+provider accepts the mechanism, product demand, willingness to pay, adoption, or
+retention.
+
+Therefore **External User/Operator Product Evidence = BLOCKED**.
+
+These two gates must not be collapsed into one another.
+
+
+## Final pre-transfer revalidation — 2026-10-01
+
+### OBSERVED
+
+Execution evidence head:
+
+`4f7f3b254a29e6023d539a85e5b126a7f21e1955`
+
+GitHub Actions:
+
+- T0 Revalidation `36891632445` — SUCCESS — 40/40 tests;
+- T0 Read-Only Fee Budget `36891632622` — SUCCESS.
+
+The run observed the dedicated wallet as an EOA with pending nonce 0 and balance
+0 before top-up, and the fresh contingency estimate remained below the configured
+0.25 USDC threshold.
+
+### CONSEQUENCE
+
+`T0_FINAL_PRE_TRANSFER_REVALIDATION = PROVEN`.
+
+Operational next gate:
+
+`T0_WALLET_TOPUP = ACTIVE / HUMAN / PROTECTED`.
+
+Automation must not move value. After the external human action, only the
+read-only `POST_FUNDING_WALLET_RECEIPT` check may run before stopping for a
+separate deployment authorization.
+
+### HEAD BOUNDARY
+
+The execution evidence head is not the same thing as the mutable branch head.
+The first state-recording commit after the proven execution was
+`90d79ee7d2f891366a9962af90f440768b4347e3`. Current branch head must be
+resolved dynamically from PR #44. Documentation-only commits do not become
+execution evidence unless executable T0 inputs change.
