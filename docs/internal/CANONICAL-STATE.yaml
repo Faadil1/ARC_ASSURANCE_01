@@ -322,3 +322,20 @@ t0_public_wallet_readiness_2026_10_01:
   protected_next_action:
     - "Explicit human approval required before sending 0.50 native USDC to the dedicated wallet."
     - "Private key / seed phrase must remain local to the human wallet."
+
+
+t0_human_funding_authorization_2026_10_01:
+  status: PROVEN
+  authorized_by: human_repo_owner
+  authorized_amount_usdc: "0.50"
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  hard_ceiling_usdc: "5.00"
+  authorization_scope:
+    - "Fund dedicated T0 Arc wallet with 0.50 native USDC only."
+    - "Does not authorize contract deployment."
+    - "Does not authorize execution/payout/refund transactions."
+  pre_transfer_conditions:
+    - "Fresh read-only Arc wallet readiness must still be green."
+    - "Fresh contingency peak must remain <= 0.25 USDC."
+    - "Destination address must match exactly."
+  private_key_boundary: "Never shared; human-local only."
