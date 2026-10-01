@@ -1,8 +1,8 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-01T16:52:00-04:00"
+updated_at: "2026-10-01T18:58:00-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_WALLET_TOPUP_BOUNDARY
+phase: ACTIVE_DESIGN_T0_POST_FUNDING_RECEIPT
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,12 +125,16 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_WALLET_TOPUP
+  id: POST_FUNDING_WALLET_RECEIPT
   status: ACTIVE
-  owner: HUMAN
-  protected_action: true
-  prerequisite: "T0_FINAL_PRE_TRANSFER_REVALIDATION is PROVEN on execution head 4f7f3b254a29e6023d539a85e5b126a7f21e1955."
-  machine_boundary: "Automation must not move funds. After the external human action, only a read-only POST_FUNDING_WALLET_RECEIPT check is allowed before a separate deployment authorization."
+  owner: ASSISTANT_READ_ONLY_PLUS_HUMAN_TX_REFERENCE
+  protected_action: false
+  completed_subchecks:
+    - "Live Arc wallet-state verification via workflows 36938183550 and 36938183671."
+    - "EOA true, pending nonce 0, balance >= 0.50 USDC, balance <= 5.00 USDC."
+  remaining:
+    - "Capture the top-up transaction reference/hash so funding causality is bound to a concrete Arc receipt."
+  machine_boundary: "Read-only verification only. No deployment or contract execution is authorized."
 
 collaboration:
   faadil:
@@ -371,11 +375,11 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_WALLET_TOPUP
+  exact_next_gate: POST_FUNDING_WALLET_RECEIPT
   exact_next_action: >-
-    Await the already-authorized external human wallet top-up only. Automation
-    performs no value movement. After the external action, run only the read-only
-    POST_FUNDING_WALLET_RECEIPT check, record evidence, then stop for separate deployment authorization.
+    Wallet funding has occurred. Read-only Arc verification is green; capture the
+    concrete top-up transaction reference/hash, bind it to the funded-wallet state,
+    record evidence, then stop for separate deployment authorization.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -418,6 +422,9 @@ system_control_plane_reconciliation_2026_10_01:
     DELIVER: "BLOCKED by G0 plus live product-depth/runtime gates."
   protected_action:
     wallet_topup_authorized_usdc: "0.50"
+    wallet_topup_observed_ui_usdc: "0.51"
+    authorization_variance_usdc: "+0.01"
+    variance_rule: "Observed execution exceeded the preauthorized amount by 0.01 USDC; record truthfully and do not retroactively describe the excess as preauthorized."
     authorization_scope: INITIAL_WALLET_TOPUP_ONLY
     deployment_authorized: false
     contract_execution_authorized: false
@@ -439,7 +446,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "Operational next gate is T0_WALLET_TOPUP; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
+  next_gate_rule: "T0_WALLET_TOPUP is executed. Operational next gate is POST_FUNDING_WALLET_RECEIPT until the transaction reference is captured; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -485,3 +492,41 @@ t0_final_pre_transfer_revalidation_2026_10_01:
   truth_boundary:
     - "T0_FINAL_PRE_TRANSFER_REVALIDATION proves readiness only."
     - "G1 T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
+
+
+t0_wallet_topup_execution_2026_10_01:
+  status: PROVEN_EXECUTED_WITH_VARIANCE
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  network: ARC_MAINNET
+  chain_id: 5042
+  authorized_amount_usdc: "0.50"
+  ui_observed_balance_after_topup_usdc: "0.51"
+  authorization_variance_usdc: "+0.01"
+  variance_interpretation: "The actual observed funded balance is 0.01 USDC above the preauthorized amount. This is recorded as an execution variance, not retroactive authorization."
+  live_readonly_proof:
+    workflow_head: 220a61576cab23665483d67ebca25e44590b35ac
+    t0_revalidation_run: 36938183550
+    readonly_fee_budget_run: 36938183671
+    result: SUCCESS
+    proves:
+      - "Arc chain 5042 reachable"
+      - "wallet is EOA"
+      - "pending nonce is 0"
+      - "native USDC balance >= 0.50"
+      - "native USDC balance <= 5.00 hard ceiling"
+    does_not_yet_prove:
+      - "top-up transaction hash / source transaction"
+      - "contract deployment"
+      - "contract custody"
+      - "payout / refund / complete"
+  post_funding_wallet_receipt:
+    status: ACTIVE
+    live_wallet_state: PROVEN
+    transaction_reference: MISSING
+  still_not_authorized:
+    - contract_deploy
+    - createPolicy
+    - contract_fund
+    - payout
+    - refund
+    - complete
