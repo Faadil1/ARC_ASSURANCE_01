@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "project": "ARC_ASSURANCE_01 / T0 PolicyCustody",
+  "repository": "Faadil1/ARC_ASSURANCE_01",
+  "commit": "387d786de48ac4c544ea5cc977a45e70e7ba2eb4",
+  "activation_reason": "Active code-bearing project discovered at System Control Plane reconciliation without a current Engineering Quality receipt; bounded backfill required before the next deployment-sensitive transition.",
+  "provider": {
+    "name": "Pinned Arc Foundry plus native Bash/Python checks and bounded manual security review",
+    "version": "arc-foundry v0.8.0-2; workflow 36889901531",
+    "authority": "NONE",
+    "status_json_pointer": null
+  },
+  "scan_scope": {
+    "paths": [
+      "src/PolicyCustody.sol",
+      "test/PolicyCustody.t.sol",
+      "script/t0-mainnet-proof.sh",
+      "script/parse_t0_gas_report.py",
+      "script/t0_readonly_fee_budget.py",
+      "script/validate_t0_funding_envelope.py",
+      "script/t0_public_wallet_readiness.py"
+    ],
+    "excluded_paths": [
+      "separate integrated AssuranceVault PR stack",
+      "generated build artifacts",
+      "unrelated documentation"
+    ],
+    "languages": [
+      "Solidity",
+      "Bash",
+      "Python"
+    ],
+    "language_policy": null
+  },
+  "quality_signals": {
+    "baseline": {
+      "strict_score": null,
+      "objective_score": null,
+      "open_findings": 2
+    },
+    "after": {
+      "strict_score": null,
+      "objective_score": null,
+      "open_findings": 2
+    },
+    "score_interpretation": "SIGNAL_NOT_TERMINAL_AUTHORITY"
+  },
+  "material_findings_fixed": [
+    {
+      "id": "T0-FIX-001",
+      "class": "security/custody-isolation",
+      "severity": "high",
+      "summary": "Caller-directed payout and cross-policy pooled-balance drain risks were removed in PolicyCustody.",
+      "evidence_pointer": "PR #6 and docs/internal/HANDOVER.md"
+    },
+    {
+      "id": "T0-FIX-002",
+      "class": "recovery",
+      "severity": "medium",
+      "summary": "Expired funded-policy recovery was added and covered by tests.",
+      "evidence_pointer": "PR #6 cancelExpiredAndRefund tests"
+    },
+    {
+      "id": "T0-FIX-003",
+      "class": "deployment-safety",
+      "severity": "high",
+      "summary": "Explicit broadcaster binding, protected deploy/execute separation and fail-closed mainnet confirmations were added.",
+      "evidence_pointer": "script/DeployT0.s.sol and script/t0-mainnet-proof.sh"
+    }
+  ],
+  "unresolved_findings": [
+    {
+      "id": "T0-DEBT-001",
+      "class": "formatting",
+      "severity": "low",
+      "summary": "forge fmt reports formatting drift in existing Solidity/test source.",
+      "evidence_pointer": "T0 Revalidation run 36889663221",
+      "disposition": "ACCEPTED_DEBT",
+      "reason": "Formatting-only rewrite is deferred immediately before protected mainnet T0 because behavior is already regression-tested and the change would add review churn without material risk reduction.",
+      "next_gate": "Post-T0 cleanup or next material code touch"
+    },
+    {
+      "id": "T0-DEBT-002",
+      "class": "static-analysis-depth",
+      "severity": "low",
+      "summary": "No separate external Solidity-analyzer receipt exists for this narrow T0 path.",
+      "evidence_pointer": "T0 Revalidation run 36889901531",
+      "disposition": "ACCEPTED_DEBT",
+      "reason": "Bounded exposure, pinned compiler/build, 40/40 tests, prior manual security hardening and fail-closed scripts are accepted for the T0 technical spike. Re-evaluate for the integrated product contract.",
+      "next_gate": "Integrated AssuranceVault Engineering Quality backfill"
+    }
+  ],
+  "regression_verification": {
+    "functional_tests": "PASS",
+    "build_or_typecheck": "PASS",
+    "lint_or_static_analysis": "UNKNOWN",
+    "behavior_receipts_preserved": "PASS",
+    "notes": "40/40 Arc Foundry tests pass. Bash syntax and Python byte-compile checks pass. Formatter drift is accepted debt; no external Solidity analyzer was run in this bounded T0 backfill."
+  },
+  "protected_contracts": {
+    "public_api": "PRESERVED",
+    "evidence_schema": "PRESERVED",
+    "deterministic_scenario": "PRESERVED",
+    "security_controls": "PRESERVED",
+    "other": [
+      "No product-scope change was made for a quality score.",
+      "No protected human-action boundary was relaxed."
+    ]
+  },
+  "scope_protection": {
+    "product_scope_expanded_for_score": false,
+    "broad_rewrite_during_freeze": false,
+    "exceptions": []
+  },
+  "evidence_pointers": [
+    "GitHub Actions run 36889901531",
+    "GitHub Actions artifact 11175404159",
+    "PR #6",
+    "docs/internal/HANDOVER.md",
+    "docs/internal/REALITY-LEDGER.md"
+  ],
+  "verdict": "PASS_WITH_ACCEPTED_DEBT",
+  "verdict_reason": "Current T0 deployment-sensitive path passes bounded native quality/regression checks. Remaining debt is low-risk and explicitly scoped; it does not upgrade T0 to live or authorize deployment."
+}
