@@ -660,3 +660,21 @@ Public config is locked in:
 The signer remains `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`; the private key remains human-local only.
 
 Next: `T0_DEPLOYMENT_EXECUTION`. After deployment, capture receipts and STOP before any value-movement leg.
+
+
+## 38. T0 deployment readiness — PROVEN
+
+Exact readiness head: `bface52ed8611ebc9e4e09f09613230985086d00`.
+
+All green:
+- Deployment Readiness `36939576285`
+- T0 Revalidation `36939576194`
+- Read-Only Fee Budget `36939576189`
+- Post-Funding Receipt `36939576310`
+
+The next action is the human-local signing/broadcast of
+`./script/t0-mainnet-proof.sh deploy --confirm`.
+
+This authorization covers deployment + the one configured policy registration only.
+STOP immediately after deployment evidence capture; contract funding and the
+payout/refund/complete leg remain unauthorized.
