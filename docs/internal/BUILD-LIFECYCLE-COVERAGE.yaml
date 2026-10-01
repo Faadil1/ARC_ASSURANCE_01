@@ -4,7 +4,7 @@ status: ACTIVE_RECONCILED_POST_REVALIDATION
 project: ARC_ASSURANCE_01
 project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
 repository: Faadil1/ARC_ASSURANCE_01
-current_stage: DESIGN__T0_PREMAINNET
+current_stage: DESIGN__T0_WALLET_TOPUP_BOUNDARY
 exact_next_gate: T0_WALLET_TOPUP
 exact_next_action: "Await the already-authorized external human wallet top-up; automation performs no value movement. Afterward run only POST_FUNDING_WALLET_RECEIPT read-only verification and stop for separate deployment authorization."
 last_updated: "2026-10-01T16:52:00-04:00"
