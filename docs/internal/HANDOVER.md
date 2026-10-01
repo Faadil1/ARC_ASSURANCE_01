@@ -83,11 +83,11 @@ This does not block the already-approved DESIGN technical spike. It does block t
 
 ## 6. Next gates — operational vs product
 
-**Operational next gate: `POST_FUNDING_WALLET_RECEIPT` — ACTIVE.**
+**Operational next gate: `T0_DEPLOYMENT_AUTHORIZATION` — ACTIVE / HUMAN / PROTECTED.**
 
 `T0_FINAL_PRE_TRANSFER_REVALIDATION` is already PROVEN on execution head `4f7f3b254a29e6023d539a85e5b126a7f21e1955`.
 
-The wallet top-up has now been executed. Read-only Arc verification is green on workflows `36938183550` and `36938183671`. The remaining receipt task is to capture the concrete top-up transaction hash/reference, bind it to the funded-wallet state, then STOP for separate deployment authorization.
+The wallet top-up and POST_FUNDING_WALLET_RECEIPT are now PROVEN. The concrete Arc transaction hash is bound to the funded-wallet state. STOP until a separate explicit human deployment authorization is given.
 
 **Product-level gate: G1 — T0_MAINNET_CUSTODY — ACTIVE / NOT PROVEN.**
 
@@ -585,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **POST_FUNDING_WALLET_RECEIPT**
+- operational next gate: **T0_DEPLOYMENT_AUTHORIZATION**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -618,3 +618,21 @@ Independent read-only verification on Arc succeeded after funding:
 Still missing for the post-funding receipt: the concrete Arc transaction hash/reference for the top-up.
 
 No deployment, createPolicy, contract funding, payout, refund or completion is authorized by this state transition.
+
+
+## 36. Post-funding receipt closure — 2026-10-01
+
+Transaction:
+`0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d`
+
+GitHub Actions verification on Arc:
+- Post-Funding Receipt run `36938737314` — SUCCESS
+- Read-Only Fee Budget run `36938737292` — SUCCESS
+- T0 Revalidation run `36938737258` — SUCCESS
+- verification head `4a81dd80edb9e4408b04f70d73ebe43163f34d5f`
+
+Result: `POST_FUNDING_WALLET_RECEIPT = PROVEN`.
+
+Next checkpoint: `T0_DEPLOYMENT_AUTHORIZATION` — HUMAN / PROTECTED / NOT YET GRANTED.
+
+No deployment or contract execution is authorized by the wallet-funding approval.
