@@ -1,0 +1,62 @@
+name: T0 Post-Funding Receipt
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Syntax check
+        run: python3 -m py_compile script/t0_verify_topup_receipt.py
+
+      - name: Verify Arc top-up transaction and funded wallet
+        run: |
+          python3 script/t0_verify_topup_receipt.py \
+            "$ARC_MAINNET_RPC_URL" \
+            ops/t0-topup-receipt-input.json \
+            | tee t0-post-funding-receipt.json
+
+      - name: Summarise
+        run: |
+          {
+            echo "## T0 Post-Funding Receipt"
+            echo ""
+            python3 - <<'PY'
+          import json
+          with open("t0-post-funding-receipt.json", "r", encoding="utf-8") as f:
+              d = json.load(f)
+          print(f"- Transaction: `{d['transaction_hash']}`")
+          print(f"- Chain ID: `{d['chain_id']}`")
+          print(f"- Status: `{d['transaction_status']}`")
+          print(f"- Block: `{d['block_number']}`")
+          print(f"- To: `{d['to']}`")
+          print(f"- Value: `{d['value_usdc_native']} USDC`")
+          print(f"- Wallet balance: `{d['wallet_balance_usdc_native']} USDC`")
+          print(f"- Pending nonce: `{d['wallet_pending_nonce']}`")
+          print(f"- EOA: `{d['wallet_is_eoa']}`")
+          print(f"- Receipt verified: `{d['topup_receipt_verified']}`")
+          PY
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload receipt
+        uses: actions/upload-artifact@v5
+        with:
+          name: t0-post-funding-receipt-${{ github.event.pull_request.head.sha || github.sha }}
+          path: t0-post-funding-receipt.json
+          if-no-files-found: error
+          retention-days: 90
