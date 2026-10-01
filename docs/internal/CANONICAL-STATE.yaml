@@ -2,7 +2,7 @@ project: ARC_ASSURANCE_01
 updated_at: "2026-10-01T18:58:00-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_POST_FUNDING_RECEIPT
+phase: ACTIVE_DESIGN_T0_DEPLOYMENT_AUTHORIZATION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,16 +125,13 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: POST_FUNDING_WALLET_RECEIPT
+  id: T0_DEPLOYMENT_AUTHORIZATION
   status: ACTIVE
-  owner: ASSISTANT_READ_ONLY_PLUS_HUMAN_TX_REFERENCE
-  protected_action: false
-  completed_subchecks:
-    - "Live Arc wallet-state verification via workflows 36938183550 and 36938183671."
-    - "EOA true, pending nonce 0, balance >= 0.50 USDC, balance <= 5.00 USDC."
-  remaining:
-    - "Capture the top-up transaction reference/hash so funding causality is bound to a concrete Arc receipt."
-  machine_boundary: "Read-only verification only. No deployment or contract execution is authorized."
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  prerequisite: "POST_FUNDING_WALLET_RECEIPT is PROVEN."
+  machine_boundary: "No deployment, createPolicy, contract funding, payout, refund or completion until separate explicit human authorization."
 
 collaboration:
   faadil:
@@ -375,11 +372,11 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: POST_FUNDING_WALLET_RECEIPT
+  exact_next_gate: T0_DEPLOYMENT_AUTHORIZATION
   exact_next_action: >-
-    Wallet funding has occurred. Read-only Arc verification is green; capture the
-    concrete top-up transaction reference/hash, bind it to the funded-wallet state,
-    record evidence, then stop for separate deployment authorization.
+    POST_FUNDING_WALLET_RECEIPT is proven. STOP until the human explicitly
+    authorizes mainnet contract deployment. No protected deployment or execution
+    action is authorized by prior wallet-funding approval.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -446,7 +443,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_WALLET_TOPUP is executed. Operational next gate is POST_FUNDING_WALLET_RECEIPT until the transaction reference is captured; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
+  next_gate_rule: "T0_WALLET_TOPUP and POST_FUNDING_WALLET_RECEIPT are PROVEN. Operational next gate is T0_DEPLOYMENT_AUTHORIZATION; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -489,6 +486,35 @@ t0_final_pre_transfer_revalidation_2026_10_01:
     - payout
     - refund
     - complete
+
+
+t0_post_funding_wallet_receipt_2026_10_01:
+  status: PROVEN
+  transaction_hash: "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d"
+  user_wallet_ui:
+    status: CONFIRMED
+    network: ARC
+    sent_amount_usdc: "0.51"
+    destination: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  rpc_verification:
+    workflow_head: 4a81dd80edb9e4408b04f70d73ebe43163f34d5f
+    post_funding_receipt_run: 36938737314
+    readonly_fee_budget_run: 36938737292
+    t0_revalidation_run: 36938737258
+    result: SUCCESS
+    artifact_digest: "sha256:151cc1fb42ef22613c18b203cdf0a9dc48797d78b09b3afaacafd2753d7d146e"
+    verified:
+      - "transaction exists on Arc mainnet"
+      - "receipt status successful"
+      - "destination matches dedicated T0 wallet"
+      - "native USDC value matches 0.51"
+      - "wallet remains EOA"
+      - "wallet balance remains within hard ceiling"
+  next_gate:
+    id: T0_DEPLOYMENT_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    authorization_granted: false
   truth_boundary:
     - "T0_FINAL_PRE_TRANSFER_REVALIDATION proves readiness only."
     - "G1 T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
@@ -520,9 +546,12 @@ t0_wallet_topup_execution_2026_10_01:
       - "contract custody"
       - "payout / refund / complete"
   post_funding_wallet_receipt:
-    status: ACTIVE
+    status: PROVEN
     live_wallet_state: PROVEN
-    transaction_reference: MISSING
+    transaction_reference: "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d"
+    verification_head: 4a81dd80edb9e4408b04f70d73ebe43163f34d5f
+    verification_run: 36938737314
+    artifact_digest: "sha256:151cc1fb42ef22613c18b203cdf0a9dc48797d78b09b3afaacafd2753d7d146e"
   still_not_authorized:
     - contract_deploy
     - createPolicy
