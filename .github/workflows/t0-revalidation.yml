@@ -142,7 +142,8 @@ jobs:
             script/parse_t0_gas_report.py \
             script/t0_readonly_fee_budget.py \
             script/validate_t0_funding_envelope.py \
-            script/t0_public_wallet_readiness.py
+            script/t0_public_wallet_readiness.py \
+            script/t0_post_funding_wallet_receipt.py
 
           echo "### Engineering quality preflight passed" >> "$GITHUB_STEP_SUMMARY"
 
@@ -173,15 +174,17 @@ jobs:
           }
 
 
-      - name: Inspect dedicated public wallet on Arc
+      - name: Verify post-funding wallet receipt on Arc
         env:
           ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
           T0_PUBLIC_WALLET_ADDRESS: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
         run: |
-          python3 script/t0_public_wallet_readiness.py \
+          python3 script/t0_post_funding_wallet_receipt.py \
             "$ARC_MAINNET_RPC_URL" \
             "$T0_PUBLIC_WALLET_ADDRESS" \
-            | tee t0-public-wallet-readiness.json
+            "0.50" \
+            "5.00" \
+            | tee t0-post-funding-wallet-receipt.json
 
       - name: Refresh read-only T0 fee budget
         env:
@@ -246,7 +249,7 @@ jobs:
             test.log
             gas-report.log
             t0-gas-unit-evidence.json
-            t0-public-wallet-readiness.json
+            t0-post-funding-wallet-receipt.json
             t0-fee-budget-snapshot.json
             t0-funding-envelope-validation.json
             /tmp/arcforge-version.txt
