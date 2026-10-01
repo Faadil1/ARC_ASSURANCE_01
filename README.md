@@ -24,11 +24,25 @@ The project must never present a local stub, simulated payment, testnet-only flo
 
 ## Current status
 
+- Project: **ACTIVE**
+- Macro stage: **DESIGN**
 - Concept Lock: **LOCKED**
 - Product Name: **OPEN**
-- PRD: being established
-- Arc mainnet proof: **NOT YET PROVEN**
-- Build gate: **PRD_READY required before consequential build**
+- Formal G0 / PRD_READY: **NOT PROVEN** — PR #1 remains open/unmerged
+- Pre-Build Reality: **PROVEN** for problem reality via PR #8
+- External User/Operator Product Evidence: **BLOCKED**
+- T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
+- Operational next gate: **T0_WALLET_TOPUP — HUMAN / PROTECTED**
+- G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
+- Live Core Loop / DELIVER: **BLOCKED**
+
+The default branch `main` is still the bootstrap line and must not be treated as
+the current project-state surface until G0 is merged. Current operational state
+is carried by PR #44 on `ops/t0-funding-readiness`.
+
+Execution receipts are bound to
+`4f7f3b254a29e6023d539a85e5b126a7f21e1955`; current branch head must be
+resolved dynamically from PR #44.
 
 ## Collaboration
 
@@ -36,4 +50,4 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - **Opeyemi (opeblow)** — technical collaborator
 - **ChatGPT** — PRD, architecture assurance, evidence/gate review, handover continuity
 
-See `product/PRD.md`, `docs/internal/CANONICAL-STATE.yaml`, `docs/internal/HANDOVER.md`, and `docs/internal/WORKSPLIT.md`.
+For current state, read in this order: `docs/internal/CANONICAL-STATE.yaml`, `docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml`, `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`, `docs/internal/HANDOVER.md`, then `docs/internal/REALITY-LEDGER.md`. See `product/PRD.md` and `docs/internal/WORKSPLIT.md` for product/work ownership.
