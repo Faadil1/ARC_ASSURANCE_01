@@ -246,11 +246,11 @@ payment_and_platform_gateways:
   Wallets:
     status: ACTIVE
     condition: "Network, address, signer, chain ID, environment, and balance evidence must be coherent."
-    current: "Human-controlled mainnet signer/funding still pending protected execution. Arc mainnet chain id 5042 and USDC interface confirmed read-only via public RPC."
+    current: "Dedicated public wallet readiness is PROVEN read-only; 0.50 USDC top-up is human-authorized but not yet observed on-chain. Deployment signing remains separately protected."
   Contracts:
     status: ACTIVE
     condition: "Deployment network, address, calls, state transitions, and receipts must be verifiable."
-    current: "PolicyCustody source produced and locally verified (35/35 under arc-forge 1.7.1-dev); compilation on generic CI not available; no deployment, address, call, or receipt evidence yet."
+    current: "PolicyCustody exact source is locally revalidated at 40/40 under pinned Arc Foundry; no Arc deployment/call/receipt exists. Integrated AssuranceVault remains a separate local candidate branch."
   App_Kit_External_Platform_Integration:
     status: N/A
     rationale: "No sponsor App Kit is currently required."
@@ -313,11 +313,12 @@ product_depth_live_reality_v1_2_1:
     Setup_Reproducibility:
       status: ACTIVE
     Clean_Room_External_Dependency_Failure:
-      status: BLOCKED
-      blocker: "No build exists to clean-room reproduce or failure-test yet."
+      status: ACTIVE
+      blocker: "Clean-room build paths exist, but external-dependency failure behavior is not yet fully proven on the live integrated product."
     Post_Vertical_Slice_Depth_Gap_Review:
-      status: BLOCKED
-      blocker: "No vertical slice exists yet."
+      status: N/A
+      rationale: "No first live integrated vertical slice exists yet."
+      reactivate_when: "Immediately after the first live integrated vertical slice."
     One_External_Trial_Not_Adoption:
       status: ACTIVE
     Organic_Usage_Integrity:
@@ -351,11 +352,11 @@ promotion_rule:
 
 t0_gate_detail:
   status: ACTIVE
-  substate: CODE_READY_CANDIDATE
+  substate: PREFUNDING_RECONCILED
   evidence_class: NOT_IMPLEMENTED
   source_produced: true
   tests_executed_with_arc_foundry: true
-  tests_passed: 35
+  tests_passed: 40
   tests_failed: 0
   mainnet_deployed: false
   real_funding: false
@@ -370,54 +371,49 @@ t0_gate_detail:
 
 
 t0_post_audit_revalidation:
-  status: BLOCKED
-  blocker: "Current T0 head changed after the 35/35 Arc Foundry run."
-  required:
-    - "Arc Foundry compile/test exact current head"
-    - "confirm protected deploy script signer path"
-    - "confirm expiry recovery tests"
-    - "confirm shell driver preflight/deploy/execute path"
-  rule: "Do not fund or broadcast mainnet until this becomes PROVEN."
+  status: PROVEN
+  evidence:
+    exact_contract_source_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    tests: "40/40 Arc Foundry"
+    later_operational_revalidation_run: 36889901531
+  note: "Historical 35/35 evidence remains bound to 18bf5d6; later exact-source 40/40 evidence supersedes the old blocker."
+  rule: "This subgate is closed; G1 itself remains NOT PROVEN until real Arc receipts exist."
 
 
 t0_funding_readiness_gate:
-  status: BLOCKED
-  current_state: READY_FOR_HUMAN_REVIEW
+  status: PROVEN
+  current_state: READY_FOR_FINAL_PRE_TRANSFER_REVALIDATION
   source_revalidation:
     status: PROVEN
-    exact_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    exact_contract_source_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
     tests: "40/40"
   gas_rehearsal:
     status: PROVEN
-    exact_head: 46cd44ef0cc11e84bfed97900180318dc7342349
     planning_floor_gas: 2925559
     recovery_extra_max_gas: 85230
-  fee_ceiling_snapshot:
-    status: PROVEN_TIME_BOUND
-    workflow_run: 36682054936
-    chain_id: 5042
-    block_number: 23501187
-    observed_gas_price_wei: "20000000000"
-    contingency_peak_required_usdc: "0.16158948"
-    five_usdc_ceiling_sufficient: true
-  candidate_funding:
+  public_wallet:
+    status: PROVEN
+    address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    is_eoa: true
+    pending_nonce: 0
+    balance_wei: "0"
+  human_funding_authorization:
+    status: PROVEN
     amount_usdc: "0.50"
-    hard_ceiling_usdc: "5.00"
-    fresh_snapshot_rule_max_contingency_usdc: "0.25"
-    candidate_validation: READY_FOR_HUMAN_REVIEW
-    authorized: false
-  blockers:
-    - "dedicated public wallet address not yet supplied"
-    - "public wallet EOA/nonce/balance readiness not yet checked"
-    - "fresh fee snapshot required immediately before funding"
-    - "explicit human funding approval"
+    scope: INITIAL_WALLET_TOPUP_ONLY
+  final_pre_transfer_gate:
+    status: ACTIVE
+    last_green_operational_head: 387d786de48ac4c544ea5cc977a45e70e7ba2eb4
+    t0_workflow: 36889901531
+    fee_workflow: 36889901547
+    last_contingency_peak_usdc: "0.16158948"
+    requirement: "Re-run on the final System Control Plane reconciliation head before transfer."
   protected_actions:
-    wallet_creation: HUMAN
-    wallet_funding: BLOCKED
+    wallet_funding: HUMAN_AUTHORIZED_PENDING_FINAL_REVALIDATION
     private_key_handling: HUMAN_LOCAL_ONLY
     mainnet_deploy: BLOCKED
-    mainnet_value_movement: BLOCKED
-  rule: "Green CI may prepare a funding candidate but can never infer funding authorization."
+    contract_execution: BLOCKED
+  rule: "Readiness plus human approval authorizes only the bounded wallet top-up after fresh final validation."
 
 t0_g1_mainnet_custody_gate:
   status: ACTIVE
@@ -436,24 +432,20 @@ t0_public_wallet_readiness_gate:
   status: PROVEN
   proof:
     wallet_address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
-    exact_head: 9b773f21163f5e6e85060b340a068dedcc551dcd
-    workflow_run: 36845314961
     chain_id: 5042
     is_eoa: true
     pending_nonce: 0
     balance_wei: "0"
     bytecode: "0x"
     prefunding_ready: true
-  fresh_fee_snapshot:
-    block_number: 23690527
-    contingency_peak_required_usdc: "0.16158948432030018"
+  latest_readonly_revalidation:
+    workflow_run: 36889901531
+    contingency_peak_required_usdc: "0.16158948"
     five_usdc_ceiling_sufficient: true
   next_gate:
-    status: BLOCKED
-    name: HUMAN_FUNDING_AUTHORIZATION
-    candidate_amount_usdc: "0.50"
-  rule: "Public-wallet readiness does not authorize funding."
-
+    status: ACTIVE
+    name: T0_FINAL_PRE_TRANSFER_REVALIDATION
+  rule: "Wallet readiness does not authorize deployment."
 
 t0_human_funding_authorization_gate:
   status: PROVEN
@@ -472,3 +464,63 @@ t0_human_funding_authorization_gate:
       - "Fresh public-wallet readiness remains true."
       - "Fresh contingency peak <= 0.25 USDC."
       - "Destination address exact match."
+
+
+system_control_plane_v1:
+  status: PROVEN
+  adoption: "2026-10-01 next material touch"
+  evidence: docs/internal/SYSTEM-RECONCILIATION-2026-10-01.md
+  history_backdated: false
+
+lifecycle_coverage_manifest_gate:
+  status: PROVEN
+  evidence: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
+  terminal_completeness_allowed: false
+
+integration_first_product_exploitation_v1_3:
+  status: ACTIVE
+  adoption: "Prospective from 2026-10-01"
+  product_exploitation_loop:
+    status: N/A
+    rationale: "No first live integrated product vertical slice yet; T0 is a DESIGN technical spike."
+    reactivate_when: "First live integrated product vertical slice is observed."
+
+claim_runtime_evidence_graph_gate:
+  status: ACTIVE
+  graph: docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml
+  T0_MAINNET_CUSTODY: BLOCKED
+  INTEGRATED_LIVE_FINANCIAL_CAUSALITY: BLOCKED
+  rule: "Missing causal edges remain missing; local or read-only evidence cannot satisfy live transactional claims."
+
+reference_intelligence_gate:
+  status: ACTIVE
+  packet: docs/internal/REFERENCE-INTELLIGENCE-PACKET.yaml
+  current_match: ai_abc_production_ai_architecture_guide_v2
+  source_pipeline_status: CLASSIFIED
+  project_decision: REFERENCE_ONLY_NO_ADOPTION
+  authority: NONE
+
+engineering_quality_assurance_gate:
+  status: ACTIVE
+  T0_scope:
+    status: PROVEN
+    receipt: docs/internal/ENGINEERING-QUALITY-RECEIPT-T0.json
+    verdict: PASS_WITH_ACCEPTED_DEBT
+  integrated_assurance_vault_scope:
+    status: BLOCKED
+    blocker: "No current Engineering Quality receipt covers the latest integrated material code state."
+
+rule_lifecycle_project_decision:
+  status: PROVEN
+  decision: NO_CHANGE
+  rationale: "No new project or global rule is justified by this reconciliation."
+
+cross_project_learning_project_gate:
+  status: N/A
+  rationale: "No multi-project evidence supports a system-rule promotion."
+
+project_branch_reconciliation:
+  status: ACTIVE
+  T0_line: "PR #6 -> #38 -> #40 -> #42 -> #44"
+  integrated_line: "PR #20 -> #24 -> #30 -> #34 -> #36"
+  invariant: "Evidence from one line cannot promote the other line's live claims."
