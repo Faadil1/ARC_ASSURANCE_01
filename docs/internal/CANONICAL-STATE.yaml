@@ -591,3 +591,42 @@ t0_deployment_authorization_2026_10_01:
     id: T0_DEPLOYMENT_EXECUTION
     status: ACTIVE
     owner: HUMAN_SIGNER
+
+
+t0_deployment_readiness_2026_10_01:
+  status: PROVEN
+  exact_head: bface52ed8611ebc9e4e09f09613230985086d00
+  workflows:
+    deployment_readiness:
+      run: 36939576285
+      result: SUCCESS
+    t0_revalidation:
+      run: 36939576194
+      result: SUCCESS
+    readonly_fee_budget:
+      run: 36939576189
+      result: SUCCESS
+    post_funding_receipt:
+      run: 36939576310
+      result: SUCCESS
+  verified:
+    - "public deployment config is internally coherent"
+    - "public env contains no PRIVATE_KEY and defaults T0_CONFIRM_MAINNET=0"
+    - "Arc wallet remains funded and within the 5 USDC hard ceiling"
+    - "original top-up receipt still verifies on Arc"
+    - "fresh fee envelope remains valid"
+    - "PolicyCustody build/test revalidation remains green on the exact head"
+  next_action:
+    gate: T0_DEPLOYMENT_EXECUTION
+    owner: HUMAN_SIGNER
+    command: "./script/t0-mainnet-proof.sh deploy --confirm"
+    scope: "deploy PolicyCustody + register the single configured policy only"
+  stop_after:
+    - "capture deployment transaction hash"
+    - "capture deployed contract address"
+    - "read back code/authority/chain/USDC/policy"
+  still_not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
