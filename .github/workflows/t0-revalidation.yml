@@ -121,6 +121,23 @@ jobs:
           cd ../..
           echo "forge-std commit: $ACTUAL_FORGE_STD_COMMIT"
 
+      - name: Engineering quality preflight
+        run: |
+          set -euo pipefail
+
+          # Native bounded quality checks for the active T0 code path.
+          # No external quality provider has authority over product scope.
+          arc-forge fmt --check
+          bash -n script/t0-mainnet-proof.sh
+
+          python3 -m py_compile \
+            script/parse_t0_gas_report.py \
+            script/t0_readonly_fee_budget.py \
+            script/validate_t0_funding_envelope.py \
+            script/t0_public_wallet_readiness.py
+
+          echo "### Engineering quality preflight passed" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Build
         run: |
           set -o pipefail
