@@ -432,3 +432,32 @@ and the machine-readable result remains:
 `funding_authorized = false`.
 
 The next state transition is a protected human action: explicit approval to fund the dedicated wallet. No private key or seed phrase should ever be shared.
+
+
+## 32. Human funding authorization — 0.50 USDC
+
+Faadil explicitly approved funding the dedicated Arc T0 wallet with:
+
+```text
+0.50 USDC
+```
+
+Destination:
+
+`0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+
+This authorization is narrow.
+
+It authorizes only the initial wallet top-up after one final fresh read-only validation.
+
+It does **not** authorize:
+
+- contract deployment;
+- createPolicy;
+- fund-to-contract;
+- payout;
+- refund;
+- complete;
+- any private-key disclosure.
+
+A new exact head is intentionally created so CI refreshes wallet state and Arc fees immediately before the transfer instruction is issued.
