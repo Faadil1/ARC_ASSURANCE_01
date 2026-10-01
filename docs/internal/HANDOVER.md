@@ -83,11 +83,11 @@ This does not block the already-approved DESIGN technical spike. It does block t
 
 ## 6. Next gates — operational vs product
 
-**Operational next gate: `T0_WALLET_TOPUP` — ACTIVE / HUMAN / PROTECTED.**
+**Operational next gate: `POST_FUNDING_WALLET_RECEIPT` — ACTIVE.**
 
 `T0_FINAL_PRE_TRANSFER_REVALIDATION` is already PROVEN on execution head `4f7f3b254a29e6023d539a85e5b126a7f21e1955`.
 
-Automation must not move funds. After the external human top-up, the next machine action is only the read-only `POST_FUNDING_WALLET_RECEIPT` check, evidence recording, then STOP for separate deployment authorization.
+The wallet top-up has now been executed. Read-only Arc verification is green on workflows `36938183550` and `36938183671`. The remaining receipt task is to capture the concrete top-up transaction hash/reference, bind it to the funded-wallet state, then STOP for separate deployment authorization.
 
 **Product-level gate: G1 — T0_MAINNET_CUSTODY — ACTIVE / NOT PROVEN.**
 
@@ -555,11 +555,9 @@ change.
 
 Operational next gate:
 
-`T0_WALLET_TOPUP` — **ACTIVE / HUMAN / PROTECTED**.
+`T0_WALLET_TOPUP` — **PROVEN EXECUTED WITH +0.01 USDC VARIANCE**.
 
-After the external human action, automation performs only the read-only
-`POST_FUNDING_WALLET_RECEIPT` check, records the Evidence Graph receipt, and
-stops. Contract deployment remains a separate protected authorization.
+The funded-wallet state is now proven read-only. `POST_FUNDING_WALLET_RECEIPT` remains ACTIVE only because the concrete Arc top-up transaction hash/reference has not yet been captured. Once bound, stop. Contract deployment remains a separate protected authorization.
 
 G1 remains **ACTIVE / NOT PROVEN**.
 
@@ -587,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **T0_WALLET_TOPUP**
+- operational next gate: **POST_FUNDING_WALLET_RECEIPT**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -602,3 +600,21 @@ historical receipts.
 
 If an older section conflicts with the state above, treat the older statement as
 historical context, not current state.
+
+
+## 35. Real wallet funding — 2026-10-01
+
+The dedicated Arc wallet now shows **0.51 USDC** in the user wallet UI. The prior explicit authorization was **0.50 USDC**, so the additional **+0.01 USDC** is recorded as an execution variance and is not retroactively described as authorized.
+
+Independent read-only verification on Arc succeeded after funding:
+
+- T0 Revalidation run `36938183550` — SUCCESS
+- T0 Read-Only Fee Budget run `36938183671` — SUCCESS
+- workflow head: `220a61576cab23665483d67ebca25e44590b35ac`
+- wallet remains an EOA
+- pending nonce remains 0
+- balance is at least 0.50 USDC and below the 5.00 USDC hard ceiling
+
+Still missing for the post-funding receipt: the concrete Arc transaction hash/reference for the top-up.
+
+No deployment, createPolicy, contract funding, payout, refund or completion is authorized by this state transition.
