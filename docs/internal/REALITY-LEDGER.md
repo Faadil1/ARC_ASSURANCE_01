@@ -237,3 +237,25 @@ The first state-recording commit after the proven execution was
 `90d79ee7d2f891366a9962af90f440768b4347e3`. Current branch head must be
 resolved dynamically from PR #44. Documentation-only commits do not become
 execution evidence unless executable T0 inputs change.
+
+
+## Real T0 wallet funding — 2026-10-01
+
+### OBSERVED
+
+- The dedicated Arc wallet UI shows **0.51 USDC** after the human top-up.
+- The prior explicit authorization was **0.50 USDC**.
+- The resulting **+0.01 USDC** difference is an execution variance; it is not rewritten as retroactively preauthorized.
+- Read-only Arc verification after funding succeeded on workflow head `220a61576cab23665483d67ebca25e44590b35ac`.
+- T0 Revalidation run `36938183550`: SUCCESS.
+- T0 Read-Only Fee Budget run `36938183671`: SUCCESS.
+- The live checker proves the wallet is an EOA, pending nonce is 0, and the native-USDC balance is at least 0.50 USDC and no more than the 5.00 USDC hard ceiling.
+
+### STILL MISSING
+
+- The concrete Arc transaction hash/reference for the top-up has not yet been captured into canonical evidence.
+- No contract deployment, custody, payout, refund or completion is proven or authorized.
+
+### CURRENT BOUNDARY
+
+`POST_FUNDING_WALLET_RECEIPT = ACTIVE` until the transaction reference is bound to the funded-wallet state. After that, STOP for a separate deployment authorization.
