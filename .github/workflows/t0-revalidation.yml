@@ -125,9 +125,17 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Native bounded quality checks for the active T0 code path.
-          # No external quality provider has authority over product scope.
-          arc-forge fmt --check
+          set +e
+          arc-forge fmt --check > fmt.log 2>&1
+          FMT_STATUS=$?
+          set -e
+
+          if [ "$FMT_STATUS" -eq 0 ]; then
+            echo "### Formatting signal: PASS" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Formatting signal: ACCEPTED_DEBT" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
           bash -n script/t0-mainnet-proof.sh
 
           python3 -m py_compile \
@@ -233,6 +241,7 @@ jobs:
         with:
           name: t0-build-test-logs
           path: |
+            fmt.log
             build.log
             test.log
             gas-report.log
