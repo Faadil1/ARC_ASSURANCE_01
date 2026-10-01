@@ -147,6 +147,30 @@ jobs:
             exit 1
           }
 
+
+      - name: Inspect dedicated public wallet on Arc
+        env:
+          ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+          T0_PUBLIC_WALLET_ADDRESS: 0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb
+        run: |
+          python3 script/t0_public_wallet_readiness.py \
+            "$ARC_MAINNET_RPC_URL" \
+            "$T0_PUBLIC_WALLET_ADDRESS" \
+            | tee t0-public-wallet-readiness.json
+
+      - name: Refresh read-only T0 fee budget
+        env:
+          ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+        run: |
+          python3 script/t0_readonly_fee_budget.py \
+            ops/t0-fee-budget-input.json \
+            t0-fee-budget-snapshot.json
+
+          python3 script/validate_t0_funding_envelope.py \
+            ops/t0-funding-envelope.json \
+            t0-fee-budget-snapshot.json \
+            t0-funding-envelope-validation.json
+
       - name: Gas evidence parser tests
         run: python3 test/test_t0_gas_evidence.py
 
@@ -196,6 +220,9 @@ jobs:
             test.log
             gas-report.log
             t0-gas-unit-evidence.json
+            t0-public-wallet-readiness.json
+            t0-fee-budget-snapshot.json
+            t0-funding-envelope-validation.json
             /tmp/arcforge-version.txt
           if-no-files-found: warn
           retention-days: 90
