@@ -32,7 +32,8 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - Pre-Build Reality: **PROVEN** for problem reality via PR #8
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- Operational next gate: **T0_WALLET_TOPUP — HUMAN / PROTECTED**
+- T0 wallet funding receipt: **PROVEN**
+- Operational next gate: **T0_DEPLOYMENT_AUTHORIZATION — HUMAN / PROTECTED / NOT YET GRANTED**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - Live Core Loop / DELIVER: **BLOCKED**
 
