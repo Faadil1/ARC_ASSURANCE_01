@@ -401,3 +401,48 @@ system_control_plane_reconciliation_2026_10_01:
     authorization_scope: INITIAL_WALLET_TOPUP_ONLY
     deployment_authorized: false
     contract_execution_authorized: false
+
+
+t0_final_pre_transfer_revalidation_2026_10_01:
+  status: PROVEN
+  exact_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  workflows:
+    t0_revalidation:
+      run: 36891632445
+      result: SUCCESS
+      tests: "40 passed / 0 failed / 0 skipped"
+    readonly_fee_budget:
+      run: 36891632622
+      result: SUCCESS
+  public_wallet:
+    address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    is_eoa: true
+    pending_nonce: 0
+    balance_wei: "0"
+    prefunding_ready: true
+  fresh_fee_state:
+    readonly_block: 23737015
+    t0_revalidation_block: 23737026
+    observed_gas_price_wei: "20000000000-20000000030"
+    contingency_peak_required_usdc: "0.16158948-0.16158948022738422"
+    threshold_usdc: "0.25"
+    threshold_pass: true
+  destination_exact_match: true
+  human_topup_authorization:
+    status: PROVEN
+    amount_usdc: "0.50"
+    scope: INITIAL_WALLET_TOPUP_ONLY
+  next_gate:
+    name: T0_WALLET_TOPUP
+    status: ACTIVE
+    owner: HUMAN
+  still_not_authorized:
+    - contract_deploy
+    - createPolicy
+    - contract_fund
+    - payout
+    - refund
+    - complete
+  truth_boundary:
+    - "T0_FINAL_PRE_TRANSFER_REVALIDATION proves readiness only."
+    - "G1 T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
