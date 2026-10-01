@@ -13,8 +13,9 @@ starts at this material touch. Earlier project history is not rewritten.
 - DELIVER: **BLOCKED**
 - Submission/release: **not current**
 
-T0 may continue as the already-authorized DESIGN technical-risk spike while
-Pre-Build Reality blocks DELIVER.
+T0 may continue as the DESIGN technical-risk spike. Pre-Build Reality problem
+evidence is **PROVEN** via PR #8; DELIVER remains blocked by formal G0 plus
+unproven live product-depth/runtime gates.
 
 ## Last genuinely proven state
 
@@ -93,8 +94,9 @@ BUILD_CANDIDATE_READY-sensitive transition.
 ## Contradictions preserved rather than hidden
 
 1. PR #1 remains open/unmerged, so formal G0 is not retroactively promoted.
-2. Pre-Build Reality remains blocked on external operator/user evidence and a
-   concrete external negative event.
+2. Pre-Build Reality problem evidence is PROVEN in PR #8. External User/Operator
+   **Product** Evidence remains a separate BLOCKED gate and must not be conflated
+   with problem reality.
 3. T0 and integrated AssuranceVault remain separate open PR stacks.
 4. The old T0 post-audit `BLOCKED` marker is superseded by later exact-source
    40/40 evidence.
@@ -112,20 +114,50 @@ Cross-project learning promotion: **NONE**.
 
 One active project does not create a new universal rule.
 
-## Exact next gate
+## Exact next gate — post-revalidation correction
 
-`T0_FINAL_PRE_TRANSFER_REVALIDATION`
+`T0_FINAL_PRE_TRANSFER_REVALIDATION` is **PROVEN** on execution evidence head
+`4f7f3b254a29e6023d539a85e5b126a7f21e1955`.
 
-After this reconciliation, rerun the exact-head T0 workflow. It must confirm:
+Proof:
 
-- 40/40 T0 tests and bounded quality preflight remain green;
-- dedicated wallet is still an EOA;
-- pending nonce is still 0;
-- balance is still 0 before top-up;
-- fresh contingency peak remains <= 0.25 USDC;
-- destination address remains exact.
+- T0 Revalidation `36891632445` — SUCCESS — 40/40 tests;
+- T0 Read-Only Fee Budget `36891632622` — SUCCESS;
+- wallet EOA = true, pending nonce = 0, balance = 0;
+- fresh contingency peak <= 0.25 USDC;
+- destination exact-match = true.
 
-If all conditions pass, the next action is the already-authorized **human**
-top-up of **0.50 USDC** to the dedicated Arc wallet.
+The operational next gate is therefore:
 
-That top-up does **not** authorize contract deployment or contract execution.
+`T0_WALLET_TOPUP` — **ACTIVE / HUMAN / PROTECTED**.
+
+Automation must not move value. After the already-authorized external human
+top-up, the only next machine action is the read-only
+`POST_FUNDING_WALLET_RECEIPT` check, evidence recording, then STOP for a separate
+deployment authorization.
+
+The product-level gate `G1_T0_MAINNET_CUSTODY` remains **ACTIVE / NOT PROVEN**.
+Contract deployment and execution are still unauthorized.
+
+
+## State precedence correction — 2026-10-01
+
+To eliminate branch/head ambiguity:
+
+- active state branch: `ops/t0-funding-readiness`
+- active state PR: **#44**
+- `main`: bootstrap-only until formal G0 is merged
+- execution evidence head: `4f7f3b254a29e6023d539a85e5b126a7f21e1955`
+- first state-recording commit after that execution: `90d79ee7d2f891366a9962af90f440768b4347e3`
+- current branch head: resolve dynamically from PR #44; do not hard-code it as the execution head
+
+Current-state reading order:
+
+1. `docs/internal/CANONICAL-STATE.yaml`
+2. `docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml`
+3. `docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml`
+4. `docs/internal/HANDOVER.md`
+5. `docs/internal/REALITY-LEDGER.md`
+
+Older contradictory prose remains historical evidence only; it cannot override
+these current-state records.
