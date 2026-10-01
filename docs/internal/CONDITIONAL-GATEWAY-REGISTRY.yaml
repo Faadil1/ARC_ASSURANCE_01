@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-29T01:30:00-04:00"
+updated_at: "2026-10-01T16:52:00-04:00"
 source_of_truth: true
 
 status_vocabulary:
@@ -30,7 +30,7 @@ macro_lifecycle:
     evidence: "PRD v0.1 and demo-first architecture are under review in PR #1."
   DELIVER:
     status: BLOCKED
-    blocker: "G0 PRD_READY (PR #1 unmerged), Pre-Build Reality external evidence gap, and T0 mainnet custody proof remain open."
+    blocker: "G0 PRD_READY (PR #1 unmerged), live product-depth gates, and T0 mainnet custody proof remain open. Pre-Build Reality problem evidence is already PROVEN."
   AUDIT:
     status: BLOCKED
     blocker: "No live runtime/canonical mainnet run yet."
@@ -43,14 +43,14 @@ judged_build_cycle:
     status: PROVEN
     evidence: "Arc Microgrants requirements and submission constraints are captured."
   PAIN:
-    status: ACTIVE
-    gap: "Need external operator/user evidence beyond council/market reasoning."
+    status: PROVEN
+    evidence: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md documents external operator incidents and observable impact."
   PROBLEM:
     status: PROVEN
     evidence: "Autonomous paid work can continue paying after provider quality degradation; product scope is narrowly defined."
   NEGATIVE_EVENT:
-    status: ACTIVE
-    gap: "Need at least one concrete external negative event / operator failure pattern with observable impact."
+    status: PROVEN
+    evidence: "PR #8 documents concrete paid-service failure, autonomous spend overrun, and production quality drift with observable impact."
   DIFFERENTIATOR:
     status: PROVEN
     evidence: "Precommitted hidden canary + deterministic financial consequence survived novelty review better than generic policy/payment/procurement layers."
@@ -75,11 +75,12 @@ judged_build_cycle:
 
 core_gates:
   Pre_Build_Reality:
-    status: BLOCKED
+    status: PROVEN
     activation: "All concepts before promotion."
     condition: "Real problem, real user/operator, concrete negative event, observable impact."
-    gap: "Real user/operator and external negative-event evidence are not yet proven."
-    rule: "T0 may proceed as DESIGN technical spike, but DELIVER promotion is blocked until this closes."
+    evidence: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+    boundary: "Problem reality is proven. Product demand, provider acceptance, adoption, willingness to pay, and external-user product validation remain unproven."
+    separation_rule: "Do not reuse this gate to represent External User/Operator Product Evidence."
   Competitive_Novelty_Kill:
     status: PROVEN
     activation: "Before Concept Lock and when nearby products materially change."
@@ -344,7 +345,7 @@ post_vertical_slice_question:
   rule: "Close material depth gaps before heavy polish."
 
 promotion_rule:
-  - "No DELIVER promotion while Pre-Build Reality remains BLOCKED."
+  - "No DELIVER promotion while G0 PRD_READY or required live product-depth/runtime gates remain BLOCKED."
   - "No LIVE claim while LIVE_GATEWAY, Live Core Loop, Load-Bearing Integration, and Real Consequence remain unproven."
   - "No submission-ready claim while Judge Performance Assurance, Deterministic Demo, Runtime/Commit Binding, and Submission Integrity are unresolved."
   - "Any ACTIVE/BLOCKED gate carried forward must remain visible in CURRENT/HANDOVER."
@@ -382,7 +383,7 @@ t0_post_audit_revalidation:
 
 t0_funding_readiness_gate:
   status: PROVEN
-  current_state: READY_FOR_FINAL_PRE_TRANSFER_REVALIDATION
+  current_state: FINAL_PRE_TRANSFER_REVALIDATION_PROVEN__AWAITING_HUMAN_TOPUP
   source_revalidation:
     status: PROVEN
     exact_contract_source_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
@@ -402,14 +403,15 @@ t0_funding_readiness_gate:
     amount_usdc: "0.50"
     scope: INITIAL_WALLET_TOPUP_ONLY
   final_pre_transfer_gate:
-    status: ACTIVE
-    last_green_operational_head: 387d786de48ac4c544ea5cc977a45e70e7ba2eb4
-    t0_workflow: 36889901531
-    fee_workflow: 36889901547
-    last_contingency_peak_usdc: "0.16158948"
-    requirement: "Re-run on the final System Control Plane reconciliation head before transfer."
+    status: PROVEN
+    execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+    t0_workflow: 36891632445
+    fee_workflow: 36891632622
+    tests: "40/40"
+    last_contingency_peak_usdc: "0.16158948022738422"
+    requirement: "Satisfied on the exact execution evidence head. Documentation commits after this point do not invalidate the execution receipt unless they alter executable T0 inputs."
   protected_actions:
-    wallet_funding: HUMAN_AUTHORIZED_PENDING_FINAL_REVALIDATION
+    wallet_funding: HUMAN_AUTHORIZED__AWAITING_EXTERNAL_ACTION
     private_key_handling: HUMAN_LOCAL_ONLY
     mainnet_deploy: BLOCKED
     contract_execution: BLOCKED
@@ -439,12 +441,15 @@ t0_public_wallet_readiness_gate:
     bytecode: "0x"
     prefunding_ready: true
   latest_readonly_revalidation:
-    workflow_run: 36889901531
-    contingency_peak_required_usdc: "0.16158948"
+    workflow_run: 36891632445
+    execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+    contingency_peak_required_usdc: "0.16158948022738422"
     five_usdc_ceiling_sufficient: true
   next_gate:
     status: ACTIVE
-    name: T0_FINAL_PRE_TRANSFER_REVALIDATION
+    name: T0_WALLET_TOPUP
+    owner: HUMAN
+    protected_action: true
   rule: "Wallet readiness does not authorize deployment."
 
 t0_human_funding_authorization_gate:
@@ -524,3 +529,17 @@ project_branch_reconciliation:
   T0_line: "PR #6 -> #38 -> #40 -> #42 -> #44"
   integrated_line: "PR #20 -> #24 -> #30 -> #34 -> #36"
   invariant: "Evidence from one line cannot promote the other line's live claims."
+
+
+state_resolution_2026_10_01:
+  status: PROVEN
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
+  execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  current_branch_head_rule: "Resolve PR #44 head dynamically."
+  operational_next_gate: T0_WALLET_TOPUP
+  macro_product_gate: G1_T0_MAINNET_CUSTODY
+  prebuild_reality: PROVEN
+  external_user_operator_product_evidence: BLOCKED
+  historical_conflict_rule: "Current-state entries in this registry supersede older contradictory prose without rewriting historical receipts."
