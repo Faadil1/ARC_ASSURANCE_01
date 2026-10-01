@@ -165,3 +165,13 @@ No private key, signature, broadcast or funds were used to obtain this proof.
 ### PROTECTED BOUNDARY
 
 Private key and seed phrase remain human-local and must not be shared.
+
+
+## Control-plane reconciliation pointer — 2026-10-01
+
+Current reconciliation details are recorded in
+`docs/internal/SYSTEM-RECONCILIATION-2026-10-01.md`,
+`docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml`, and
+`docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml`.
+
+Historical evidence classes remain unchanged.
