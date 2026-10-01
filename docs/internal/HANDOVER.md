@@ -385,3 +385,50 @@ Never share the private key or seed phrase.
 After the public-wallet gate passes, refresh the fee snapshot once more and request explicit human approval before funding 0.50 USDC.
 
 G1 remains ACTIVE / NOT PROVEN until real deploy → fund → payout → refund → complete receipts exist.
+
+
+## 31. Dedicated T0 wallet — public readiness PROVEN
+
+Public wallet:
+
+`0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+
+Read-only Arc workflow:
+
+`36845314961`
+
+Observed on Arc mainnet:
+
+```text
+chain id      = 5042
+bytecode      = 0x
+EOA           = true
+pending nonce = 0
+balance       = 0
+```
+
+Verdict:
+
+`PUBLIC_WALLET_READY_FOR_FUNDING_REVIEW`
+
+Fresh fee snapshot in the same run:
+
+- block: 23,690,527;
+- gas price: 20,000,000,570 wei/gas;
+- 2x safe gas price: 40,000,001,140 wei/gas;
+- happy peak: 0.15627796416892186 USDC;
+- contingency peak: 0.16158948432030018 USDC;
+- 5 USDC ceiling: sufficient.
+
+Candidate envelope remains:
+
+```text
+0.50 USDC initial top-up
+5.00 USDC hard ceiling
+```
+
+and the machine-readable result remains:
+
+`funding_authorized = false`.
+
+The next state transition is a protected human action: explicit approval to fund the dedicated wallet. No private key or seed phrase should ever be shared.
