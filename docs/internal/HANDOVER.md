@@ -461,3 +461,107 @@ It does **not** authorize:
 - any private-key disclosure.
 
 A new exact head is intentionally created so CI refreshes wallet state and Arc fees immediately before the transfer instruction is issued.
+
+
+## 33. System Control Plane reconciliation — 2026-10-01
+
+Central canon was re-read from `Faadil1/faadil-agent-system@main` before
+continuing. Adoption starts at this material touch; no earlier artifact is
+backdated.
+
+### Actual state
+
+- project: **ACTIVE**
+- macro stage: **DESIGN**
+- operational track: **T0_MAINNET_CUSTODY**
+- G0 PRD_READY: **not proven**; PR #1 remains open/unmerged
+- G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
+- DELIVER: **BLOCKED**
+
+The current T0 spike may continue inside DESIGN even though Pre-Build Reality
+still blocks DELIVER.
+
+### Last genuinely proven state
+
+- T0 exact-source local revalidation: 40/40 Arc Foundry tests;
+- dedicated Arc wallet readiness: PROVEN read-only;
+- human authorization for a **0.50 USDC initial wallet top-up only**: PROVEN;
+- local gas rehearsal and time-bound fee ceiling: proven only in their actual
+  evidence classes.
+
+No real contract deployment or T0 custody/payout/refund/complete receipt exists.
+
+### New prospective control-plane artifacts
+
+- lifecycle coverage:
+  `docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml`
+- claim/runtime/evidence graph:
+  `docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml`
+- Reference Intelligence packet:
+  `docs/internal/REFERENCE-INTELLIGENCE-PACKET.yaml`
+- T0 Engineering Quality receipt:
+  `docs/internal/ENGINEERING-QUALITY-RECEIPT-T0.json`
+- reconciliation record:
+  `docs/internal/SYSTEM-RECONCILIATION-2026-10-01.md`
+
+### Product Reality v1.3
+
+Integration-First / Maximum Product Exploitation v1.3 is active prospectively.
+
+The PRD does not require a product-scope rewrite: it already requires real Arc
+financial causality, load-bearing integration, negative consequence, recovery
+and independent verification.
+
+The Product Exploitation Loop is **not triggered yet** because T0 is not the
+first live integrated product vertical slice. It activates after that slice.
+
+### Engineering Quality backfill
+
+Current T0 scope verdict:
+
+`PASS_WITH_ACCEPTED_DEBT`
+
+The accepted debt is bounded and non-terminal: formatting drift plus absence of
+a separate external Solidity-analyzer receipt on this narrow T0 spike. No
+behavioral, security, evidence, or human-authority contract was relaxed.
+
+The separate integrated AssuranceVault line still needs its own current
+Engineering Quality receipt before its next integrated deployment or
+BUILD_CANDIDATE_READY-sensitive transition.
+
+### Reference Intelligence
+
+The registered AI-ABC human-approval/risk-tier pattern is relevant but remains
+`CLASSIFIED / REFERENCE_ONLY / authority NONE`.
+
+Decision: `use_as_reference`, no durable adoption and no project/global rule
+change.
+
+### Contradictions preserved explicitly
+
+1. Downstream code success does not retroactively prove G0.
+2. Pre-Build Reality remains blocked on external user/operator + concrete
+   negative-event evidence.
+3. T0 and integrated AssuranceVault are separate open PR stacks; T0 receipts
+   cannot promote integrated product claims.
+4. The old T0 post-audit revalidation blocker is stale versus the later 40/40
+   exact-source proof.
+5. Historical machine snapshots with `funding_authorized=false` remain true;
+   the later human authorization is a separate protected decision.
+
+### Exact next gate
+
+`T0_FINAL_PRE_TRANSFER_REVALIDATION`
+
+Required after the final reconciliation head:
+
+- T0 tests and bounded quality preflight green;
+- wallet still EOA;
+- pending nonce still 0;
+- balance still 0;
+- fresh contingency peak <= 0.25 USDC;
+- destination address exact.
+
+If green, the next action is the already-authorized **human** transfer of
+0.50 USDC to the dedicated Arc wallet only. Contract deployment remains a
+separate protected action.
