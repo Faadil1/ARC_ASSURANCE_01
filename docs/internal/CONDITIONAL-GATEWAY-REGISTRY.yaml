@@ -353,7 +353,7 @@ promotion_rule:
 
 t0_gate_detail:
   status: ACTIVE
-  substate: PREFUNDING_RECONCILED
+  substate: PRETRANSFER_REVALIDATED__AWAITING_HUMAN_TOPUP
   evidence_class: NOT_IMPLEMENTED
   source_produced: true
   tests_executed_with_arc_foundry: true
