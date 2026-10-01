@@ -293,3 +293,32 @@ t0_funding_readiness_2026_09_30:
     - "Fee snapshot is time-bound and must be refreshed before funding/deploy."
     - "0.50 USDC is a candidate envelope, not an authorization."
     - "G1 remains ACTIVE / NOT PROVEN until real Arc receipts exist."
+
+
+t0_public_wallet_readiness_2026_10_01:
+  wallet_address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  exact_head: 9b773f21163f5e6e85060b340a068dedcc551dcd
+  workflow_run: 36845314961
+  chain_id: 5042
+  code: "0x"
+  is_eoa: true
+  pending_nonce: 0
+  is_fresh_nonce: true
+  balance_wei: "0"
+  is_zero_balance_before_funding: true
+  prefunding_ready: true
+  verdict: PUBLIC_WALLET_READY_FOR_FUNDING_REVIEW
+  fresh_fee_snapshot:
+    block_number: 23690527
+    observed_gas_price_wei: "20000000570"
+    safe_gas_price_wei: "40000001140"
+    happy_peak_required_usdc: "0.15627796416892186"
+    contingency_peak_required_usdc: "0.16158948432030018"
+    within_5_usdc_ceiling: true
+  funding_envelope:
+    candidate_topup_usdc: "0.50"
+    validation_status: CANDIDATE_ENVELOPE_READY_FOR_HUMAN_REVIEW
+    funding_authorized: false
+  protected_next_action:
+    - "Explicit human approval required before sending 0.50 native USDC to the dedicated wallet."
+    - "Private key / seed phrase must remain local to the human wallet."
