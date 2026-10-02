@@ -36,7 +36,8 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - T0 mainnet deployment: **PROVEN**
 - T0 policy registration: **PROVEN**
 - T0 real contract funding (0.010 USDC): **PROVEN**
-- Operational next gate: **T0_PAYOUT_AUTHORIZATION — HUMAN / PROTECTED / NOT YET GRANTED**
+- T0 configured payout (0.001 USDC): **PROVEN**
+- Operational next gate: **T0_REFUND_AUTHORIZATION — HUMAN / PROTECTED / NOT YET GRANTED**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / PARTIAL / NOT PROVEN**
 - Live Core Loop / DELIVER: **BLOCKED**
 
