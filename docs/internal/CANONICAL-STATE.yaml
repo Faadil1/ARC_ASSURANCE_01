@@ -1058,3 +1058,54 @@ g1_t0_mainnet_custody:
     It does not prove the hidden-canary precommit, provider work/signing,
     deterministic scoring, fail->no-pay causality, circuit breaker, or full
     integrated live product loop.
+
+
+g0_review_boundary_2026_10_02:
+  status: BLOCKED
+  pr: 1
+  pr_url: "https://github.com/Faadil1/ARC_ASSURANCE_01/pull/1"
+  technical_mergeability: CLEAN
+  requested_reviewer: opeblow
+  submitted_reviews: 0
+  exact_remaining_human_prerequisite: "Opeyemi must submit Approve or Request changes; G0 cannot be promoted by repository owner self-approval."
+  after_approval: "Merge PR #1 if no changes are requested, then reconcile stacked bases."
+
+g2_precommit_readiness_2026_10_02:
+  status: ACTIVE_READINESS__PROMOTION_BLOCKED
+  promotion_blockers:
+    - G0_PRD_READY_NOT_PROVEN
+    - INTEGRATED_ASSURANCE_VAULT_NOT_LIVE_DEPLOYED
+    - LIVE_BATCH_COMMIT_NOT_EXECUTED
+  implementation_vehicle:
+    contract: AssuranceVault
+    rationale: "Use the integrated load-bearing product core; do not create a separate proof-only AssuranceCoreV1 mainnet deployment."
+    source_base_branch: ops/exact-predeploy-gas-snapshot
+    source_base_sha: c3aaa11bf7454e1f3afe0fb740c8c0ccd7fedd5c
+    clean_room_run: 36680776957
+    javascript_tests: "72 passed / 0 failed"
+    solidity_tests: "29 passed / 0 failed"
+    creation_bytecode_hash: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+  readiness_branch: ops/g2-precommit-readiness
+  readiness_pr: 45
+  readiness_artifacts:
+    - docs/internal/G2-PRECOMMIT-READINESS.md
+    - docs/internal/G2-PRECOMMIT-READINESS.yaml
+  hidden_preimage_rule: >-
+    Before provider output lock, public surfaces may contain only the opaque
+    commitment. Commitment preimage material must remain private until reveal
+    and must not be placed in GitHub, Actions logs/artifacts, PR comments, chat,
+    or screenshots.
+  protected_actions:
+    integrated_deployment: NOT_AUTHORIZED
+    policy_creation: NOT_AUTHORIZED
+    policy_funding: NOT_AUTHORIZED
+    commit_batch: NOT_AUTHORIZED
+    provider_output_lock: NOT_AUTHORIZED
+    reveal: NOT_AUTHORIZED
+    resolve: NOT_AUTHORIZED
+  exact_g2_live_claim: >-
+    A real opaque hidden-test commitment exists on Arc mainnet before provider
+    execution/output lock for the same batch.
+  truth_boundary: >-
+    G2 does not itself prove provider execution, output correctness,
+    deterministic resolution, fail->no-pay, breaker behavior, or adoption.
