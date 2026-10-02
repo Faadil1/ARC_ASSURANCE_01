@@ -585,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **T0_REFUND_AUTHORIZATION**
+- operational next gate: **T0_COMPLETION_AUTHORIZATION**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -815,3 +815,37 @@ The one-time payout authorization is now consumed.
 **Next protected checkpoint: `T0_REFUND_AUTHORIZATION`.**
 No `refundRemaining` transaction may be signed or broadcast until separate
 explicit human authorization. Completion remains separately unauthorized.
+
+
+## 45. Real Arc remaining-funds refund — PROVEN
+
+Refund transaction:
+`0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024`
+
+Contract:
+`0x0377D371d6981c98CE9C650338D7E1E80819B572`
+
+Verification run `36984307453` on head
+`0ca236dc7826481b3f8ecbcf4d2f06852d30c24a` succeeded.
+
+Verified:
+- Arc chain 5042;
+- sender is the dedicated T0 wallet;
+- nonce = 4;
+- function selector = `refundRemaining(bytes32)`;
+- policy id matches the locked T0 policy;
+- transaction `msg.value = 0`;
+- `RemainingFundsRefunded` emitted exactly **0.009 native USDC**;
+- post-refund custody balance = 0;
+- totalRefunded observed at **0.009 native USDC**;
+- state observed immediately after refund = `Refunded`;
+- remaining = 0;
+- totalLiability = 0;
+- totalCustodyReceived remains **0.010 native USDC**;
+- totalValueReleased remains **0.001 native USDC**;
+- contract balance = 0.
+
+The one-time refund authorization is now consumed.
+
+**Next protected checkpoint: `T0_COMPLETION_AUTHORIZATION`.**
+No `complete(policyId)` transaction may be signed or broadcast until separate explicit human authorization.
