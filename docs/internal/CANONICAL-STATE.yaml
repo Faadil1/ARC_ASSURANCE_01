@@ -1203,3 +1203,37 @@ g2_readonly_predeploy_2026_10_02:
     protected_action: true
     authorization_granted: false
     exact_scope_if_granted: "Deploy AssuranceVault only from authority wallet on Arc mainnet using the bound init code; no policy creation, funding, commitBatch, output lock, reveal or resolve."
+
+
+g2_integrated_deployment_authorization_2026_10_02:
+  status: GRANTED
+  granted_by: HUMAN_OWNER
+  exact_user_authorization: "J’autorise uniquement le déploiement de l’AssuranceVault intégré sur Arc Mainnet."
+  scope:
+    allowed:
+      - "Deploy the integrated AssuranceVault on Arc Mainnet only"
+    not_allowed:
+      - "createPolicy"
+      - "fund"
+      - "commitBatch"
+      - "lockProviderOutput"
+      - "revealCanary"
+      - "resolveBatch"
+      - "refundProtectedRemainder"
+      - "any additional wallet top-up"
+  bound_evidence_head: "1933b9d5bfd9722450b099f7e054fe610ab017dc"
+  bound_init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  required_pre_broadcast_revalidation:
+    status: ACTIVE
+    must_confirm:
+      - "Arc chain id == 5042"
+      - "deployer == 0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      - "pending nonce still == 6"
+      - "predicted contract address still == 0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+      - "exact init-code hash unchanged"
+      - "wallet balance remains sufficient"
+      - "fresh gas estimate remains acceptable"
+  broadcast_execution:
+    signer: HUMAN_METAMASK_ONLY
+    assistant_private_key_access: FORBIDDEN
+    status: NOT_YET_BROADCAST
