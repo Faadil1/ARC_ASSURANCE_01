@@ -49,9 +49,11 @@ The default branch `main` is still the bootstrap line and must not be treated as
 the current project-state surface until G0 is merged. Current operational state
 is carried by PR #44 on `ops/t0-funding-readiness`.
 
-Execution receipts are bound to
-`4f7f3b254a29e6023d539a85e5b126a7f21e1955`; current branch head must be
-resolved dynamically from PR #44.
+The pre-transfer exact-source revalidation execution head is
+`4f7f3b254a29e6023d539a85e5b126a7f21e1955`. The deployed executable runtime
+was independently source-bound in the deployment receipt workflow, and each
+mainnet lifecycle step is separately bound to its Arc transaction receipt.
+Current branch head must be resolved dynamically from PR #44.
 
 ## Collaboration
 
