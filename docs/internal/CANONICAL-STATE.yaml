@@ -94,22 +94,28 @@ scope:
 
 current_gate:
   id: G0_PRD_READY
-  status: IN_PROGRESS
-  exit_criteria:
-    - "PRD merged"
-    - "canonical state merged"
-    - "handover merged"
-    - "work split merged"
-    - "Opeyemi collaborator access verified; criterion satisfied."
+  status: PROVEN
+  proven_by:
+    owner_signoff: Faadil
+    merged_pr: 1
+    merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+    collaborator_review_policy: RECOMMENDED_NON_BLOCKING
+
+prior_product_gate:
+  id: G1_T0_MAINNET_CUSTODY
+  status: PROVEN
+  evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: G1_T0_MAINNET_CUSTODY
-  owner: opeblow
+  id: G2_PRECOMMIT
+  status: ACTIVE_READINESS__LIVE_PROOF_NOT_PROVEN
+  vehicle: AssuranceVault
   required_proof:
-    - "real Arc mainnet USDC enters contract custody"
-    - "configured payout succeeds"
-    - "remaining balance refund succeeds"
-    - "transaction references captured"
+    - "integrated runtime/source binding on Arc mainnet"
+    - "real policy and sufficient native-USDC liability"
+    - "opaque commitment exists onchain before provider output lock"
+    - "no prior ProviderOutputLocked exists for the same batch"
+  protected_live_actions_authorized: false
 
 collaboration:
   faadil:
