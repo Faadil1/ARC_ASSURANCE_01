@@ -320,3 +320,28 @@ This proves policy registration only. It does **not** prove custody or settlemen
 `T0_CONTRACT_FUNDING_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
 
 No contract funding, payout, refund or completion is authorized by prior approvals.
+
+
+## Real Arc contract funding — 2026-10-02
+
+### OBSERVED
+
+- Funding tx: `0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1`.
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`.
+- Verification run `36982128480`: SUCCESS.
+- Transaction is a successful `fund(bytes32)` call from the dedicated T0 wallet at nonce 2.
+- Transaction value is exactly `10000000000000000` native units = **0.010 USDC**.
+- The emitted `PolicyFunded` event records the same amount.
+- Immediately after the verified funding transaction: state = Funded, remaining = 0.010, totalLiability = 0.010, totalCustodyReceived = 0.010, contract balance = 0.010, totalValueReleased = 0.
+
+### CONSEQUENCE
+
+`T0_CONTRACT_FUNDING_EXECUTION = PROVEN`.
+
+This proves real Arc-native custody of the bounded T0 principal. It does **not** prove payout, refund or completion.
+
+### CURRENT BOUNDARY
+
+`T0_PAYOUT_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
+
+No configured payout transaction is authorized by the prior funding approval.
