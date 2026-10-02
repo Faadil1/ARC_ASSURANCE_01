@@ -55,6 +55,8 @@ The assistant may contribute files/PRs through GitHub but does not substitute si
 
 ## 2. Interface ownership
 
+**Review policy:** a listed reviewer is recommended by default. Review becomes mandatory only when a gate or change explicitly touches a surface for which that reviewer is the accountable technical owner. G0 / PRD_READY does not require collaborator approval; Faadil owner sign-off plus a clean merge is sufficient.
+
 | Surface | Primary owner | Reviewer |
 |---|---|---|
 | PRD / scope / product laws | Faadil + Assistant | Opeyemi |
@@ -85,13 +87,14 @@ Deliverables:
 - work split;
 - truth-boundary rules.
 
-#### P0.2 Collaborator invite acceptance
+#### P0.2 Collaborator access
 **Owner:** Opeyemi / Faadil  
 Deliverable:
-- Opeyemi accepts the already-sent collaborator invitation;
-- `opeblow` has write permission and can create branches/PRs.
+- `opeblow` has repository write permission and can create branches/PRs.
 
-Current state: **INVITE_PENDING**.
+Current state: **PROVEN / NON-BLOCKING FOR G0**.
+
+Collaborator access is useful for parallel technical ownership but is not an exit criterion for G0 / PRD_READY.
 
 #### P0.3 Pre-Build Reality evidence gap
 **Owner:** Faadil + Assistant  
@@ -272,11 +275,12 @@ Automation may prepare commands/evidence, but must not misrepresent these action
 
 ## 7. Immediate next actions
 
-1. Opeyemi accepts the existing collaborator invitation.
-2. Merge PRD/state/work-split PR after review.
-3. Opeyemi begins `feat/t0-mainnet-custody`.
-4. Faadil begins `feat/canonical-scorer` in parallel.
-5. No evidence viewer or major visual design work until T0 is green.
+1. Faadil owner-signs G0 and merges the PRD/state/work-split PR when technically clean.
+2. Opeyemi review is recommended but non-blocking for G0.
+3. Opeyemi owns technical review where later changes materially affect his smart-contract / settlement surfaces.
+4. Opeyemi begins `feat/t0-mainnet-custody`.
+5. Faadil begins `feat/canonical-scorer` in parallel.
+6. No evidence viewer or major visual design work until T0 is green.
 
 
 ---
