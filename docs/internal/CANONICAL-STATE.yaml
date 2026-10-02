@@ -1237,3 +1237,37 @@ g2_integrated_deployment_authorization_2026_10_02:
     signer: HUMAN_METAMASK_ONLY
     assistant_private_key_access: FORBIDDEN
     status: NOT_YET_BROADCAST
+
+
+g2_final_prebroadcast_revalidation_2026_10_02:
+  status: PROVEN
+  exact_head: "3cd45b6d687a00f423cf76ae5e8690b70fce54aa"
+  reproducible_build:
+    run: 37024125860
+    result: SUCCESS
+  readonly_predeploy:
+    run: 37024125628
+    result: SUCCESS
+    artifact_id: 11234575822
+    artifact_digest: "sha256:4caab15b9b6457350d10c73fc555419d1f1e43c33fcfca432762f143f0706ddd"
+  chain_id: 5042
+  block_number: "23897749"
+  gas_price_wei: "20000000000"
+  deployer:
+    address: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+    pending_nonce: 6
+    balance_wei: "450904799000000000"
+  init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  predicted_contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  eth_estimateGas_units: "3493605"
+  estimated_deploy_cost_wei: "69872100000000000"
+  conservative_full_hero_peak_wei: "306023800000000000"
+  wallet_budget_verdict: READ_ONLY_GAS_BUDGET_WITHIN_CEILING
+  deployment_helper:
+    filename: "g2_assurancevault_deploy_exact.js"
+    sha256: "a5f0809ad9c4741c569d4adf8b51d87a31d5c44d0e09ecb7d0affb2a5b4c4b32"
+    behavior: "local Remix script; verifies chain/account/nonce/init hash/predicted address/gas before requesting MetaMask contract-creation transaction"
+  protected_action:
+    authorization: GRANTED_DEPLOYMENT_ONLY
+    ready_for_human_wallet_confirmation: true
+    downstream_actions_authorized: false
