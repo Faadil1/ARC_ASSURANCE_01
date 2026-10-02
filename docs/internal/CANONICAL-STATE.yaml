@@ -2,7 +2,7 @@ project: ARC_ASSURANCE_01
 updated_at: "2026-10-01T18:58:00-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_DEPLOYMENT_EXECUTION_BOUNDARY
+phase: ACTIVE_DESIGN_T0_POLICY_REGISTRATION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,12 +125,12 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_DEPLOYMENT_EXECUTION
+  id: T0_POLICY_REGISTRATION_EXECUTION
   status: ACTIVE
   owner: HUMAN_SIGNER
   protected_action: true
-  prerequisite: "T0_DEPLOYMENT_AUTHORIZATION is PROVEN."
-  machine_boundary: "Assistant may prepare and verify configuration, but the human-local signer must authorize/broadcast the deploy transaction. This authorization does not cover fund/payout/refund/complete."
+  prerequisite: "T0_DEPLOYMENT_EXECUTION is PROVEN."
+  machine_boundary: "Exactly one createPolicy call with the locked T0 config is authorized. STOP after receipt verification; contract funding/payout/refund/complete remain unauthorized."
 
 collaboration:
   faadil:
@@ -371,12 +371,12 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_DEPLOYMENT_EXECUTION
+  exact_next_gate: T0_POLICY_REGISTRATION_EXECUTION
   exact_next_action: >-
-    Human deployment authorization is now explicit for deploy + policy registration
-    only. Prepare and revalidate the exact deployment configuration, then the
-    human-local signer may broadcast deploy --confirm. STOP after deployment receipt
-    capture; fund/payout/refund/complete remain separately unauthorized.
+    Real Arc deployment is proven and runtime-bound to the canonical source.
+    Human-local signer may execute exactly one createPolicy call using the locked
+    T0 policy config. STOP after receipt verification; funding/payout/refund/complete
+    remain separately unauthorized.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -443,7 +443,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_DEPLOYMENT_AUTHORIZATION is PROVEN for deploy + policy registration only. Operational next gate is T0_DEPLOYMENT_EXECUTION; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
+  next_gate_rule: "T0_DEPLOYMENT_EXECUTION is PROVEN. Operational next gate is T0_POLICY_REGISTRATION_EXECUTION under the already-granted narrow authorization; product gate G1_T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -654,3 +654,41 @@ t0_deployment_execution_method_delta_2026_10_01:
     refund: NOT_AUTHORIZED
     complete: NOT_AUTHORIZED
   truth_boundary: "Two separate MetaMask-signed transactions replace the single Foundry broadcast, but no contract source or policy parameters change."
+
+
+t0_deployment_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  deployment_tx_hash: "0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  deployer: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  tx_value_wei: "0"
+  nonce: 0
+  verification:
+    head: 872975bc1c5428222d063a0ac9f5dc9b7d327c33
+    workflow_run: 36975671614
+    result: SUCCESS
+    artifact_digest: "sha256:dafa534dbfd6ff73e6bad22b88a79ccab72089019cc30395081646ff99db02d2"
+    proven:
+      - "deployment transaction succeeded on Arc"
+      - "receipt contractAddress matches expected contract"
+      - "runtime code exists"
+      - "authority matches dedicated T0 wallet"
+      - "expectedChainId == 5042"
+      - "usdcErc20Interface matches Arc canonical interface"
+      - "deploymentSpendCap == 0.05 native USDC"
+      - "policyCount == 0 before registration"
+      - "totalLiability == 0"
+      - "totalCustodyReceived == 0"
+      - "deployed executable runtime matches canonical compiled executable runtime after stripping Solidity CBOR metadata"
+  next_gate:
+    id: T0_POLICY_REGISTRATION_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
+    authorization: ALREADY_GRANTED_LIMITED_SCOPE
+  still_not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
