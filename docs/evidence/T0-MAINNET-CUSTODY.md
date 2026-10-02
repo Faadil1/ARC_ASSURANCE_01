@@ -39,7 +39,7 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 - Funding amount (native 18-decimal units): `10000000000000000` — **EXECUTED / PROVEN**
 - Funding amount (USDC display): **0.010 USDC — EXECUTED / PROVEN**
-- Payout amount: **0.001 USDC — NOT YET EXECUTED**
+- Payout amount: **0.001 USDC — EXECUTED / PROVEN**
 - Expected refund remainder: **0.009 USDC — NOT YET EXECUTED**
 - Deployment spend cap (immutable): `50000000000000000`
 
@@ -95,16 +95,18 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 ## Payout
 
-- Tx hash:
-- Explorer:
-- Block / log index:
-- `PaymentReleased` event:
-- Recipient balance before:
-- Recipient balance after:
-- Contract balance before:
-- Contract balance after:
-- `totalValueReleased()` after:
-- `totalLiability()` after:
+- Tx hash: `0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34`
+- Verification: GitHub Actions run `36983144079`
+- Receipt status: **SUCCESS / LIVE ARC**
+- Function: `releaseConfiguredPayout(bytes32)`
+- Transaction value: **0**
+- `PaymentReleased` event: **PROVEN; amount = 0.001 USDC**
+- State immediately after verified payout: `PaidOut`
+- Contract balance immediately after: **0.009 USDC**
+- `remainingFor(policyId)` immediately after: **0.009 USDC**
+- `totalValueReleased()` immediately after: **0.001 USDC**
+- `totalLiability()` immediately after: **0.009 USDC**
+- `totalCustodyReceived()` remains **0.010 USDC**
 
 ## Refund
 
@@ -149,7 +151,9 @@ Paste the decoded `snapshot(policyId)` result.
 - Exactly one T0 policy is registered with the locked configuration.
 - Exactly **0.010 native USDC** entered real Arc contract custody for that policy.
 - Funding receipt and immediate post-state are independently verified.
-- Payout/refund/completion remain unproven.
+- Configured payout of exactly **0.001 native USDC** is proven.
+- **0.009 native USDC** remained in policy custody immediately after payout.
+- Refund/completion remain unproven.
 
 ### INFERRED
 
