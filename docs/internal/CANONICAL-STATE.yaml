@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-02T04:40:43-04:00"
+updated_at: "2026-10-02T08:20:00-04:00"
 source_of_truth: true
 project_status: ACTIVE
 phase: ACTIVE_DESIGN_POST_T0_G1_PROVEN
@@ -16,7 +16,8 @@ repository:
   prd_branch: docs/prd-v0.1
   active_state_branch: ops/t0-funding-readiness
   active_state_pr: 44
-  default_branch_note: "Until G0 is merged, main is bootstrap history and MUST NOT be treated as the current project state."
+  g0_merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  default_branch_note: "main now contains the PROVEN G0 governance baseline. Later operational state remains ahead on stacked branches until reconciled/merged."
 
 program:
   name: Arc Microgrants
@@ -34,7 +35,7 @@ concept_lock:
   vertical: "structured document extraction"
   original_prooftender_procurement_layer: DEAD
   revalidation_required_before_deliver: false
-  revalidation_reason: "Pre-Build Reality problem evidence was proven in PR #8; DELIVER remains blocked by G0 and live product-depth gates, not by problem reality."
+  revalidation_reason: "Pre-Build Reality is PROVEN and G0 is now PROVEN. DELIVER remains blocked only by integrated live product-depth/runtime gates and external product evidence."
 
 promoted_invariants:
   - id: INV-01
@@ -98,28 +99,29 @@ scope:
 
 current_gate:
   id: G0_PRD_READY
-  status: IN_PROGRESS
-  exit_criteria:
-    - "PRD merged"
-    - "canonical state merged"
-    - "handover merged"
-    - "work split merged"
-    - "Opeyemi reviews PR #1 and PRD governance is merged"
-  note: >-
-    PR #1 is still open and main is still at the bootstrap commit. No branch has
-    been merged, so the whole PR stack is unmerged.
+  status: PROVEN
+  proven_by:
+    owner_signoff: Faadil
+    collaborator_review_policy: RECOMMENDED_NON_BLOCKING
+    collaborator_access: "opeblow = write"
+    merged_pr: 1
+    merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  truth_boundary: "G0 proves governance readiness only; it does not prove any downstream live product gate."
 
 next_gate:
   scope: PRODUCT_GATE
   id: G2_PRECOMMIT
-  status: BLOCKED
+  status: ACTIVE_READINESS__LIVE_PROOF_NOT_PROVEN
   blocked_by:
-    - G0_PRD_READY
+    - INTEGRATED_BRANCH_RECONCILIATION_WITH_MERGED_G0
+    - INTEGRATED_ASSURANCE_VAULT_MAINNET_DEPLOYMENT_NOT_PROVEN
+    - LIVE_BATCH_COMMIT_NOT_EXECUTED
   owner: project
   note: >-
-    G1_T0_MAINNET_CUSTODY is PROVEN from real Arc mainnet receipts. G2 cannot be
-    promoted while formal G0 / PRD_READY remains unmerged and while the integrated
-    product loop is not yet live.
+    G0 and G1 are PROVEN. G2 readiness exists in PR #45 on the integrated
+    AssuranceVault line. Live promotion still requires a reconciled integrated
+    branch, protected deployment/policy/funding actions, and an onchain opaque
+    commitment before provider output lock.
   review_queue_for_opeblow:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
@@ -409,10 +411,10 @@ system_control_plane_reconciliation_2026_10_01:
     integrated_line: "PR #20 -> #24 -> #30 -> #34 -> #36"
     invariant: "Evidence from one line cannot promote the other line's live claims."
   unresolved_upstream:
-    G0_PRD_READY: "NOT_PROVEN; PR #1 remains open/unmerged."
+    G0_PRD_READY: "PROVEN; PR #1 merged to main at 1220fc5d39b2262f0b66d0ae4713629b10f3ca29."
     Pre_Build_Reality: "PROVEN in PR #8 for problem reality."
     External_User_Operator_Product_Evidence: "BLOCKED; no external product trial/evidence yet."
-    DELIVER: "BLOCKED by G0 plus live product-depth/runtime gates."
+    DELIVER: "BLOCKED by integrated live product-depth/runtime gates and external product evidence; G0 is cleared."
   protected_action:
     wallet_topup_authorized_usdc: "0.50"
     wallet_topup_observed_ui_usdc: "0.51"
@@ -427,7 +429,7 @@ state_precedence_2026_10_01:
   status: PROVEN
   active_state_branch: ops/t0-funding-readiness
   active_state_pr: 44
-  default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
+  default_branch_role: G0_GOVERNANCE_BASELINE__NOT_LATEST_OPERATIONAL_STATE
   reading_order:
     - docs/internal/CANONICAL-STATE.yaml
     - docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -1060,15 +1062,17 @@ g1_t0_mainnet_custody:
     integrated live product loop.
 
 
-g0_review_boundary_2026_10_02:
-  status: BLOCKED
+g0_resolution_2026_10_02:
+  status: PROVEN
+  policy_correction:
+    owner_signoff_sufficient_for_g0: true
+    collaborator_review: RECOMMENDED_NON_BLOCKING
+    mandatory_technical_owner_review: "Only when a later gate/change materially affects that owner's explicit technical surface."
   pr: 1
   pr_url: "https://github.com/Faadil1/ARC_ASSURANCE_01/pull/1"
-  technical_mergeability: CLEAN
-  requested_reviewer: opeblow
-  submitted_reviews: 0
-  exact_remaining_human_prerequisite: "Opeyemi must submit Approve or Request changes; G0 cannot be promoted by repository owner self-approval."
-  after_approval: "Merge PR #1 if no changes are requested, then reconcile stacked bases."
+  merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  opeblow_permission: write
+  next: "Reconcile the integrated AssuranceVault line with merged G0, then continue G2 PRECOMMIT readiness/live execution."
 
 g2_precommit_readiness_2026_10_02:
   status: ACTIVE_READINESS__PROMOTION_BLOCKED
