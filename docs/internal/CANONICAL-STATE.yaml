@@ -1122,3 +1122,84 @@ g2_precommit_readiness_2026_10_02:
   truth_boundary: >-
     G2 does not itself prove provider execution, output correctness,
     deterministic resolution, fail->no-pay, breaker behavior, or adoption.
+
+
+g2_readonly_predeploy_2026_10_02:
+  status: PROVEN
+  evidence_head: "1933b9d5bfd9722450b099f7e054fe610ab017dc"
+  workflows:
+    reproducible_build:
+      run: 37022813711
+      result: SUCCESS
+    readonly_predeploy:
+      run: 37022813189
+      result: SUCCESS
+      artifact_id: 11234067687
+      artifact_digest: "sha256:7b83be30ab648cb78cff2d82c00d1d9029b63e82292333ebec1ba006a8ea614d"
+  role_topology:
+    authority_funder:
+      address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      eoa: true
+      observed_nonce: 6
+      observed_balance_wei: "450904799000000000"
+      observed_balance_usdc: "0.450904799"
+    provider_signer:
+      address: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+      eoa: true
+      observed_nonce: 0
+      observed_balance_wei: "0"
+    payout_recipient:
+      address: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+      eoa: true
+      observed_nonce: 0
+      observed_balance_wei: "0"
+    all_distinct: true
+  deployment_manifest:
+    chain_id: 5042
+    deployment_spend_cap_wei: "50000000000000000"
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+    policy_max_failures: 2
+    policy_max_spend_cap_wei: "20000000000000000"
+    policy_unit_payout_wei: "2000000000000000"
+    policy_expiry_unix: "1792033200"
+    policy_expiry_note: "2026-10-14 23:00 America/Toronto; refresh if execution is delayed"
+    creation_bytecode_keccak256: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+    init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  arc_snapshot:
+    block_number: "23896460"
+    gas_price_wei: "20000000000"
+    deployer_pending_nonce: 6
+    predicted_contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    eth_estimateGas_units: "3493605"
+    estimated_deployment_cost_wei_at_observed_gas_price: "69872100000000000"
+    estimated_deployment_cost_usdc: "0.0698721"
+  conservative_full_hero_budget:
+    exact_head_execution_gas_units: "2426871"
+    safe_total_gas_units: "7400595"
+    safe_gas_price_wei: "40000000000"
+    gas_reserve_wei: "296023800000000000"
+    principal_outflow_wei: "10000000000000000"
+    peak_required_wei: "306023800000000000"
+    peak_required_usdc: "0.3060238"
+    observed_wallet_balance_usdc: "0.450904799"
+    observed_balance_headroom_usdc: "0.144880999"
+    wallet_ceiling_usdc: "5.00"
+    verdict: READ_ONLY_GAS_BUDGET_WITHIN_CEILING
+  safety:
+    private_key_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+  invalidation:
+    - "deployer nonce changes from 6"
+    - "init-code or constructor args change"
+    - "creation bytecode changes"
+    - "gas snapshot becomes stale for approval"
+  next_gate:
+    id: G2_INTEGRATED_DEPLOYMENT_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+    exact_scope_if_granted: "Deploy AssuranceVault only from authority wallet on Arc mainnet using the bound init code; no policy creation, funding, commitBatch, output lock, reveal or resolve."
