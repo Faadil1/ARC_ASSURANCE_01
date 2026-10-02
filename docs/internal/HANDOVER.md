@@ -1033,3 +1033,25 @@ canary reveal, resolve, refund and additional top-up.
 
 A fresh read-only revalidation on the same exact SHA is mandatory immediately
 before the human MetaMask broadcast.
+
+
+## 52. Final G2 pre-broadcast revalidation — PROVEN
+
+Exact deployment head: `3cd45b6d687a00f423cf76ae5e8690b70fce54aa`.
+
+- reproducible build `37024125860` — SUCCESS
+- read-only predeploy `37024125628` — SUCCESS
+- deployer nonce still **6**
+- balance still **0.450904799 USDC**
+- init-code hash unchanged
+- predicted contract unchanged:
+  `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
+- exact deploy gas estimate still **3,493,605**
+- wallet-budget verdict still **WITHIN CEILING**
+
+The local Remix helper `g2_assurancevault_deploy_exact.js` is bound by
+SHA-256 `a5f0809ad9c4741c569d4adf8b51d87a31d5c44d0e09ecb7d0affb2a5b4c4b32`.
+It requests only the authorized contract-creation transaction and performs
+local checks before opening MetaMask.
+
+Current checkpoint: **HUMAN METAMASK CONFIRMATION**.
