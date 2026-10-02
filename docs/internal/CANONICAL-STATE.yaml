@@ -2,7 +2,7 @@ project: ARC_ASSURANCE_01
 updated_at: "2026-10-02T04:17:08-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_REFUND_EXECUTION_BOUNDARY
+phase: ACTIVE_DESIGN_T0_COMPLETION_AUTHORIZATION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,12 +125,13 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_REFUND_EXECUTION
+  id: T0_COMPLETION_AUTHORIZATION
   status: ACTIVE
-  owner: HUMAN_SIGNER
+  owner: HUMAN
   protected_action: true
-  prerequisite: "T0_REFUND_AUTHORIZATION is PROVEN."
-  machine_boundary: "Exactly one refundRemaining(policyId) transaction is authorized. Expected refund is 0.009 native USDC to the immutable funder. STOP after receipt verification. Completion remains separately unauthorized."
+  authorization_granted: false
+  prerequisite: "T0_REFUND_EXECUTION is PROVEN."
+  machine_boundary: "STOP. No complete(policyId) transaction may be signed or broadcast until separate explicit human authorization."
 
 collaboration:
   faadil:
@@ -371,12 +372,10 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_REFUND_EXECUTION
+  exact_next_gate: T0_COMPLETION_AUTHORIZATION
   exact_next_action: >-
-    Human authorization is explicit for exactly one refundRemaining(policyId)
-    transaction returning the remaining 0.009 native USDC to the immutable funder.
-    Revalidate state, then the human-local signer may broadcast. STOP after receipt
-    verification; completion remains separately unauthorized.
+    Real Arc remaining-funds refund is proven at exactly 0.009 native USDC.
+    STOP until the human explicitly authorizes complete(policyId).
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -443,7 +442,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_REFUND_AUTHORIZATION is PROVEN for exactly one refundRemaining(policyId) transaction. Operational next gate is T0_REFUND_EXECUTION; completion remains separately protected."
+  next_gate_rule: "T0_REFUND_EXECUTION is PROVEN. Operational next gate is T0_COMPLETION_AUTHORIZATION; G1 remains ACTIVE / PARTIAL until completion is proven."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -924,3 +923,48 @@ t0_refund_preflight_2026_10_02:
     expected_refund_usdc: "0.009"
     occurrence_limit: 1
   stop_after: "Capture and verify refund receipt; complete remains separately unauthorized."
+
+
+t0_refund_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 4
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "0"
+  refund_wei: "9000000000000000"
+  refund_usdc: "0.009"
+  verification:
+    head: 0ca236dc7826481b3f8ecbcf4d2f06852d30c24a
+    workflow_run: 36984307453
+    result: SUCCESS
+    artifact_digest: "sha256:ba4dca004eddb026b3689e217f507af91629d5803f8f07710ec5e406f0e4bb85"
+    proven:
+      - "successful refundRemaining(policyId) transaction on Arc"
+      - "function selector matches refundRemaining(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "transaction msg.value == 0"
+      - "RemainingFundsRefunded amount == 0.009 native USDC"
+      - "post-refund custody balance == 0"
+      - "post-refund totalRefunded == 0.009 native USDC"
+      - "state == Refunded immediately after refund verification"
+      - "remaining == 0"
+      - "totalLiability == 0"
+      - "totalCustodyReceived remains 0.010 native USDC"
+      - "totalValueReleased remains 0.001 native USDC"
+      - "contract native balance == 0"
+  authorization_consumed:
+    id: T0_REFUND_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  next_gate:
+    id: T0_COMPLETION_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+  still_not_authorized:
+    - complete
