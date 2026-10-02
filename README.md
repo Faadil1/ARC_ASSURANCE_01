@@ -33,8 +33,10 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
 - T0 wallet funding receipt: **PROVEN**
-- Operational next gate: **T0_DEPLOYMENT_AUTHORIZATION — HUMAN / PROTECTED / NOT YET GRANTED**
-- G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
+- T0 mainnet deployment: **PROVEN**
+- T0 policy registration: **PROVEN**
+- Operational next gate: **T0_CONTRACT_FUNDING_AUTHORIZATION — HUMAN / PROTECTED / NOT YET GRANTED**
+- G1 T0_MAINNET_CUSTODY: **ACTIVE / PARTIAL / NOT PROVEN**
 - Live Core Loop / DELIVER: **BLOCKED**
 
 The default branch `main` is still the bootstrap line and must not be treated as
