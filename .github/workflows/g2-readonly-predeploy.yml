@@ -90,17 +90,19 @@ jobs:
           }
           EOF
 
-      - name: Run exact-head tests and build
+      - name: Run exact-head JavaScript tests and Solidity build
         run: |
           npm run golden:write
           npm run test:all-js
           forge build
-          forge test -vv
 
       - name: Generate reproducible build manifest
         env:
           GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
         run: npm run build:manifest
+
+      - name: Run Solidity tests after manifest generation
+        run: forge test -vv
 
       - name: Derive deterministic public policy identifiers
         run: |
