@@ -985,3 +985,34 @@ Current next input boundary:
 - payout recipient: **NOT FINALIZED**.
 
 No integrated deployment/policy/funding/commit authorization has been granted.
+
+
+## 50. G2 exact Arc predeploy — PROVEN READ-ONLY
+
+Bound head:
+`1933b9d5bfd9722450b099f7e054fe610ab017dc`
+
+Runs:
+- reproducible build `37022813711` — SUCCESS
+- G2 read-only predeploy `37022813189` — SUCCESS
+
+Locked roles:
+- authority/funder: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- provider: `0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe`
+- payout recipient: `0x6B8ad09233dF44eD57B99aF8839129303955590C`
+
+Exact predeploy:
+- deployer nonce: **6**
+- predicted contract: `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
+- init-code hash:
+  `0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93`
+- Arc deployment estimate: **3,493,605 gas / 0.0698721 USDC** at observed gas price
+- conservative full-hero peak budget: **0.3060238 USDC**
+- wallet observed: **0.450904799 USDC**
+- conservative current headroom: **0.144880999 USDC**
+- wallet-budget verdict: **WITHIN CEILING / BALANCE SUFFICIENT**
+
+No signing or broadcast occurred.
+
+**Next checkpoint: G2_INTEGRATED_DEPLOYMENT_AUTHORIZATION.**
+Deployment only; no downstream policy/funding/commit authorization is implied.
