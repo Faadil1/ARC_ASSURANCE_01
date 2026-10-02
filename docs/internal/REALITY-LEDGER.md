@@ -553,3 +553,63 @@ remains a human MetaMask action.
 
 Re-run the exact read-only Arc predeploy gate on head
 `1933b9d5bfd9722450b099f7e054fe610ab017dc` immediately before broadcast.
+
+
+## Integrated AssuranceVault deployment — 2026-10-02
+
+### OBSERVED
+
+- Arc transaction:
+  `0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272`
+- block: **23909824**
+- deployer: `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`
+- nonce: **6**, consumed; current pending nonce after receipt = **7**
+- contract:
+  `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
+- transaction value: **0**
+- exact transaction init code matches canonical build: **true**
+- init-code hash:
+  `0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93`
+- runtime code size: **15,618 bytes**
+- constructor bindings:
+  - authority = dedicated human Arc wallet;
+  - expectedChainId = 5042;
+  - Arc USDC interface = `0x3600...0000`;
+  - deployment spend cap = **0.05 native USDC**.
+- initial contract state:
+  - policyCount = 0;
+  - liability = 0;
+  - custody received = 0;
+  - value released = 0;
+  - native contract balance = 0.
+- gas used = **3,464,938**
+- effective gas price = **21.5 gwei**
+- effective deployment cost = **0.074496167 native USDC**
+
+Independent verification:
+- G2 Deployment Receipt run `37036958146` — **SUCCESS**
+- verification head `84efcb9d67085f12f171988fa21e5ebff7c79b76`
+- artifact `11241455626`
+- artifact digest
+  `sha256:a502c42de338950a9f526c8ca1aeb37935a8d47ee7d7bfa8566fb99f316922d4`
+- same-head reproducible build `37036958053` — **SUCCESS**
+
+### CONSEQUENCE
+
+`G2_INTEGRATED_DEPLOYMENT = PROVEN`.
+
+The integrated product core is now physically deployed and exact-init-code bound
+on Arc Mainnet.
+
+### TRUTH BOUNDARY
+
+This does **not** prove G2 / PRECOMMIT. No policy exists yet and no real batch
+commitment has been submitted. It also does not prove funding, provider output,
+reveal, deterministic resolve, PASS -> pay, FAIL -> no-pay, breaker -> refund,
+or external-user adoption.
+
+### CURRENT PROTECTED BOUNDARY
+
+`G2_POLICY_CREATION_AUTHORIZATION = ACTIVE / HUMAN / NOT GRANTED`.
+
+No downstream transaction is authorized by the deployment receipt.
