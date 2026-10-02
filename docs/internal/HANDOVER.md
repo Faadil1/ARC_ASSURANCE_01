@@ -585,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **T0_CONTRACT_FUNDING_AUTHORIZATION**
+- operational next gate: **T0_PAYOUT_AUTHORIZATION**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -754,3 +754,33 @@ The deployment+registration authorization is now consumed.
 No native USDC may enter the contract until the human explicitly authorizes the
 bounded 0.010-USDC funding transaction. Payout, refund and completion remain
 separately unauthorized.
+
+
+## 43. Real Arc contract funding — PROVEN
+
+Funding transaction:
+`0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1`
+
+Contract:
+`0x0377D371d6981c98CE9C650338D7E1E80819B572`
+
+Verification run `36982128480` on head
+`593acc5b016a0fccfadc2f012a7e787dbd4256f8` succeeded.
+
+Verified:
+- Arc chain 5042;
+- sender is the dedicated T0 wallet;
+- nonce = 2;
+- function selector = `fund(bytes32)`;
+- policy id matches the locked T0 policy;
+- `msg.value = 10000000000000000` native units = **0.010 USDC**;
+- `PolicyFunded` event records the same exact amount;
+- state observed immediately after funding = `Funded`;
+- remaining/liability/custody received/contract balance each observed at **0.010 USDC** immediately after funding;
+- totalValueReleased remained 0 immediately after funding.
+
+The one-time funding authorization is now consumed.
+
+**Next protected checkpoint: `T0_PAYOUT_AUTHORIZATION`.**
+No `releaseConfiguredPayout` transaction may be signed or broadcast until separate
+explicit human authorization. Refund and completion remain separately unauthorized.
