@@ -6,7 +6,7 @@ project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
 repository: Faadil1/ARC_ASSURANCE_01
 current_stage: DESIGN__G2_PRECOMMIT_READINESS
 exact_next_gate: G2_PRECOMMIT
-exact_next_action: "G0 and G1 are proven. Reconcile the integrated AssuranceVault line with merged G0, rerun exact-source readiness, then request protected authorization for the first live G2 deployment step."
+exact_next_action: "G0/G1 are proven and G2 content reconciliation is green. Finalize public integrated role addresses, run exact read-only Arc predeploy/fee/nonce checks, then request protected authorization for integrated deployment."
 last_updated: "2026-10-02T08:20:00-04:00"
 bootstrap:
   faadil_system_router_activated: true
@@ -61,7 +61,7 @@ product_depth_and_live_reality:
   post_vertical_slice_depth_gap_review: NOT_APPLICABLE_WITH_REASON
 missing:
   - "External user/operator PRODUCT evidence (problem reality is already proven)."
-  - "Integrated AssuranceVault branch must be reconciled with merged G0 before any live G2 action."
+  - "Public integrated role addresses (provider signer and payout recipient) are not finalized."
 state_resolution:
   active_state_branch: ops/t0-funding-readiness
   active_state_pr: 44
