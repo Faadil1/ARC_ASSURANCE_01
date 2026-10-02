@@ -459,3 +459,32 @@ This does not weaken later technical review gates. A technical-owner review can 
 ### NEXT
 
 `G2_PRECOMMIT` becomes the active product gate. The remaining immediate blocker is structural reconciliation of the integrated AssuranceVault line with merged G0 before any protected mainnet G2 action.
+
+
+## G2 post-G0 readiness reconciliation — 2026-10-02
+
+### OBSERVED
+
+- G0 / PRD_READY is PROVEN on `main`.
+- G1 / T0_MAINNET_CUSTODY is PROVEN.
+- G2 readiness PR #45 uses the integrated `AssuranceVault`.
+- Readiness head: `21ff1ac9b138e2271018bae696de744268bfc223`.
+- Clean-room run `37006382193` succeeded on parent `ccbf1aa...`.
+- The only parent→head change after that green run is `docs/internal/G2-PRECOMMIT-READINESS.yaml`.
+- Compare from executable source `c3aaa11...` to readiness head touches governance/readiness documents only; executable source is unchanged.
+
+### CONSEQUENCE
+
+The earlier G0 blocker is cleared and G2 engineering readiness is green.
+
+### CURRENT BOUNDARY
+
+G2 remains **NOT PROVEN LIVE**.
+
+Before exact predeploy estimation and any protected mainnet action, the public
+integrated role addresses must be finalized:
+- authority/funder;
+- provider signer;
+- payout recipient.
+
+No mainnet action is authorized by this readiness state.
