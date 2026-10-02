@@ -1197,12 +1197,12 @@ g2_readonly_predeploy_2026_10_02:
     - "creation bytecode changes"
     - "gas snapshot becomes stale for approval"
   next_gate:
-    id: G2_INTEGRATED_DEPLOYMENT_AUTHORIZATION
-    status: ACTIVE
-    owner: HUMAN
+    id: G2_INTEGRATED_DEPLOYMENT
+    status: PROVEN
+    owner: HUMAN_SIGNER
     protected_action: true
-    authorization_granted: false
-    exact_scope_if_granted: "Deploy AssuranceVault only from authority wallet on Arc mainnet using the bound init code; no policy creation, funding, commitBatch, output lock, reveal or resolve."
+    authorization_consumed: true
+    next_protected_gate: G2_POLICY_CREATION_AUTHORIZATION
 
 
 g2_integrated_deployment_authorization_2026_10_02:
@@ -1271,3 +1271,68 @@ g2_final_prebroadcast_revalidation_2026_10_02:
     authorization: GRANTED_DEPLOYMENT_ONLY
     ready_for_human_wallet_confirmation: true
     downstream_actions_authorized: false
+
+
+g2_integrated_deployment_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+  block_number: 23909824
+  deployer: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  deployment_nonce: 6
+  pending_nonce_after: 7
+  tx_value_wei: "0"
+  contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  runtime_code_bytes: 15618
+  init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  exact_init_code_match: true
+  gas:
+    gas_used: 3464938
+    effective_gas_price_wei: "21500000000"
+    effective_cost_wei: "74496167000000000"
+    effective_cost_usdc: "0.074496167"
+  constructor_bindings:
+    authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    expected_chain_id: 5042
+    usdc_erc20_interface: "0x3600000000000000000000000000000000000000"
+    deployment_spend_cap_wei: "50000000000000000"
+  initial_state:
+    policy_count: 0
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+  verification:
+    workflow: G2_DEPLOYMENT_RECEIPT
+    run: 37036958146
+    result: SUCCESS
+    verification_head: "84efcb9d67085f12f171988fa21e5ebff7c79b76"
+    artifact_id: 11241455626
+    artifact_digest: "sha256:a502c42de338950a9f526c8ca1aeb37935a8d47ee7d7bfa8566fb99f316922d4"
+    reproducible_build_run: 37036958053
+    source_continuity: "No Solidity/product JS/build-input changes from deployment helper head 3cd45b6..."
+  deployment_authorization:
+    status: PROVEN_CONSUMED
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  truth_boundary: >-
+    Integrated AssuranceVault deployment is live and exact-source/init-code bound.
+    No policy, custody, batch commitment, provider output, reveal, resolve, payout
+    or breaker claim is implied.
+
+g2_policy_creation_authorization:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  locked_policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  rule: "STOP. No createPolicy transaction may be signed or broadcast until separate explicit human authorization."
+  downstream_still_unauthorized:
+    - fund
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
