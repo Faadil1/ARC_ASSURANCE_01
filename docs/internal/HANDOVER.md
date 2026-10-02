@@ -902,3 +902,62 @@ remain separate.
 
 Formal G0 / PRD_READY is still unproven because PR #1 is open/unmerged. After
 G0, the next PRD promotion gate is G2 / PRECOMMIT.
+
+
+## 47. G0 review boundary + G2 integrated readiness — 2026-10-02
+
+### G0
+
+PR #1 is technically clean and mergeable, but **G0 remains NOT PROVEN** because
+the required Opeyemi review has not yet been submitted.
+
+Observed:
+- PR #1 base: `main`
+- PR #1 head: `docs/prd-v0.1`
+- requested reviewer: `opeblow`
+- submitted reviews: **0**
+- mergeable state: **clean**
+
+A focused G0 reviewer checklist and direct @opeblow ping were added to PR #1.
+Do not self-bypass this review requirement.
+
+### G2 vehicle decision
+
+Do **not** deploy the standalone `AssuranceCoreV1` merely to obtain a G2 proof.
+
+Use the integrated `AssuranceVault` product core so that the precommit proven
+at G2 is the same mechanism that later carries provider output lock, reveal,
+deterministic resolution and financial consequence.
+
+Integrated base:
+- branch: `ops/exact-predeploy-gas-snapshot`
+- SHA: `c3aaa11bf7454e1f3afe0fb740c8c0ccd7fedd5c`
+- clean-room workflow: `36680776957`
+- JavaScript: **72 passed / 0 failed**
+- Solidity: **29 passed / 0 failed**
+- AssuranceVault creation bytecode:
+  `0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57`
+
+Readiness workstream:
+- branch: `ops/g2-precommit-readiness`
+- PR: **#45**
+- files:
+  - `docs/internal/G2-PRECOMMIT-READINESS.md`
+  - `docs/internal/G2-PRECOMMIT-READINESS.yaml`
+
+### G2 truth boundary
+
+Required live G2 claim:
+
+> A real opaque hidden-test commitment exists on Arc mainnet before provider
+> execution/output lock for the same batch.
+
+Before provider output lock, only the opaque commitment may be public. The
+commitment preimage must remain private until reveal; do not place it in GitHub,
+Actions artifacts/logs, PR comments, chat or screenshots.
+
+No integrated deployment, policy creation, funding, `commitBatch`, output-lock,
+reveal or resolve action is currently authorized.
+
+Current order:
+`G0 review + merge -> reconcile integrated line -> protected live G2 execution`.
