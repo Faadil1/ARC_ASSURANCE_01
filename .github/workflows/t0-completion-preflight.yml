@@ -1,0 +1,97 @@
+name: T0 Completion Preflight
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      T0_CONTRACT_ADDRESS: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+      T0_WALLET: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      T0_POLICY_ID: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Install Arc cast
+        run: |
+          set -euo pipefail
+          ARC_TAG="v0.8.0-2"
+          ARC_VER="${ARC_TAG#v}"
+          ASSET="arc-foundry-v${ARC_VER}-x86_64-unknown-linux-gnu.tar.gz"
+          URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_TAG}/${ASSET}"
+          EXPECTED_SHA256="088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556"
+          curl -fsSL "$URL" -o /tmp/arc.tar.gz
+          ACTUAL_SHA256="$(sha256sum /tmp/arc.tar.gz | awk '{print $1}')"
+          [ "$ACTUAL_SHA256" = "$EXPECTED_SHA256" ]
+          rm -rf /tmp/arcbin && mkdir -p /tmp/arcbin
+          tar -xzf /tmp/arc.tar.gz -C /tmp/arcbin
+          for b in /tmp/arcbin/*; do
+            [ -f "$b" ] && [ -x "$b" ] && sudo install -m 0755 "$b" "/usr/local/bin/$(basename "$b")"
+          done
+          printf '#!/bin/sh\nexec cast "$@"\n' | sudo tee /usr/local/bin/arc-cast >/dev/null
+          sudo chmod 0755 /usr/local/bin/arc-cast
+
+      - name: Verify policy is ready for completion
+        run: |
+          set -euo pipefail
+          CHAIN="$(arc-cast chain-id --rpc-url "$ARC_MAINNET_RPC_URL")"
+          AUTHORITY="$(arc-cast call "$T0_CONTRACT_ADDRESS" "authority()(address)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          EXISTS="$(arc-cast call "$T0_CONTRACT_ADDRESS" "policyExists(bytes32)(bool)" "$T0_POLICY_ID" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          STATE="$(arc-cast call "$T0_CONTRACT_ADDRESS" "stateOf(bytes32)(uint8)" "$T0_POLICY_ID" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          REMAINING="$(arc-cast call "$T0_CONTRACT_ADDRESS" "remainingFor(bytes32)(uint256)" "$T0_POLICY_ID" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          LIABILITY="$(arc-cast call "$T0_CONTRACT_ADDRESS" "totalLiability()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          RECEIVED="$(arc-cast call "$T0_CONTRACT_ADDRESS" "totalCustodyReceived()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          RELEASED="$(arc-cast call "$T0_CONTRACT_ADDRESS" "totalValueReleased()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          CONTRACT_BALANCE="$(arc-cast balance "$T0_CONTRACT_ADDRESS" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          WALLET_NONCE="$(arc-cast nonce "$T0_WALLET" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          ACCOUNTING="$(arc-cast call "$T0_CONTRACT_ADDRESS" "getAccounting(bytes32)((uint256,uint256,uint256))" "$T0_POLICY_ID" --rpc-url "$ARC_MAINNET_RPC_URL")"
+
+          [ "$CHAIN" = "5042" ]
+          [ "${AUTHORITY,,}" = "${T0_WALLET,,}" ]
+          [ "$EXISTS" = "true" ]
+          [ "$STATE" = "3" ]
+          [ "$REMAINING" = "0" ]
+          [ "$LIABILITY" = "0" ]
+          [ "$RECEIVED" = "10000000000000000" ]
+          [ "$RELEASED" = "1000000000000000" ]
+          [ "$CONTRACT_BALANCE" = "0" ]
+
+          cat > t0-completion-preflight.json <<EOF
+          {
+            "schema": "ARC_ASSURANCE_T0_COMPLETION_PREFLIGHT_V1",
+            "chain_id": "$CHAIN",
+            "contract": "$T0_CONTRACT_ADDRESS",
+            "authority": "$AUTHORITY",
+            "policy_id": "$T0_POLICY_ID",
+            "policy_exists": "$EXISTS",
+            "state": "$STATE",
+            "remaining_wei": "$REMAINING",
+            "total_liability_wei": "$LIABILITY",
+            "total_custody_received_wei": "$RECEIVED",
+            "total_value_released_wei": "$RELEASED",
+            "contract_balance_wei": "$CONTRACT_BALANCE",
+            "wallet_nonce": "$WALLET_NONCE",
+            "get_accounting_raw": $(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$ACCOUNTING"),
+            "verified": true
+          }
+          EOF
+
+      - name: Upload completion preflight evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: t0-completion-preflight-${{ github.event.pull_request.head.sha || github.sha }}
+          path: t0-completion-preflight.json
+          if-no-files-found: error
+          retention-days: 90
