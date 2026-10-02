@@ -4,9 +4,9 @@ status: ACTIVE_RECONCILED_POST_REVALIDATION
 project: ARC_ASSURANCE_01
 project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
 repository: Faadil1/ARC_ASSURANCE_01
-current_stage: DESIGN__G2_PRECOMMIT_READINESS
-exact_next_gate: G2_PRECOMMIT
-exact_next_action: "G0/G1 are proven and G2 content reconciliation is green. Finalize public integrated role addresses, run exact read-only Arc predeploy/fee/nonce checks, then request protected authorization for integrated deployment."
+current_stage: DESIGN__G2_INTEGRATED_DEPLOYED__POLICY_AUTH_BOUNDARY
+exact_next_gate: G2_POLICY_CREATION_AUTHORIZATION
+exact_next_action: "Integrated AssuranceVault deployment is PROVEN on Arc mainnet. STOP until separate explicit human authorization for createPolicy on the locked G2 policy."
 last_updated: "2026-10-02T08:20:00-04:00"
 bootstrap:
   faadil_system_router_activated: true
@@ -53,7 +53,7 @@ capabilities:
 product_depth_and_live_reality:
   applicable: true
   live_core_loop: MISSING
-  load_bearing_integration: MISSING
+  load_bearing_integration: PARTIAL_LIVE_DEPLOYED_CORE
   real_consequence: PARTIAL_T0_LIVE_PAYMENT_PRIMITIVE
   real_user_surface: MISSING
   external_user_or_operator_evidence: MISSING
@@ -61,7 +61,6 @@ product_depth_and_live_reality:
   post_vertical_slice_depth_gap_review: NOT_APPLICABLE_WITH_REASON
 missing:
   - "External user/operator PRODUCT evidence (problem reality is already proven)."
-  - "Public integrated role addresses (provider signer and payout recipient) are not finalized."
 state_resolution:
   active_state_branch: ops/t0-funding-readiness
   active_state_pr: 44
@@ -84,9 +83,18 @@ state_resolution:
   post_funding_wallet_receipt: PROVEN
   funding_transaction_reference: PROVEN
   deployment_authorization_legacy_duplicate: SUPERSEDED_BY_PROVEN_CONSUMED
-  macro_product_gate: G2_PRECOMMIT__READINESS_ACTIVE
+  macro_product_gate: G2_PRECOMMIT__DEPLOYMENT_PROVEN__POLICY_AUTH_BLOCKED
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: MISSING
   branch_head_rule: "Resolve PR #44 head dynamically; documentation commits do not change the execution evidence head unless executable T0 inputs change."
 
 terminal_completeness_allowed: false
+
+
+g2_integrated_deployment:
+  status: PROVEN
+  tx_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  verification_run: 37036958146
+  exact_init_code_match: true
+  next_protected_gate: G2_POLICY_CREATION_AUTHORIZATION
