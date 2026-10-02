@@ -353,22 +353,24 @@ promotion_rule:
 
 t0_gate_detail:
   status: ACTIVE
-  substate: FUNDED__POST_FUNDING_RECEIPT_ACTIVE
+  substate: DEPLOYED__POLICY_REGISTERED__AWAITING_CONTRACT_FUNDING_AUTHORIZATION
   evidence_class: NOT_IMPLEMENTED
   source_produced: true
   tests_executed_with_arc_foundry: true
   tests_passed: 40
   tests_failed: 0
-  mainnet_deployed: false
-  real_funding: true
+  mainnet_deployed: true
+  wallet_funding: true
+  contract_funding: false
   real_payout: false
   real_refund: false
-  runtime_commit_bound: false
+  deployment_runtime_source_bound: true
+  full_lifecycle_runtime_commit_bound: false
   promotion_condition: "All above execution/evidence fields true with receipts bound to exact commit."
   boundary: >-
-    tests_executed_with_arc_foundry is true but mainnet_deployed through
-    runtime_commit_bound are all false. LOCAL test evidence is explicitly NOT
-    promoted to LIVE_GATEWAY. G1 remains ACTIVE and NOT PROVEN.
+    Mainnet deployment and one policy registration are now live and independently
+    verified. Contract custody, payout, refund and completion remain unproven, so
+    G1 remains ACTIVE / PARTIAL / NOT PROVEN and cannot be promoted to LIVE_GATEWAY.
 
 
 t0_post_audit_revalidation:
@@ -424,12 +426,13 @@ t0_g1_mainnet_custody_gate:
   status: ACTIVE
   source_ready: true
   funding_ready_candidate: true
-  live_deployment: false
+  live_deployment: true
   real_custody: false
   real_payout: false
   real_refund: false
   real_completion: false
-  runtime_commit_binding: false
+  deployment_runtime_source_binding: true
+  full_lifecycle_runtime_commit_binding: false
   promotion_condition: "Real Arc receipts for deploy/fund/payout/refund/complete bound to the approved exact commit."
 
 
@@ -541,7 +544,7 @@ state_resolution_2026_10_01:
   default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
   execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
   current_branch_head_rule: "Resolve PR #44 head dynamically."
-  operational_next_gate: T0_POLICY_REGISTRATION_EXECUTION
+  operational_next_gate: T0_CONTRACT_FUNDING_AUTHORIZATION
   macro_product_gate: G1_T0_MAINNET_CUSTODY
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: BLOCKED
@@ -615,15 +618,41 @@ t0_deployment_execution_gate:
 
 
 t0_policy_registration_execution_gate:
-  status: ACTIVE
+  status: PROVEN
   owner: HUMAN_SIGNER
   protected_action: true
-  authorization: PROVEN_LIMITED_SCOPE
+  authorization: PROVEN_CONSUMED
   contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
   policy_config: ops/t0-deployment-config.json
-  completion_rule: "Exactly one createPolicy receipt must be captured and verified, then STOP before contract funding."
+  transaction_hash: "0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7"
+  verification_run: 36976421698
+  verification_head: c4c923455ba2caf9a04a372c213f3339dfcbbfe8
+  artifact_digest: "sha256:8f2c2c5b954d8062b133a9e0adbeb168c702dd8171cc8f7b4f5413bafcd491fa"
+  proven:
+    - "createPolicy receipt successful"
+    - "selector and calldata match locked config"
+    - "PolicyCreated event matches locked config"
+    - "policyCount == 1"
+    - "policyExists == true"
+    - "state == Created"
+    - "no custody/value movement occurred"
   does_not_authorize:
     - contract_funding
     - payout
     - refund
     - complete
+
+
+t0_contract_funding_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  prerequisite:
+    - "T0_DEPLOYMENT_EXECUTION = PROVEN"
+    - "T0_POLICY_REGISTRATION_EXECUTION = PROVEN"
+  candidate_amount_wei: "10000000000000000"
+  candidate_amount_usdc: "0.010"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  rule: "No contract funding transaction may be signed or broadcast until separate explicit human authorization. Payout/refund/complete remain separately protected."
