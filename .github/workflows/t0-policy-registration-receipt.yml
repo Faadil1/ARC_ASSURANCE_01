@@ -75,11 +75,9 @@ jobs:
 
           [ "$POLICY_COUNT" = "1" ]
           [ "$EXISTS" = "true" ]
-          [ "$STATE" = "0" ]
-          [ "$REMAINING" = "0" ]
-          [ "$LIABILITY" = "0" ]
-          [ "$RECEIVED" = "0" ]
-          [ "$RELEASED" = "0" ]
+          # STATE / REMAINING / LIABILITY / RECEIVED / RELEASED are lifecycle-mutable.
+          # Registration proof is historical and must remain valid after later
+          # authorized funding / payout / refund / completion transitions.
 
           GET_POLICY="$(arc-cast call "$T0_CONTRACT_ADDRESS" "getPolicy(bytes32)((bytes32,address,address,uint256,uint256,uint64,uint64,uint64,uint64,uint256,uint256,uint256,bool,bool,uint8))" "$T0_POLICY_ID" --rpc-url "$ARC_MAINNET_RPC_URL")"
 
@@ -91,11 +89,11 @@ jobs:
             "function_selector": "$ACTUAL_SELECTOR",
             "policy_count": "$POLICY_COUNT",
             "policy_exists": "$EXISTS",
-            "state": "$STATE",
-            "remaining": "$REMAINING",
-            "total_liability": "$LIABILITY",
-            "total_custody_received": "$RECEIVED",
-            "total_value_released": "$RELEASED",
+            "current_state": "$STATE",
+            "current_remaining": "$REMAINING",
+            "current_total_liability": "$LIABILITY",
+            "current_total_custody_received": "$RECEIVED",
+            "current_total_value_released": "$RELEASED",
             "get_policy_raw": $(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$GET_POLICY"),
             "verified": true
           }
