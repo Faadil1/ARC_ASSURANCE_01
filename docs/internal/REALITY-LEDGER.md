@@ -345,3 +345,28 @@ This proves real Arc-native custody of the bounded T0 principal. It does **not**
 `T0_PAYOUT_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
 
 No configured payout transaction is authorized by the prior funding approval.
+
+
+## Real Arc configured payout — 2026-10-02
+
+### OBSERVED
+
+- Payout tx: `0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34`.
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`.
+- Verification run `36983144079`: SUCCESS.
+- Transaction is a successful `releaseConfiguredPayout(bytes32)` call from the dedicated T0 wallet at nonce 3.
+- Transaction value is zero.
+- The emitted `PaymentReleased` event records exactly **0.001 native USDC**.
+- Immediately after payout verification: state = PaidOut, remaining = 0.009, totalLiability = 0.009, totalCustodyReceived = 0.010, totalValueReleased = 0.001, contract balance = 0.009 native USDC.
+
+### CONSEQUENCE
+
+`T0_PAYOUT_EXECUTION = PROVEN`.
+
+This proves the configured payout leg. It does **not** prove refund or completion.
+
+### CURRENT BOUNDARY
+
+`T0_REFUND_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
+
+No refund transaction is authorized by the payout approval.
