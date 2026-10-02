@@ -370,3 +370,28 @@ This proves the configured payout leg. It does **not** prove refund or completio
 `T0_REFUND_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
 
 No refund transaction is authorized by the payout approval.
+
+
+## Real Arc remaining-funds refund — 2026-10-02
+
+### OBSERVED
+
+- Refund tx: `0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024`.
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`.
+- Verification run `36984307453`: SUCCESS.
+- Transaction is a successful `refundRemaining(bytes32)` call from the dedicated T0 wallet at nonce 4.
+- Transaction value is zero.
+- `RemainingFundsRefunded` records exactly **0.009 native USDC**.
+- Immediately after refund verification: state = Refunded, remaining = 0, totalLiability = 0, totalCustodyReceived = 0.010, totalValueReleased = 0.001, contract balance = 0.
+
+### CONSEQUENCE
+
+`T0_REFUND_EXECUTION = PROVEN`.
+
+This proves the remaining-funds refund leg. It does **not** prove completion.
+
+### CURRENT BOUNDARY
+
+`T0_COMPLETION_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
+
+No completion transaction is authorized by the refund approval.
