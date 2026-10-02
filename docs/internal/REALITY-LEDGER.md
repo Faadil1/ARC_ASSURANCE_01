@@ -530,3 +530,26 @@ only while deployer nonce remains 6 and the exact init code remains unchanged.
 A deployment authorization, if granted, covers deployment only. Policy creation,
 funding, `commitBatch`, provider output lock, reveal and resolve remain separate
 protected actions.
+
+
+## G2 protected deployment authorization — 2026-10-02
+
+### AUTHORIZATION OBSERVED
+
+The human owner explicitly authorized **only** deployment of the integrated
+`AssuranceVault` on Arc Mainnet.
+
+### SCOPE BOUNDARY
+
+Allowed: one integrated AssuranceVault deployment.
+
+Not authorized: `createPolicy`, funding, `commitBatch`, provider output lock,
+canary reveal, resolve, refund, or any additional wallet top-up.
+
+The assistant must not consume or request a private key. Final signing/broadcast
+remains a human MetaMask action.
+
+### PRE-BROADCAST CONDITION
+
+Re-run the exact read-only Arc predeploy gate on head
+`1933b9d5bfd9722450b099f7e054fe610ab017dc` immediately before broadcast.
