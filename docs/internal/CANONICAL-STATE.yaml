@@ -900,3 +900,27 @@ t0_refund_authorization_2026_10_02:
     id: T0_REFUND_EXECUTION
     status: ACTIVE
     owner: HUMAN_SIGNER
+
+
+t0_refund_preflight_2026_10_02:
+  status: PROVEN
+  head: f2e4a42949b877dfc83061ed396129cdd719b9c1
+  workflow_run: 36983766447
+  result: SUCCESS
+  verified:
+    - "Arc chain 5042"
+    - "authority matches dedicated T0 wallet"
+    - "policy exists"
+    - "state == PaidOut"
+    - "remaining == 0.009 native USDC"
+    - "totalLiability == 0.009 native USDC"
+    - "totalCustodyReceived == 0.010 native USDC"
+    - "totalValueReleased == 0.001 native USDC"
+    - "contract balance == 0.009 native USDC"
+  next_action:
+    function: "refundRemaining(bytes32)"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    expected_refund_wei: "9000000000000000"
+    expected_refund_usdc: "0.009"
+    occurrence_limit: 1
+  stop_after: "Capture and verify refund receipt; complete remains separately unauthorized."
