@@ -613,3 +613,32 @@ or external-user adoption.
 `G2_POLICY_CREATION_AUTHORIZATION = ACTIVE / HUMAN / NOT GRANTED`.
 
 No downstream transaction is authorized by the deployment receipt.
+
+
+## G2 policy creation preflight — 2026-10-02
+
+### OBSERVED
+
+Read-only run `37038419742` succeeded.
+
+The integrated vault remains empty and unconfigured:
+- policyCount = 0;
+- liability = 0;
+- custody = 0;
+- released value = 0;
+- contract balance = 0.
+
+The locked `createPolicy` transaction estimates at **272,515 gas** with
+observed fee **~0.00545030000981054 native USDC**, while the authority wallet
+holds **0.376408632 native USDC**.
+
+### CONSEQUENCE
+
+Policy creation is technically ready but **not authorized**.
+
+### CURRENT PROTECTED BOUNDARY
+
+`G2_POLICY_CREATION_AUTHORIZATION = ACTIVE / HUMAN / NOT GRANTED`.
+
+No downstream funding or batch action is implied by a future policy-creation
+authorization.
