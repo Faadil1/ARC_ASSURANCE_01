@@ -460,7 +460,9 @@ Off-chain material must be content-addressed or hashed where useful, but a hash 
 ## 16. Promotion gates
 
 ### G0 — PRD_READY
-PRD, canonical state, work split and truth boundaries reviewed.
+PRD, canonical state, work split and truth boundaries are complete, owner-signed off by Faadil, and merged to `main`.
+
+A collaborator review is recommended but **non-blocking** for G0 unless a separate surface-specific gate explicitly requires that collaborator's approval. Technical-owner review remains required when a later change materially affects a surface owned by that technical lead.
 
 ### G1 — T0_MAINNET_CUSTODY
 Real Arc mainnet USDC custody, payout and refund proven.
