@@ -1,7 +1,6 @@
 name: T0 Contract Funding Preflight
 
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
