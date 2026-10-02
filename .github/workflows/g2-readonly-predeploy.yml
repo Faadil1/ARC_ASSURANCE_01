@@ -101,9 +101,6 @@ jobs:
           GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
         run: npm run build:manifest
 
-      - name: Run Solidity tests after manifest generation
-        run: forge test -vv
-
       - name: Derive deterministic public policy identifiers
         run: |
           node --input-type=module <<'NODE'
@@ -115,9 +112,13 @@ jobs:
           console.log(JSON.stringify({policy_id:policyId, scorer_id_hash:scorer}, null, 2));
           NODE
 
-      - name: Generate exact deployment manifest
+      - name: Generate exact deployment manifest before Solidity cross-check
         run: |
-          node script/generate-deployment-manifest.mjs             build/reproducible-build-manifest.json             build/g2-deployment-manifest.json
+          node script/generate-deployment-manifest.mjs             build/reproducible-build-manifest.json             build/deployment-manifest.ci.json
+          cp build/deployment-manifest.ci.json build/g2-deployment-manifest.json
+
+      - name: Run Solidity tests with exact deployment manifest
+        run: forge test -vv
 
       - name: Generate exact Arc predeploy gas snapshot
         run: |
