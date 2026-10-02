@@ -1,7 +1,6 @@
 name: G2 Read-Only Predeploy
 
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
