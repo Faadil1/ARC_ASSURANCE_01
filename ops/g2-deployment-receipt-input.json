@@ -1,0 +1,13 @@
+{
+  "schema": "ARC_ASSURANCE_G2_DEPLOYMENT_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "deployment_tx_hash": "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272",
+  "expected_deployer": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 6,
+  "expected_tx_value_wei": "0",
+  "expected_contract_address": "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4",
+  "expected_chain_id_constructor": 5042,
+  "expected_usdc_erc20_interface": "0x3600000000000000000000000000000000000000",
+  "expected_deployment_spend_cap_wei": "50000000000000000",
+  "expected_init_code_keccak256": "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+}
