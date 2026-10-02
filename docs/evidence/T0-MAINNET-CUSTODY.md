@@ -1,6 +1,6 @@
 # T0 Mainnet Custody Evidence
 
-**Evidence class:** PARTIAL_LIVE
+**Evidence class:** LIVE
 **Gate:** G1 / T0_MAINNET_CUSTODY
 **Branch:** `feat/t0-mainnet-custody`
 **Contract:** `src/PolicyCustody.sol`
@@ -125,9 +125,17 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 ## Completion
 
-- Tx hash:
-- `PolicyCompleted` event:
-- Final state: _(expected 4 = Completed)_
+- Tx hash: `0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932`
+- Verification: GitHub Actions run `36985388199`
+- Receipt status: **SUCCESS / LIVE ARC**
+- Function: `complete(bytes32)`
+- Transaction value: **0**
+- `PolicyCompleted` event: **PROVEN; finalBalance = 0**
+- `PolicyStateChanged`: **PROVEN; Refunded -> Completed**
+- Final state: **4 / Completed**
+- Final `remainingFor(policyId)`: **0**
+- Final `totalLiability()`: **0**
+- Final contract native balance: **0**
 
 ## Final snapshot
 
@@ -135,10 +143,13 @@ Paste the decoded `snapshot(policyId)` result.
 
 ## Accounting reconciliation
 
-- `totalFunded == totalPaidOut + totalRefunded` for the policy:
-- `totalLiability() == 0` across all policies:
-- `unattributedValue() == 0`:
-- `custodyBalance == 0`:
+- `totalFunded == 0.010 USDC`: **PROVEN**
+- `totalPaidOut == 0.001 USDC`: **PROVEN**
+- `totalRefunded == 0.009 USDC`: **PROVEN**
+- `totalFunded == totalPaidOut + totalRefunded`: **PROVEN (0.010 = 0.001 + 0.009)**
+- `totalLiability() == 0`: **PROVEN**
+- contract native balance == 0: **PROVEN**
+- `remainingFor(policyId) == 0`: **PROVEN**
 
 ## Independent verification
 
@@ -159,11 +170,12 @@ Paste the decoded `snapshot(policyId)` result.
 - **0.009 native USDC** remained in policy custody immediately after payout.
 - Remaining-funds refund of exactly **0.009 native USDC** is proven.
 - Contract custody and liability are now **0**.
-- Completion remains unproven.
+- Completion is proven with `Refunded -> Completed`, final balance 0 and no value movement.
+- **G1 / T0_MAINNET_CUSTODY is PROVEN.**
 
 ### INFERRED
 
-- If receipts and balances reconcile, T0 proves the Arc-native custody/payout/refund primitive for this exact contract and commit.
+- The receipt set proves the Arc-native custody/payout/refund/completion primitive for this exact deployed contract and verified runtime/source binding.
 - Per-policy liability isolation means the pooled native balance does not let one policy consume another's value.
 
 ### UNKNOWN / NOT PROVEN BY T0
@@ -192,4 +204,4 @@ Current-head changes include:
 - truthful unknown-policy views;
 - corrected policy-cap semantics.
 
-Do not promote this gate until the current head is recompiled/tested with Arc Foundry and then bound to the mainnet receipts.
+Historical note: that promotion condition is now satisfied for G1 by the verified runtime/source binding plus live Arc deployment, custody, payout, refund and completion receipts.
