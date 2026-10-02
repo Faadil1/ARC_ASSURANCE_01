@@ -77,12 +77,9 @@ jobs:
 
           [ "$POLICY_COUNT" = "1" ]
           [ "$EXISTS" = "true" ]
-          [ "$STATE" = "1" ]
-          [ "$REMAINING" = "$EXPECTED_FUND_WEI" ]
-          [ "$LIABILITY" = "$EXPECTED_FUND_WEI" ]
-          [ "$RECEIVED" = "$EXPECTED_FUND_WEI" ]
-          [ "$RELEASED" = "0" ]
-          [ "$CONTRACT_BALANCE" = "$EXPECTED_FUND_WEI" ]
+          # Current state/liability/balance are lifecycle-mutable after payout/refund.
+          # Immutable funding proof is carried by the successful transaction,
+          # exact msg.value, calldata and PolicyFunded event.
 
           GET_ACCOUNTING="$(arc-cast call "$T0_CONTRACT_ADDRESS" "getAccounting(bytes32)((uint256,uint256,uint256))" "$T0_POLICY_ID" --rpc-url "$ARC_MAINNET_RPC_URL")"
 
@@ -94,12 +91,12 @@ jobs:
             "function_selector": "$ACTUAL_SELECTOR",
             "policy_count": "$POLICY_COUNT",
             "policy_exists": "$EXISTS",
-            "state": "$STATE",
-            "remaining_wei": "$REMAINING",
-            "total_liability_wei": "$LIABILITY",
-            "total_custody_received_wei": "$RECEIVED",
-            "total_value_released_wei": "$RELEASED",
-            "contract_balance_wei": "$CONTRACT_BALANCE",
+            "current_state": "$STATE",
+            "current_remaining_wei": "$REMAINING",
+            "current_total_liability_wei": "$LIABILITY",
+            "current_total_custody_received_wei": "$RECEIVED",
+            "current_total_value_released_wei": "$RELEASED",
+            "current_contract_balance_wei": "$CONTRACT_BALANCE",
             "get_accounting_raw": $(python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$GET_ACCOUNTING"),
             "verified": true
           }
