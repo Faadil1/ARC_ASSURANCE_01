@@ -227,3 +227,15 @@ Still required before exact predeploy estimation:
 - payout recipient: fresh distinct EOA, different from authority/funder and provider signer.
 
 Role separation is intentional. Do not reuse the authority/funder as provider signer or payout recipient for the integrated live proof.
+
+
+## 13. Integrated role topology — LOCKED
+
+- authority / funder: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- provider signer: `0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe`
+- payout recipient: `0x6B8ad09233dF44eD57B99aF8839129303955590C`
+
+All three public addresses are distinct.
+
+This locks public role topology only. It does not authorize deployment, policy
+creation, funding, `commitBatch`, output lock, reveal or resolve.
