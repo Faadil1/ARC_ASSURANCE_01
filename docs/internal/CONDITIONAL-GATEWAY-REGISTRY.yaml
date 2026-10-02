@@ -105,10 +105,10 @@ core_gates:
     condition: "Every proof artifact is labeled by actual evidence class."
   Runtime_Commit_Binding:
     status: PROVEN
-    scope: T0_MAINNET_CUSTODY
-    evidence: "Deployed executable runtime is source-bound; every protected T0 transaction is receipt-bound to the verified contract and active evidence branch."
-    reopen_when: "The integrated assurance runtime is deployed or materially changed."
-    condition: "Runtime evidence must bind to the exact demonstrated commit."
+    scope: T0_MAINNET_CUSTODY__PLUS_INTEGRATED_ASSURANCEVAULT_DEPLOYMENT
+    evidence: "T0 lifecycle is receipt-bound; integrated AssuranceVault deployment is exact-init-code bound on Arc mainnet via G2 Deployment Receipt run 37036958146."
+    reopen_when: "Integrated executable source/constructor inputs change or later live runtime evidence diverges."
+    condition: "Runtime evidence must bind to the exact demonstrated commit/init code."
   Deterministic_Demo:
     status: BLOCKED
     blocker: "No canonical run yet."
@@ -249,11 +249,11 @@ payment_and_platform_gateways:
   Wallets:
     status: ACTIVE
     condition: "Network, address, signer, chain ID, environment, and balance evidence must be coherent."
-    current: "Dedicated public wallet readiness is PROVEN read-only; 0.50 USDC top-up is human-authorized but not yet observed on-chain. Deployment signing remains separately protected."
+    current: "Dedicated Arc authority wallet is live-proven and has executed both T0 and the integrated AssuranceVault deployment. Further protected actions still require separate authorization."
   Contracts:
     status: ACTIVE
     condition: "Deployment network, address, calls, state transitions, and receipts must be verifiable."
-    current: "PolicyCustody exact source is locally revalidated at 40/40 under pinned Arc Foundry; no Arc deployment/call/receipt exists. Integrated AssuranceVault remains a separate local candidate branch."
+    current: "PolicyCustody T0 lifecycle is PROVEN. Integrated AssuranceVault is now live-deployed on Arc at 0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4 with exact init-code/constructor binding; policy/batch lifecycle remains unproven."
   App_Kit_External_Platform_Integration:
     status: N/A
     rationale: "No sponsor App Kit is currently required."
@@ -502,8 +502,9 @@ claim_runtime_evidence_graph_gate:
   status: ACTIVE
   graph: docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml
   T0_MAINNET_CUSTODY: PROVEN
+  INTEGRATED_MAINNET_DEPLOYMENT: PROVEN
   INTEGRATED_LIVE_FINANCIAL_CAUSALITY: BLOCKED
-  rule: "T0 custody transactional edges are complete and live. Integrated assurance causal edges remain missing; local evidence cannot satisfy those live claims."
+  rule: "Integrated deployment/source binding is live-proven. Policy, precommit, provider, reveal, resolve and financial-causality edges remain missing."
 
 reference_intelligence_gate:
   status: ACTIVE
@@ -797,3 +798,28 @@ g1_t0_mainnet_custody_gate:
     - "refund tx 0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024"
     - "completion tx 0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
   boundary: "G1 proves only the Arc-native custody lifecycle primitive. G2+ hidden-canary assurance behavior remains unproven."
+
+
+g2_integrated_deployment_gate:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+  contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  deployment_nonce: 6
+  exact_init_code_match: true
+  verification_run: 37036958146
+  verification_head: 84efcb9d67085f12f171988fa21e5ebff7c79b76
+  artifact_digest: "sha256:a502c42de338950a9f526c8ca1aeb37935a8d47ee7d7bfa8566fb99f316922d4"
+  authorization_status: PROVEN_CONSUMED
+  next_gate: G2_POLICY_CREATION_AUTHORIZATION
+  truth_boundary: "Deployment proof alone does not prove G2 PRECOMMIT or any financial causality."
+
+g2_policy_creation_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  rule: "No createPolicy transaction may be signed or broadcast without separate explicit human authorization."
