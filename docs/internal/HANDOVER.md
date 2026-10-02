@@ -585,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **T0_DEPLOYMENT_AUTHORIZATION**
+- operational next gate: **T0_CONTRACT_FUNDING_AUTHORIZATION**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -719,3 +719,38 @@ Verified:
 
 Next protected action: exactly one `createPolicy` call using the locked T0 policy values.
 STOP after its receipt is captured and verified. Contract funding remains unauthorized.
+
+
+## 41. Real Arc policy registration — PROVEN
+
+createPolicy transaction:
+`0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7`
+
+Contract:
+`0x0377D371d6981c98CE9C650338D7E1E80819B572`
+
+Verification run `36976421698` on head
+`c4c923455ba2caf9a04a372c213f3339dfcbbfe8` succeeded.
+
+Verified:
+- Arc chain 5042;
+- sender is the dedicated T0 wallet;
+- nonce = 1;
+- transaction value = 0;
+- selector is exactly `createPolicy(bytes32,address,address,uint256,uint256,uint64)`;
+- calldata matches the locked policy id, funder, payout recipient, max spend cap, unit payout and expiry;
+- `PolicyCreated` event matches the locked configuration;
+- `policyCount = 1`;
+- `policyExists = true`;
+- state = `Created`;
+- `remaining = 0`;
+- `totalLiability = 0`;
+- `totalCustodyReceived = 0`;
+- `totalValueReleased = 0`.
+
+The deployment+registration authorization is now consumed.
+
+**Next protected checkpoint: `T0_CONTRACT_FUNDING_AUTHORIZATION`.**
+No native USDC may enter the contract until the human explicitly authorizes the
+bounded 0.010-USDC funding transaction. Payout, refund and completion remain
+separately unauthorized.
