@@ -1,6 +1,6 @@
 # G2 PRECOMMIT — Live Readiness Packet
 
-**Status:** READY_FOR_POST_RECONCILIATION_PREFLIGHT__LIVE_PROOF_NOT_PROVEN  
+**Status:** CONTENT_RECONCILED__READINESS_GREEN__LIVE_PROOF_NOT_PROVEN  
 **Gate:** G2 / PRECOMMIT  
 **Target runtime:** Arc mainnet (chain 5042)  
 **Target contract:** integrated `AssuranceVault`  
@@ -144,15 +144,15 @@ G1 T0 CUSTODY      PROVEN
 G2 PRECOMMIT       READINESS ACTIVE / LIVE PROOF NOT PROVEN
 ```
 
-G0 is proven. No G2 live transaction should be initiated until this integrated branch is reconciled with `main`, exact-source readiness is rerun, and the relevant protected action is explicitly authorized.
+G0 is proven. This branch has been content-reconciled with the merged G0 policy and rerun through clean-room successfully. No G2 live transaction should be initiated until the required public role addresses are finalized, exact read-only Arc predeploy checks are green, and the relevant protected action is explicitly authorized.
 
 ## 8. Live execution plan after G0
 
 G0 is now proven. Next:
 
-1. rebase/reconcile the integrated branch against the merged governance baseline;
-2. rerun clean-room build/tests and prove creation-bytecode continuity or explain any delta;
-3. produce a fresh Arc read-only deployer/fee/nonce snapshot;
+1. content reconciliation against the merged governance baseline — **DONE**;
+2. clean-room rebuild/test after reconciliation — **DONE**;
+3. finalize public role addresses and produce a fresh Arc read-only deployer/fee/nonce snapshot;
 4. select bounded constructor configuration and tiny-value policy economics;
 5. request separate human deployment authorization;
 6. deploy and source-bind integrated `AssuranceVault`;
@@ -178,6 +178,9 @@ G2 readiness is complete when:
 - [x] hidden-preimage handling rule is explicit;
 - [x] protected-action boundaries are explicit;
 - [x] G0 PRD_READY is proven;
+- [x] G0 governance content is reconciled into the integrated readiness branch;
+- [x] post-reconciliation clean-room run is green;
+- [ ] public authority/funder/provider/payout role addresses are finalized;
 - [ ] integrated deployment runtime/source binding is live-proven;
 - [ ] bounded policy + funding are live-proven;
 - [ ] hidden commitment generated privately;
@@ -195,3 +198,16 @@ Until the remaining live conditions are satisfied:
 - merge SHA: `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
 - G0 review policy: owner sign-off + clean merge; collaborator review recommended/non-blocking
 - immediate next step: structurally reconcile this branch with merged `main`, then rerun clean-room and read-only Arc predeploy checks
+
+
+## 11. Post-G0 reconciliation receipt
+
+- G0 merge: `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
+- readiness head: `c6049d61fd19c2e27fb626f4ec19d25619f165b7`
+- clean-room run: `37006014692` — **SUCCESS**
+- artifact digest: `sha256:2bb4469d9554a2c1e612c5d4ba3e51fcf29b1ce08fc586a25a2f70a047d27d3c`
+- delta from proven executable source `c3aaa11...`: documentation/governance/readiness files only; no Solidity, JavaScript, deployment script, verifier, or build input changed.
+
+Repository-graph note: the stacked integrated branch predates the G0 merge commit, but the relevant G0 content is reconciled on this readiness head and executable-source continuity is preserved. This is integration-history debt, not live-product evidence.
+
+Next non-protected input needed before exact predeploy estimation: finalize the public integrated role addresses (authority/funder, provider signer, payout recipient).
