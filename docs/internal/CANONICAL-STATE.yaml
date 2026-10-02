@@ -2,7 +2,7 @@ project: ARC_ASSURANCE_01
 updated_at: "2026-10-02T04:17:08-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_REFUND_AUTHORIZATION_BOUNDARY
+phase: ACTIVE_DESIGN_T0_REFUND_EXECUTION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,13 +125,12 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_REFUND_AUTHORIZATION
+  id: T0_REFUND_EXECUTION
   status: ACTIVE
-  owner: HUMAN
+  owner: HUMAN_SIGNER
   protected_action: true
-  authorization_granted: false
-  prerequisite: "T0_PAYOUT_EXECUTION is PROVEN."
-  machine_boundary: "STOP. No refundRemaining(policyId) transaction may be signed or broadcast until separate explicit human authorization. Completion remains separately protected."
+  prerequisite: "T0_REFUND_AUTHORIZATION is PROVEN."
+  machine_boundary: "Exactly one refundRemaining(policyId) transaction is authorized. Expected refund is 0.009 native USDC to the immutable funder. STOP after receipt verification. Completion remains separately unauthorized."
 
 collaboration:
   faadil:
@@ -372,11 +371,12 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_REFUND_AUTHORIZATION
+  exact_next_gate: T0_REFUND_EXECUTION
   exact_next_action: >-
-    Real Arc configured payout is proven at exactly 0.001 native USDC, leaving
-    0.009 native USDC under custody. STOP until the human explicitly authorizes
-    refundRemaining(policyId). Completion remains separately unauthorized.
+    Human authorization is explicit for exactly one refundRemaining(policyId)
+    transaction returning the remaining 0.009 native USDC to the immutable funder.
+    Revalidate state, then the human-local signer may broadcast. STOP after receipt
+    verification; completion remains separately unauthorized.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -443,7 +443,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_PAYOUT_EXECUTION is PROVEN. Operational next gate is T0_REFUND_AUTHORIZATION; G1 remains ACTIVE / PARTIAL / NOT PROVEN until refund and completion receipts are proven."
+  next_gate_rule: "T0_REFUND_AUTHORIZATION is PROVEN for exactly one refundRemaining(policyId) transaction. Operational next gate is T0_REFUND_EXECUTION; completion remains separately protected."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -880,3 +880,23 @@ t0_payout_execution_2026_10_02:
     - refundRemaining
     - cancelExpiredAndRefund
     - complete
+
+
+t0_refund_authorization_2026_10_02:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorized_scope:
+    contract: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    function: "refundRemaining(bytes32)"
+    expected_refund_wei: "9000000000000000"
+    expected_refund_usdc: "0.009"
+    occurrence_limit: 1
+  not_authorized:
+    - complete
+    - cancelExpiredAndRefund
+    - any second refund transaction
+  next_gate:
+    id: T0_REFUND_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
