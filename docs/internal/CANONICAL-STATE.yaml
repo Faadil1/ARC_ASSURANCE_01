@@ -987,3 +987,26 @@ t0_completion_authorization_2026_10_02:
     id: T0_COMPLETION_EXECUTION
     status: ACTIVE
     owner: HUMAN_SIGNER
+
+
+t0_completion_preflight_2026_10_02:
+  status: PROVEN
+  head: 5959a7002766677d78d071205d2e0b5607f92d20
+  workflow_run: 36984921552
+  result: SUCCESS
+  verified:
+    - "Arc chain 5042"
+    - "authority matches dedicated T0 wallet"
+    - "policy exists"
+    - "state == Refunded"
+    - "remaining == 0"
+    - "totalLiability == 0"
+    - "totalCustodyReceived == 0.010 native USDC"
+    - "totalValueReleased == 0.001 native USDC"
+    - "contract balance == 0"
+  next_action:
+    function: "complete(bytes32)"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    tx_value_wei: "0"
+    occurrence_limit: 1
+  stop_after: "Capture and verify completion receipt and final Completed state."
