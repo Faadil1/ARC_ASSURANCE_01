@@ -1336,3 +1336,53 @@ g2_policy_creation_authorization:
     - revealCanary
     - resolveBatch
     - refundProtectedRemainder
+
+
+g2_policy_creation_preflight_2026_10_02:
+  status: PROVEN
+  workflow_run: 37038419742
+  evidence_head: "de510d74098314befaf5c9ddd7e518f0c4025153"
+  artifact_id: 11240893301
+  artifact_digest: "sha256:a560205397e6605073420dd13dcfdd107ba3a2d60f78e3dfda252fb4c19401a5"
+  observed:
+    chain_id: 5042
+    block_number: 23912425
+    contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    authority_pending_nonce: 7
+    authority_balance_wei: "376408632000000000"
+    authority_balance_usdc: "0.376408632"
+    policy_count: 0
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+  locked_policy:
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+    payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+    scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+    max_failures: 2
+    max_spend_cap_wei: "20000000000000000"
+    unit_payout_wei: "2000000000000000"
+    expiry_unix: "1792033200"
+  transaction_preflight:
+    function: "createPolicy(bytes32,address,address,address,bytes32,uint32,uint256,uint256,uint64)"
+    tx_value_wei: "0"
+    calldata_keccak256: "0x407d54a1632fa2d5cfc0231cc2eb3300c36d86ba6d97d312f7d4e5bb14b9c5b2"
+    estimate_gas_units: "272515"
+    gas_price_wei: "20000000036"
+    estimated_fee_wei: "5450300009810540"
+    estimated_fee_usdc: "0.00545030000981054"
+  safety:
+    private_key_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+  next_gate:
+    id: G2_POLICY_CREATION_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
