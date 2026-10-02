@@ -1072,10 +1072,10 @@ g0_resolution_2026_10_02:
   pr_url: "https://github.com/Faadil1/ARC_ASSURANCE_01/pull/1"
   merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
   opeblow_permission: write
-  next: "Reconcile the integrated AssuranceVault line with merged G0, then continue G2 PRECOMMIT readiness/live execution."
+  next: "G2 readiness is content-reconciled and green; finalize public role addresses, then run exact read-only Arc predeploy checks."
 
 g2_precommit_readiness_2026_10_02:
-  status: ACTIVE_READINESS__PROMOTION_BLOCKED
+  status: CONTENT_RECONCILED__READINESS_GREEN__PROMOTION_BLOCKED
   promotion_blockers:
     - PUBLIC_ROLE_ADDRESSES_NOT_FINALIZED
     - INTEGRATED_ASSURANCE_VAULT_NOT_LIVE_DEPLOYED
