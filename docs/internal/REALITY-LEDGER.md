@@ -429,5 +429,33 @@ circuit breaking, the integrated live product loop, or external-user adoption.
 
 ### CURRENT PRODUCT BOUNDARY
 
-Formal `G0_PRD_READY` remains unproven because PR #1 is still open/unmerged.
-The next product promotion gate after G0 is `G2_PRECOMMIT`.
+`G0_PRD_READY = PROVEN` via PR #1 merged to `main` at
+`1220fc5d39b2262f0b66d0ae4713629b10f3ca29`.
+
+`G1_T0_MAINNET_CUSTODY = PROVEN`.
+
+Current product promotion gate: `G2_PRECOMMIT` — readiness active, live proof not proven.
+The integrated AssuranceVault line must first be reconciled with the merged G0 mainline.
+
+
+
+## G0 governance correction + merge — 2026-10-02
+
+### OBSERVED
+
+- GitHub reports no repository ruleset requiring PR approval for this merge.
+- PR #1 was technically clean / mergeable.
+- `opeblow` has write permission.
+- The project-local G0 rule was corrected so collaborator review is recommended/non-blocking.
+- Faadil explicitly owner-signed the correction and authorized proceeding.
+- PR #1 merged to `main` at `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`.
+
+### CONSEQUENCE
+
+`G0_PRD_READY = PROVEN`.
+
+This does not weaken later technical review gates. A technical-owner review can still be mandatory when a later change materially affects that owner's explicit contract/settlement surface.
+
+### NEXT
+
+`G2_PRECOMMIT` becomes the active product gate. The remaining immediate blocker is structural reconciliation of the integrated AssuranceVault line with merged G0 before any protected mainnet G2 action.
