@@ -4,10 +4,10 @@ status: ACTIVE_RECONCILED_POST_REVALIDATION
 project: ARC_ASSURANCE_01
 project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
 repository: Faadil1/ARC_ASSURANCE_01
-current_stage: DESIGN__T0_COMPLETION_AUTHORIZATION_BOUNDARY
-exact_next_gate: T0_COMPLETION_AUTHORIZATION
-exact_next_action: "Real remaining-funds refund of 0.009 USDC is proven. Stop until explicit human authorization for complete(policyId)."
-last_updated: "2026-10-02T04:17:08-04:00"
+current_stage: DESIGN__POST_T0_G1_PROVEN
+exact_next_gate: G0_PRD_READY
+exact_next_action: "T0 / G1 is fully proven on Arc mainnet. Return to the blocked formal G0 merge/review path, then advance toward G2 PRECOMMIT and the integrated live core loop."
+last_updated: "2026-10-02T04:40:43-04:00"
 bootstrap:
   faadil_system_router_activated: true
   project_profile_resolved: true
@@ -54,7 +54,7 @@ product_depth_and_live_reality:
   applicable: true
   live_core_loop: MISSING
   load_bearing_integration: MISSING
-  real_consequence: MISSING
+  real_consequence: PARTIAL_T0_LIVE_PAYMENT_PRIMITIVE
   real_user_surface: MISSING
   external_user_or_operator_evidence: MISSING
   reality_ledger: SATISFIED
@@ -62,14 +62,14 @@ product_depth_and_live_reality:
 missing:
   - "Formal G0 PRD_READY remains unproven."
   - "External user/operator PRODUCT evidence (problem reality is already proven)."
-  - "Remaining Arc G1 receipt: completion."
+  - "Formal G0 PRD_READY remains the sequencing blocker before G2 PRECOMMIT."
 state_resolution:
   active_state_branch: ops/t0-funding-readiness
   active_state_pr: 44
   default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
   execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
   final_pre_transfer_revalidation: PROVEN
-  operational_next_gate: T0_COMPLETION_AUTHORIZATION
+  operational_next_gate: T0_CYCLE_CLOSED
   deployment_authorization: PROVEN_CONSUMED
   deployment_execution: PROVEN
   policy_registration: PROVEN
@@ -79,12 +79,13 @@ state_resolution:
   payout_execution: PROVEN
   refund_authorization: PROVEN_CONSUMED
   refund_execution: PROVEN
-  completion_authorization: NOT_GRANTED
+  completion_authorization: PROVEN_CONSUMED
+  completion_execution: PROVEN
   wallet_topup: PROVEN_EXECUTED_WITH_VARIANCE
   post_funding_wallet_receipt: PROVEN
   funding_transaction_reference: PROVEN
-  deployment_authorization: NOT_GRANTED
-  macro_product_gate: G1_T0_MAINNET_CUSTODY
+  deployment_authorization_legacy_duplicate: SUPERSEDED_BY_PROVEN_CONSUMED
+  macro_product_gate: G1_T0_MAINNET_CUSTODY__PROVEN
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: MISSING
   branch_head_rule: "Resolve PR #44 head dynamically; documentation commits do not change the execution evidence head unless executable T0 inputs change."
