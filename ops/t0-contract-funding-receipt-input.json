@@ -1,0 +1,11 @@
+{
+  "schema": "ARC_ASSURANCE_T0_CONTRACT_FUNDING_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "funding_tx_hash": "0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1",
+  "contract_address": "0x0377D371d6981c98CE9C650338D7E1E80819B572",
+  "expected_sender": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 2,
+  "policy_id": "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000",
+  "expected_value_wei": "10000000000000000",
+  "expected_value_usdc": "0.010"
+}
