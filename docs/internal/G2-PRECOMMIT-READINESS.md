@@ -211,3 +211,19 @@ Until the remaining live conditions are satisfied:
 Repository-graph note: the stacked integrated branch predates the G0 merge commit, but the relevant G0 content is reconciled on this readiness head and executable-source continuity is preserved. This is integration-history debt, not live-product evidence.
 
 Next non-protected input needed before exact predeploy estimation: finalize the public integrated role addresses (authority/funder, provider signer, payout recipient).
+
+
+## 12. Integrated public-role lock
+
+Locked now:
+
+- authority/funder: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- role: dedicated human-controlled Arc operator wallet
+- status: **LOCKED FOR INTEGRATED READINESS**
+
+Still required before exact predeploy estimation:
+
+- provider signer: fresh distinct EOA, no application funds required;
+- payout recipient: fresh distinct EOA, different from authority/funder and provider signer.
+
+Role separation is intentional. Do not reuse the authority/funder as provider signer or payout recipient for the integrated live proof.
