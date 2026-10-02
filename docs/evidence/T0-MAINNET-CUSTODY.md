@@ -1,6 +1,6 @@
 # T0 Mainnet Custody Evidence
 
-**Evidence class:** NOT_IMPLEMENTED
+**Evidence class:** PARTIAL_LIVE
 **Gate:** G1 / T0_MAINNET_CUSTODY
 **Branch:** `feat/t0-mainnet-custody`
 **Contract:** `src/PolicyCustody.sol`
@@ -28,19 +28,19 @@ Recorded by Opeyemi at commit `18bf5d6`. **Superseded for promotion purposes by 
 
 ## Addresses
 
-- Human-controlled deployer/authority:
-- T0 contract:
-- Payout recipient:
-- Policy id:
+- Human-controlled deployer/authority: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- T0 contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`
+- Payout recipient: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- Policy id: `0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000`
 
 ## Chosen bounded amounts
 
 Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` wei.
 
-- Funding amount (native 18-decimal units):
-- Funding amount (USDC display):
-- Payout amount:
-- Expected refund remainder:
+- Funding amount (native 18-decimal units): `10000000000000000` — configured, not yet sent
+- Funding amount (USDC display): **0.010 USDC — NOT YET EXECUTED**
+- Payout amount: **0.001 USDC — NOT YET EXECUTED**
+- Expected refund remainder: **0.009 USDC — NOT YET EXECUTED**
 - Deployment spend cap (immutable): `50000000000000000`
 
 ## Preflight (read-only)
@@ -53,20 +53,30 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 ## Deployment
 
-- Tx hash:
-- Explorer:
-- Block:
-- Receipt status:
-- Contract code read back:
-- `authority()`:
-- `expectedChainId()`:
-- `usdcErc20Interface()`:
-- `deploymentSpendCap()`:
+- Tx hash: `0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24`
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`
+- Receipt status: **SUCCESS / LIVE ARC**
+- Verification: GitHub Actions run `36975671614`
+- Contract code read back: **PROVEN**
+- Executable runtime/source binding: **PROVEN**
+- `authority()`: dedicated T0 wallet — **PROVEN**
+- `expectedChainId()`: `5042` — **PROVEN**
+- `usdcErc20Interface()`: `0x3600000000000000000000000000000000000000` — **PROVEN**
+- `deploymentSpendCap()`: `50000000000000000` — **PROVEN**
 
 ## Policy registration
 
-- `PolicyCreated` event:
-- `PolicyStateChanged` emitted: _(expected: none — `PolicyCreated` is the record of entry into `State.Created`)_
+- Tx hash: `0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7`
+- Verification: GitHub Actions run `36976421698`
+- `PolicyCreated` event: **PROVEN; matches locked config**
+- `policyCount()`: `1`
+- `policyExists(policyId)`: `true`
+- `stateOf(policyId)`: `0 / Created`
+- `remainingFor(policyId)`: `0`
+- `totalLiability()`: `0`
+- `totalCustodyReceived()`: `0`
+- `totalValueReleased()`: `0`
+- `PolicyStateChanged` emitted: none expected at creation; `PolicyCreated` is the creation record
 
 ## Funding
 
@@ -130,7 +140,10 @@ Paste the decoded `snapshot(policyId)` result.
 
 ### OBSERVED
 
-_To be populated only after the real mainnet run._
+- Real Arc deployment is proven.
+- Deployed executable runtime is bound to the canonical source build.
+- Exactly one T0 policy is registered with the locked configuration.
+- No contract custody has occurred yet; all custody/payout/refund/completion claims remain unproven.
 
 ### INFERRED
 
