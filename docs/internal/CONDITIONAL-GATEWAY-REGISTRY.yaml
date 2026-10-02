@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-01T16:52:00-04:00"
+updated_at: "2026-10-02T04:40:43-04:00"
 source_of_truth: true
 
 status_vocabulary:
@@ -30,10 +30,10 @@ macro_lifecycle:
     evidence: "PRD v0.1 and demo-first architecture are under review in PR #1."
   DELIVER:
     status: BLOCKED
-    blocker: "G0 PRD_READY (PR #1 unmerged), live product-depth gates, and T0 mainnet custody proof remain open. Pre-Build Reality problem evidence is already PROVEN."
+    blocker: "G0 PRD_READY (PR #1 unmerged) and integrated live product-depth gates remain open. T0 / G1 mainnet custody is now PROVEN."
   AUDIT:
-    status: BLOCKED
-    blocker: "No live runtime/canonical mainnet run yet."
+    status: ACTIVE
+    evidence: "A complete live Arc T0 custody lifecycle is proven. Full integrated-product audit remains pending."
   EXPAND:
     status: N/A
     rationale: "No expansion before the core live proof is promoted."
@@ -59,10 +59,10 @@ judged_build_cycle:
     evidence: "T0 and canonical scorer workstreams defined; consequential build waits on G0."
   LIVE_DEPTH:
     status: BLOCKED
-    blocker: "No live core loop, real consequence, or external operator loop yet."
+    blocker: "T0 proves a real live payment/custody consequence, but the hidden-canary assurance core loop and external operator loop are not live yet."
   EVIDENCE:
     status: ACTIVE
-    evidence: "Evidence model and promotion gates defined; live evidence pending."
+    evidence: "T0 live deployment/custody/payout/refund/completion receipts are proven; integrated assurance evidence remains pending."
   STORY:
     status: BLOCKED
     blocker: "Hero narrative cannot be finalized until live proof exists."
@@ -104,8 +104,10 @@ core_gates:
     labels: [LIVE, LOCAL, LOCAL_STUB, PRESEEDED, SIMULATED, PARTIAL, NOT_IMPLEMENTED]
     condition: "Every proof artifact is labeled by actual evidence class."
   Runtime_Commit_Binding:
-    status: BLOCKED
-    blocker: "No canonical runtime or deployed commit exists yet."
+    status: PROVEN
+    scope: T0_MAINNET_CUSTODY
+    evidence: "Deployed executable runtime is source-bound; every protected T0 transaction is receipt-bound to the verified contract and active evidence branch."
+    reopen_when: "The integrated assurance runtime is deployed or materially changed."
     condition: "Runtime evidence must bind to the exact demonstrated commit."
   Deterministic_Demo:
     status: BLOCKED
@@ -499,9 +501,9 @@ integration_first_product_exploitation_v1_3:
 claim_runtime_evidence_graph_gate:
   status: ACTIVE
   graph: docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml
-  T0_MAINNET_CUSTODY: BLOCKED
+  T0_MAINNET_CUSTODY: PROVEN
   INTEGRATED_LIVE_FINANCIAL_CAUSALITY: BLOCKED
-  rule: "Missing causal edges remain missing; local or read-only evidence cannot satisfy live transactional claims."
+  rule: "T0 custody transactional edges are complete and live. Integrated assurance causal edges remain missing; local evidence cannot satisfy those live claims."
 
 reference_intelligence_gate:
   status: ACTIVE
@@ -544,8 +546,8 @@ state_resolution_2026_10_01:
   default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
   execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
   current_branch_head_rule: "Resolve PR #44 head dynamically."
-  operational_next_gate: T0_COMPLETION_EXECUTION
-  macro_product_gate: G1_T0_MAINNET_CUSTODY
+  operational_next_gate: T0_CYCLE_CLOSED
+  macro_product_gate: G1_T0_MAINNET_CUSTODY__PROVEN
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: BLOCKED
   historical_conflict_rule: "Current-state entries in this registry supersede older contradictory prose without rewriting historical receipts."
@@ -767,9 +769,31 @@ t0_completion_authorization_gate:
   policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
 
 t0_completion_execution_gate:
-  status: ACTIVE
+  status: PROVEN
   owner: HUMAN_SIGNER
   protected_action: true
   function: "complete(bytes32)"
   required_tx_value_wei: "0"
-  completion_rule: "Capture and verify one successful completion receipt and final post-state."
+  transaction_hash: "0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
+  verification_run: 36985388199
+  verification_head: 6cae32c7b891bb0db296f37020343e6afccda692
+  artifact_digest: "sha256:bbb7061ba2a8b7f67efa6128a07edff14655e4951e186bce1df6ad40f79fad81"
+  proven:
+    - "completion receipt successful"
+    - "selector and policy id match"
+    - "transaction msg.value == 0"
+    - "PolicyCompleted finalBalance == 0"
+    - "PolicyStateChanged Refunded -> Completed"
+    - "final state == Completed"
+    - "final remaining/liability/contract balance == 0"
+
+g1_t0_mainnet_custody_gate:
+  status: PROVEN
+  evidence:
+    - "deployment tx 0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24"
+    - "policy registration tx 0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7"
+    - "funding tx 0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1"
+    - "payout tx 0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34"
+    - "refund tx 0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024"
+    - "completion tx 0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
+  boundary: "G1 proves only the Arc-native custody lifecycle primitive. G2+ hidden-canary assurance behavior remains unproven."
