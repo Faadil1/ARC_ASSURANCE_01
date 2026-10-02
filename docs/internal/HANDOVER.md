@@ -1091,3 +1091,40 @@ or refund action is authorized yet.
 
 G2 / PRECOMMIT itself remains **NOT PROVEN** until an opaque batch commitment is
 observed onchain before provider output lock for the same live policy/batch.
+
+
+## 53. G2 policy creation preflight — PROVEN READ-ONLY
+
+Workflow `37038419742` succeeded without signing or broadcasting.
+
+Observed:
+- deployed AssuranceVault exists on Arc;
+- authority pending nonce = **7**;
+- authority balance = **0.376408632 native USDC**;
+- policyCount = 0;
+- vault liability/custody/released value/balance = 0;
+- authority/provider/payout roles are distinct EOAs;
+- locked policy expiry is still in the future.
+
+Locked createPolicy:
+- policyId:
+  `0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30`
+- funder: `0x2ca7...a02bb`
+- provider: `0xa58b...D35Fe`
+- payout recipient: `0x6B8a...5590C`
+- scorer hash:
+  `0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45`
+- max failures: **2**
+- policy cap: **0.020 USDC**
+- unit payout: **0.002 USDC**
+- expiry: **1792033200**
+- tx value: **0**
+- calldata hash:
+  `0x407d54a1632fa2d5cfc0231cc2eb3300c36d86ba6d97d312f7d4e5bb14b9c5b2`
+- gas estimate: **272,515**
+- observed estimated fee: **~0.0054503000 USDC**
+
+**Next protected gate remains `G2_POLICY_CREATION_AUTHORIZATION`.**
+
+No policy creation is authorized yet. Funding and all batch actions remain
+separately unauthorized even after policy creation.
