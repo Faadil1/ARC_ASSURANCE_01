@@ -585,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **T0_PAYOUT_AUTHORIZATION**
+- operational next gate: **T0_REFUND_AUTHORIZATION**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -784,3 +784,34 @@ The one-time funding authorization is now consumed.
 **Next protected checkpoint: `T0_PAYOUT_AUTHORIZATION`.**
 No `releaseConfiguredPayout` transaction may be signed or broadcast until separate
 explicit human authorization. Refund and completion remain separately unauthorized.
+
+
+## 44. Real Arc configured payout — PROVEN
+
+Payout transaction:
+`0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34`
+
+Contract:
+`0x0377D371d6981c98CE9C650338D7E1E80819B572`
+
+Verification run `36983144079` on head
+`6e136f670b69a7a1248fff92af4e13c5185e2fac` succeeded.
+
+Verified:
+- Arc chain 5042;
+- sender is the dedicated T0 wallet;
+- nonce = 3;
+- function selector = `releaseConfiguredPayout(bytes32)`;
+- policy id matches the locked T0 policy;
+- transaction `msg.value = 0`;
+- `PaymentReleased` emitted exactly **0.001 native USDC**;
+- state observed immediately after payout = `PaidOut`;
+- remaining/liability/contract balance observed immediately after payout = **0.009 native USDC**;
+- totalCustodyReceived remains **0.010 native USDC**;
+- totalValueReleased observed immediately after payout = **0.001 native USDC**.
+
+The one-time payout authorization is now consumed.
+
+**Next protected checkpoint: `T0_REFUND_AUTHORIZATION`.**
+No `refundRemaining` transaction may be signed or broadcast until separate
+explicit human authorization. Completion remains separately unauthorized.
