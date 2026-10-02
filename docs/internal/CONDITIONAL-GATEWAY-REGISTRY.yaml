@@ -544,7 +544,7 @@ state_resolution_2026_10_01:
   default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
   execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
   current_branch_head_rule: "Resolve PR #44 head dynamically."
-  operational_next_gate: T0_PAYOUT_EXECUTION
+  operational_next_gate: T0_REFUND_AUTHORIZATION
   macro_product_gate: G1_T0_MAINNET_CUSTODY
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: BLOCKED
@@ -699,10 +699,34 @@ t0_payout_authorization_gate:
     - additional_payout
 
 t0_payout_execution_gate:
-  status: ACTIVE
+  status: PROVEN
   owner: HUMAN_SIGNER
   protected_action: true
   function: "releaseConfiguredPayout(bytes32)"
   configured_amount_wei: "1000000000000000"
   configured_amount_usdc: "0.001"
-  completion_rule: "Capture and verify one successful configured payout receipt and post-state, then STOP before refund authorization."
+  transaction_hash: "0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34"
+  verification_run: 36983144079
+  verification_head: 6e136f670b69a7a1248fff92af4e13c5185e2fac
+  artifact_digest: "sha256:e24d3ca86d484e406c30b98c6966c8ed95438ea7099d244609e40ba3f346b690"
+  proven:
+    - "payout receipt successful"
+    - "selector and policy id match"
+    - "transaction msg.value == 0"
+    - "PaymentReleased amount == 0.001 native USDC"
+    - "post-payout state observed as PaidOut"
+    - "0.009 native USDC remains in policy custody immediately after payout"
+
+
+t0_refund_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  prerequisite: "T0_PAYOUT_EXECUTION = PROVEN"
+  configured_function: "refundRemaining(bytes32)"
+  expected_refund_wei: "9000000000000000"
+  expected_refund_usdc: "0.009"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  rule: "No refundRemaining transaction may be signed or broadcast until separate explicit human authorization. Completion remains separately protected."
