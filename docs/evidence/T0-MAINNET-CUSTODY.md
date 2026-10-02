@@ -139,7 +139,27 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 ## Final snapshot
 
-Paste the decoded `snapshot(policyId)` result.
+The final snapshot is reconstructible from the verified completion post-state and
+the canonical `snapshot(bytes32)` implementation:
+
+- `policyId`: `0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000`
+- `funder`: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- `payoutRecipient`: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- `state`: **4 / Completed**
+- `custodyBalance`: **0**
+- `totalFunded`: **0.010 USDC**
+- `totalPaidOut`: **0.001 USDC**
+- `totalRefunded`: **0.009 USDC**
+- `remaining`: **0**
+- `payoutReleased`: **true**
+- `refundIssued`: **true**
+- `chainId`: **5042**
+- `poolLiability`: **0**
+- `unattributedValue`: **0** (contract balance and liability are both verified at zero)
+
+Truth note: these values are reconstructed from independently verified receipts,
+post-state getters and the source-bound snapshot implementation; they are not a
+claim that a separate snapshot transaction exists.
 
 ## Accounting reconciliation
 
@@ -153,9 +173,17 @@ Paste the decoded `snapshot(policyId)` result.
 
 ## Independent verification
 
-- Reviewer:
-- Verification command(s):
-- Result:
+- Verifier: GitHub Actions read-only Arc RPC workflows
+- Deployment/runtime-source binding: run `36975671614` — SUCCESS
+- Policy registration: run `36976421698` — SUCCESS
+- Contract funding: run `36982128480` — SUCCESS
+- Configured payout: run `36983144079` — SUCCESS
+- Remaining-funds refund: run `36984307453` — SUCCESS
+- Completion: run `36985388199` — SUCCESS
+- Current-head regression pass: deployment, registration, funding, payout, refund,
+  completion, fee budget, deployment readiness, post-funding receipt and
+  revalidation are all green on head `c8f53ad58787387103494c4cd7f2abf9e4307515`.
+- Result: **G1 / T0_MAINNET_CUSTODY PROVEN**
 
 ## Truth boundary
 
