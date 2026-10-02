@@ -66,19 +66,20 @@ This workstream establishes:
 - `docs/internal/WORKSPLIT.md`
 - contribution rules
 
-No consequential product build should be treated as promoted until G0 is merged/reviewed.
+No consequential product build should be treated as promoted until G0 is owner-signed off and merged. Collaborator review is recommended but non-blocking unless a later surface-specific gate explicitly requires accountable technical-owner approval.
 
-## 5. Immediate blocker
+## 5. G0 merge boundary
 
-Faadil has already sent Opeyemi (`opeblow`) a collaborator invitation with the intended write access.
+Repository-owner sign-off is sufficient for G0 once the PRD, canonical state, handover and work split are complete and the PR is technically clean.
 
 Current status:
 
-- collaborator invitation: **INVITE_PENDING**
-- next action: **Opeyemi accepts the existing GitHub invitation**
-- after acceptance, verify that `opeblow` can push a branch/open a PR and request him on PR #1.
+- Faadil owner sign-off: **PROVEN**
+- `opeblow` repository permission: **write / PROVEN**
+- Opeyemi review on G0: **RECOMMENDED / NON-BLOCKING**
+- next action: **merge PR #1 into `main`**
 
-No new invitation is required unless the existing one expires or is declined.
+Technical-owner review remains mandatory only at later gates where the changed surface falls under that owner's explicit accountability.
 
 ## 6. Next gate
 
