@@ -28,7 +28,7 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - Macro stage: **DESIGN**
 - Concept Lock: **LOCKED**
 - Product Name: **OPEN**
-- Formal G0 / PRD_READY: **NOT PROVEN** — PR #1 remains open/unmerged
+- Formal G0 / PRD_READY: **PROVEN** — PR #1 merged to `main` at `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
 - Pre-Build Reality: **PROVEN** for problem reality via PR #8
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
@@ -41,13 +41,13 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - T0 completion: **PROVEN**
 - T0 operational cycle: **CLOSED / PROVEN**
 - G1 T0_MAINNET_CUSTODY: **PROVEN**
-- Formal sequencing blocker: **G0 PRD_READY remains NOT PROVEN**
-- Next PRD product gate after G0: **G2 PRECOMMIT**
+- G0 sequencing blocker: **CLEARED**
+- Current PRD product gate: **G2 PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN**
 - Integrated Live Core Loop / DELIVER: **BLOCKED**
 
-The default branch `main` is still the bootstrap line and must not be treated as
-the current project-state surface until G0 is merged. Current operational state
-is carried by PR #44 on `ops/t0-funding-readiness`.
+The default branch `main` now contains the merged G0 governance baseline. The
+latest operational state still lives on PR #44 / `ops/t0-funding-readiness`
+until the later stacked state is integrated.
 
 The pre-transfer exact-source revalidation execution head is
 `4f7f3b254a29e6023d539a85e5b126a7f21e1955`. The deployed executable runtime
