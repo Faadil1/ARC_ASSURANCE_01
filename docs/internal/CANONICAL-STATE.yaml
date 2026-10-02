@@ -94,13 +94,22 @@ scope:
 
 current_gate:
   id: G0_PRD_READY
-  status: IN_PROGRESS
+  status: READY_FOR_OWNER_SIGNOFF
   exit_criteria:
     - "PRD merged"
     - "canonical state merged"
     - "handover merged"
     - "work split merged"
-    - "Opeyemi accepts the pending collaborator invitation and has repo write access"
+    - "Faadil owner sign-off recorded"
+  review_policy:
+    collaborator_review: RECOMMENDED_NON_BLOCKING
+    mandatory_only_when: "A later gate or change explicitly requires accountable technical-owner approval for the affected surface."
+  owner_signoff:
+    authorized: true
+    source: "Explicit repository-owner instruction to reconcile the policy and proceed."
+  collaborator_access:
+    opeblow_permission: write
+    g0_blocking: false
 
 next_gate:
   id: G1_T0_MAINNET_CUSTODY
