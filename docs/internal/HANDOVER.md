@@ -466,14 +466,16 @@ Central canon was re-read from `Faadil1/faadil-agent-system@main` before
 continuing. Adoption starts at this material touch; no earlier artifact is
 backdated.
 
-### Actual state
+### Historical state at this checkpoint
 
 - project: **ACTIVE**
 - macro stage: **DESIGN**
-- operational track: **T0_MAINNET_CUSTODY**
+- operational track at that time: **T0_MAINNET_CUSTODY**
 - G0 PRD_READY: **not proven**; PR #1 remains open/unmerged
-- G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
+- G1 T0_MAINNET_CUSTODY at that time: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
+
+This subsection is historical and is superseded by §46 for current T0/G1 state.
 
 The current T0 spike may continue inside DESIGN. Pre-Build Reality problem
 evidence is PROVEN; DELIVER remains blocked by formal G0 plus live
@@ -487,7 +489,7 @@ product-depth/runtime gates.
 - local gas rehearsal and time-bound fee ceiling: proven only in their actual
   evidence classes.
 
-No real contract deployment or T0 custody/payout/refund/complete receipt exists.
+At this historical checkpoint, no real contract deployment or T0 custody/payout/refund/complete receipt existed.
 
 ### New prospective control-plane artifacts
 
@@ -559,7 +561,7 @@ Operational next gate:
 
 The funded-wallet state is now proven read-only. `POST_FUNDING_WALLET_RECEIPT` remains ACTIVE only because the concrete Arc top-up transaction hash/reference has not yet been captured. Once bound, stop. Contract deployment remains a separate protected authorization.
 
-G1 remains **ACTIVE / NOT PROVEN**.
+At that checkpoint, G1 remained **ACTIVE / NOT PROVEN**. This is superseded by §46.
 
 
 ## 34. Ambiguity resolution — canonical precedence
@@ -586,9 +588,11 @@ historical receipts.
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
 - operational next gate: **T0_CYCLE_CLOSED — PROVEN**
-- G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
-- DELIVER: **BLOCKED**
-- Product Exploitation Loop: **NOT YET TRIGGERED**
+- G1 T0_MAINNET_CUSTODY: **PROVEN**
+- formal sequencing blocker: **G0 PRD_READY remains NOT PROVEN**
+- next PRD product gate after G0: **G2 PRECOMMIT**
+- DELIVER: **BLOCKED** on G0 + integrated live product-depth evidence
+- Product Exploitation Loop: **NOT YET TRIGGERED** because T0 is a live custody primitive, not the first live integrated product vertical slice
 
 ### Reading order
 
@@ -847,8 +851,8 @@ Verified:
 
 The one-time refund authorization is now consumed.
 
-**Next protected checkpoint: `T0_COMPLETION_AUTHORIZATION`.**
-No `complete(policyId)` transaction may be signed or broadcast until separate explicit human authorization.
+**Historical next checkpoint at that moment:** `T0_COMPLETION_AUTHORIZATION`.
+That authorization was later granted, consumed, and the completion receipt is now PROVEN in §46.
 
 
 ## 46. Real Arc completion + G1 close — PROVEN
