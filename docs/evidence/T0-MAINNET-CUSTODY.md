@@ -37,8 +37,8 @@ Recorded by Opeyemi at commit `18bf5d6`. **Superseded for promotion purposes by 
 
 Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` wei.
 
-- Funding amount (native 18-decimal units): `10000000000000000` — configured, not yet sent
-- Funding amount (USDC display): **0.010 USDC — NOT YET EXECUTED**
+- Funding amount (native 18-decimal units): `10000000000000000` — **EXECUTED / PROVEN**
+- Funding amount (USDC display): **0.010 USDC — EXECUTED / PROVEN**
 - Payout amount: **0.001 USDC — NOT YET EXECUTED**
 - Expected refund remainder: **0.009 USDC — NOT YET EXECUTED**
 - Deployment spend cap (immutable): `50000000000000000`
@@ -80,14 +80,18 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 ## Funding
 
-- Tx hash:
-- Explorer:
-- Block / log index:
-- `PolicyFunded` event:
-- Contract balance before:
-- Contract balance after:
-- `totalCustodyReceived()` after:
-- `totalLiability()` after:
+- Tx hash: `0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1`
+- Verification: GitHub Actions run `36982128480`
+- Receipt status: **SUCCESS / LIVE ARC**
+- Function: `fund(bytes32)`
+- Transaction value: `10000000000000000` native units = **0.010 USDC**
+- `PolicyFunded` event: **PROVEN; exact amount matches**
+- State immediately after verified funding: `Funded`
+- Contract balance immediately after: **0.010 USDC**
+- `totalCustodyReceived()` immediately after: **0.010 USDC**
+- `totalLiability()` immediately after: **0.010 USDC**
+- `remainingFor(policyId)` immediately after: **0.010 USDC**
+- `totalValueReleased()` immediately after: **0**
 
 ## Payout
 
@@ -143,7 +147,9 @@ Paste the decoded `snapshot(policyId)` result.
 - Real Arc deployment is proven.
 - Deployed executable runtime is bound to the canonical source build.
 - Exactly one T0 policy is registered with the locked configuration.
-- No contract custody has occurred yet; all custody/payout/refund/completion claims remain unproven.
+- Exactly **0.010 native USDC** entered real Arc contract custody for that policy.
+- Funding receipt and immediate post-state are independently verified.
+- Payout/refund/completion remain unproven.
 
 ### INFERRED
 
