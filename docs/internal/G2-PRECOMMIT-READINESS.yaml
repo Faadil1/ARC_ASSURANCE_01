@@ -1,13 +1,13 @@
 schema: ARC_ASSURANCE_G2_PRECOMMIT_READINESS_V1
 project: ARC_ASSURANCE_01
 gate: G2_PRECOMMIT
-status: ACTIVE_READINESS__LIVE_PROOF_NOT_PROVEN
+status: CONTENT_RECONCILED__READINESS_GREEN__LIVE_PROOF_NOT_PROVEN
 g0:
   status: PROVEN
   merged_pr: 1
   merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
 blockers:
-  - INTEGRATED_BRANCH_RECONCILIATION_WITH_MAIN
+  - PUBLIC_ROLE_ADDRESSES_NOT_FINALIZED
   - INTEGRATED_MAINNET_DEPLOYMENT_NOT_PROVEN
   - LIVE_BATCH_COMMIT_NOT_EXECUTED
 target:
@@ -17,7 +17,20 @@ target:
   source_base_branch: ops/exact-predeploy-gas-snapshot
   creation_bytecode_hash: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
 source_evidence:
-  clean_room_workflow: 36680776957
+  original_clean_room_workflow: 36680776957
+  post_g0_reconciliation:
+    head: c6049d61fd19c2e27fb626f4ec19d25619f165b7
+    clean_room_workflow: 37006014692
+    result: SUCCESS
+    artifact_digest: "sha256:2bb4469d9554a2c1e612c5d4ba3e51fcf29b1ce08fc586a25a2f70a047d27d3c"
+    executable_delta_from_c3aaa11: NONE
+    changed_surfaces:
+      - product/PRD.md
+      - docs/internal/WORKSPLIT.md
+      - docs/internal/CANONICAL-STATE.yaml
+      - docs/internal/HANDOVER.md
+      - docs/internal/G2-PRECOMMIT-READINESS.md
+      - docs/internal/G2-PRECOMMIT-READINESS.yaml
   javascript_tests:
     passed: 72
     failed: 0
@@ -57,3 +70,14 @@ truth_boundary:
     - fail_no_pay
     - breaker
     - adoption
+
+repository_graph:
+  merged_g0_main_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  readiness_branch_predates_merge_commit: true
+  content_reconciled: true
+  executable_source_changed: false
+  classification: ACCEPTED_INTEGRATION_HISTORY_DEBT
+public_role_addresses:
+  authority_funder: KNOWN_T0_WALLET_CANDIDATE_NOT_YET_LOCKED_FOR_INTEGRATED
+  provider_signer: NOT_FINALIZED
+  payout_recipient: NOT_FINALIZED
