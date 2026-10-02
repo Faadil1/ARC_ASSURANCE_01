@@ -1087,6 +1087,12 @@ g2_precommit_readiness_2026_10_02:
     creation_bytecode_hash: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
   readiness_branch: ops/g2-precommit-readiness
   readiness_pr: 45
+  readiness_verification:
+    head: cff4605cdb7d4a33d8fc48369dfeacedf1eec3be
+    clean_room_run: 36986875427
+    result: SUCCESS
+    artifact_digest: "sha256:d809069ca0837abb4e2b9ebfce56279c6efdc0a4e2622c1aeff238844e838842"
+    delta_from_source_base: "two documentation files only; no executable/build inputs changed"
   readiness_artifacts:
     - docs/internal/G2-PRECOMMIT-READINESS.md
     - docs/internal/G2-PRECOMMIT-READINESS.yaml
