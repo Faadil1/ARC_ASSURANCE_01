@@ -1,8 +1,8 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-02T04:06:17-04:00"
+updated_at: "2026-10-02T04:17:08-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_PAYOUT_EXECUTION_BOUNDARY
+phase: ACTIVE_DESIGN_T0_REFUND_AUTHORIZATION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,12 +125,13 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_PAYOUT_EXECUTION
+  id: T0_REFUND_AUTHORIZATION
   status: ACTIVE
-  owner: HUMAN_SIGNER
+  owner: HUMAN
   protected_action: true
-  prerequisite: "T0_PAYOUT_AUTHORIZATION is PROVEN."
-  machine_boundary: "Exactly one releaseConfiguredPayout(policyId) transaction is authorized. The contract-fixed payout is 0.001 native USDC. STOP after receipt verification. Refund/complete remain separately unauthorized."
+  authorization_granted: false
+  prerequisite: "T0_PAYOUT_EXECUTION is PROVEN."
+  machine_boundary: "STOP. No refundRemaining(policyId) transaction may be signed or broadcast until separate explicit human authorization. Completion remains separately protected."
 
 collaboration:
   faadil:
@@ -371,12 +372,11 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_PAYOUT_EXECUTION
+  exact_next_gate: T0_REFUND_AUTHORIZATION
   exact_next_action: >-
-    Human authorization is explicit for exactly one releaseConfiguredPayout(policyId)
-    transaction. Revalidate the funded state, then the human-local signer may
-    broadcast. STOP after receipt verification; refund and completion remain
-    separately unauthorized.
+    Real Arc configured payout is proven at exactly 0.001 native USDC, leaving
+    0.009 native USDC under custody. STOP until the human explicitly authorizes
+    refundRemaining(policyId). Completion remains separately unauthorized.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -443,7 +443,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_PAYOUT_AUTHORIZATION is PROVEN for exactly one releaseConfiguredPayout(policyId) transaction using the contract-fixed 0.001-USDC amount. Operational next gate is T0_PAYOUT_EXECUTION; G1 remains ACTIVE / PARTIAL / NOT PROVEN."
+  next_gate_rule: "T0_PAYOUT_EXECUTION is PROVEN. Operational next gate is T0_REFUND_AUTHORIZATION; G1 remains ACTIVE / PARTIAL / NOT PROVEN until refund and completion receipts are proven."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -832,3 +832,51 @@ t0_payout_authorization_2026_10_02:
     id: T0_PAYOUT_EXECUTION
     status: ACTIVE
     owner: HUMAN_SIGNER
+
+
+t0_payout_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 3
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "0"
+  payout_wei: "1000000000000000"
+  payout_usdc: "0.001"
+  remaining_wei: "9000000000000000"
+  remaining_usdc: "0.009"
+  verification:
+    head: 6e136f670b69a7a1248fff92af4e13c5185e2fac
+    workflow_run: 36983144079
+    result: SUCCESS
+    artifact_digest: "sha256:e24d3ca86d484e406c30b98c6966c8ed95438ea7099d244609e40ba3f346b690"
+    proven:
+      - "successful releaseConfiguredPayout(policyId) transaction on Arc"
+      - "function selector matches releaseConfiguredPayout(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "transaction msg.value == 0"
+      - "PaymentReleased event amount == configured 0.001 native USDC"
+      - "PaymentReleased unitPayout == 0.001 native USDC"
+      - "state == PaidOut immediately after payout verification"
+      - "remaining == 0.009 native USDC immediately after payout verification"
+      - "totalLiability == 0.009 native USDC immediately after payout verification"
+      - "totalCustodyReceived remains 0.010 native USDC"
+      - "totalValueReleased == 0.001 native USDC immediately after payout verification"
+      - "contract native balance == 0.009 native USDC immediately after payout verification"
+  authorization_consumed:
+    id: T0_PAYOUT_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  next_gate:
+    id: T0_REFUND_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+  still_not_authorized:
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
