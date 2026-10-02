@@ -1,8 +1,8 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-02T04:17:08-04:00"
+updated_at: "2026-10-02T04:40:43-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_COMPLETION_EXECUTION_BOUNDARY
+phase: ACTIVE_DESIGN_POST_T0_G1_PROVEN
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -111,26 +111,24 @@ current_gate:
 
 next_gate:
   scope: PRODUCT_GATE
-  id: G1_T0_MAINNET_CUSTODY
-  owner: opeblow
-  required_proof:
-    - "real Arc mainnet USDC enters contract custody"
-    - "configured payout succeeds"
-    - "remaining balance refund succeeds"
-    - "transaction references captured"
-  blocked_by_human_action: >-
-    Mainnet funding and signing are protected human actions requiring a funded
-    Arc wallet controlled by Faadil. Code readiness does not advance this gate.
+  id: G2_PRECOMMIT
+  status: BLOCKED
+  blocked_by:
+    - G0_PRD_READY
+  owner: project
+  note: >-
+    G1_T0_MAINNET_CUSTODY is PROVEN from real Arc mainnet receipts. G2 cannot be
+    promoted while formal G0 / PRD_READY remains unmerged and while the integrated
+    product loop is not yet live.
   review_queue_for_opeblow:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_COMPLETION_EXECUTION
-  status: ACTIVE
-  owner: HUMAN_SIGNER
-  protected_action: true
-  prerequisite: "T0_COMPLETION_AUTHORIZATION is PROVEN."
-  machine_boundary: "Exactly one complete(policyId) transaction is authorized for the locked T0 policy. It must carry msg.value = 0 and move no funds. STOP after receipt verification."
+  id: T0_CYCLE_CLOSED
+  status: PROVEN
+  owner: PROJECT
+  protected_action: false
+  machine_boundary: "The bounded T0 mainnet lifecycle is complete. No additional T0 financial action is authorized or required."
 
 collaboration:
   faadil:
@@ -1010,3 +1008,54 @@ t0_completion_preflight_2026_10_02:
     tx_value_wei: "0"
     occurrence_limit: 1
   stop_after: "Capture and verify completion receipt and final Completed state."
+
+
+t0_completion_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 5
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "0"
+  verification:
+    head: 6cae32c7b891bb0db296f37020343e6afccda692
+    workflow_run: 36985388199
+    result: SUCCESS
+    artifact_digest: "sha256:bbb7061ba2a8b7f67efa6128a07edff14655e4951e186bce1df6ad40f79fad81"
+    proven:
+      - "successful complete(policyId) transaction on Arc"
+      - "function selector matches complete(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "transaction msg.value == 0"
+      - "PolicyCompleted event finalBalance == 0"
+      - "PolicyStateChanged proves Refunded -> Completed"
+      - "state == Completed"
+      - "remaining == 0"
+      - "totalLiability == 0"
+      - "totalCustodyReceived == 0.010 native USDC"
+      - "totalValueReleased == 0.001 native USDC"
+      - "contract native balance == 0"
+  authorization_consumed:
+    id: T0_COMPLETION_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+
+g1_t0_mainnet_custody:
+  status: PROVEN
+  proof_scope:
+    - mainnet_deployment
+    - policy_registration
+    - real_native_usdc_custody
+    - configured_payout
+    - remaining_funds_refund
+    - completion
+    - transaction_references
+    - runtime_source_binding
+  truth_boundary: >-
+    G1 proves the Arc-native custody/payout/refund lifecycle for PolicyCustody.
+    It does not prove the hidden-canary precommit, provider work/signing,
+    deterministic scoring, fail->no-pay causality, circuit breaker, or full
+    integrated live product loop.
