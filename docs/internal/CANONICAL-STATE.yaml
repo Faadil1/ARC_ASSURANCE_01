@@ -630,3 +630,27 @@ t0_deployment_readiness_2026_10_01:
     - payout
     - refund
     - complete
+
+
+t0_deployment_execution_method_delta_2026_10_01:
+  status: ACTIVE
+  reason: "Human workstation lacks admin rights; WSL/Arc Foundry local setup is unavailable."
+  canonical_source_unchanged: true
+  prior_method: "Foundry deploy script deploy + policy registration in one broadcast."
+  fallback_method: "Remix web IDE + MetaMask browser extension."
+  compiler_required: "solc 0.8.24 exact"
+  execution_sequence:
+    - "Deploy PolicyCustody constructor on Arc mainnet."
+    - "Verify deployment receipt and runtime bindings."
+    - "Call createPolicy once with the locked T0 configuration."
+    - "Verify policy registration receipt."
+    - "STOP before any contract funding."
+  authorization_scope_unchanged: true
+  protected_transactions:
+    deployment: AUTHORIZED
+    createPolicy: AUTHORIZED
+    contract_funding: NOT_AUTHORIZED
+    payout: NOT_AUTHORIZED
+    refund: NOT_AUTHORIZED
+    complete: NOT_AUTHORIZED
+  truth_boundary: "Two separate MetaMask-signed transactions replace the single Foundry broadcast, but no contract source or policy parameters change."
