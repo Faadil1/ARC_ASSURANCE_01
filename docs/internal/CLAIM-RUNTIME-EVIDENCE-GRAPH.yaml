@@ -82,6 +82,12 @@ claims:
       - "configured payout"
       - "remaining-funds refund"
       - "completion"
+  - claim_id: INTEGRATED_MAINNET_DEPLOYMENT
+    statement: "The integrated AssuranceVault exact init code is deployed on Arc mainnet with constructor/runtime bindings verified."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_INTEGRATED_MAINNET_DEPLOYMENT]
   - claim_id: INTEGRATED_LOCAL_LOAD_BEARING
     statement: "The separate integrated AssuranceVault line locally demonstrates load-bearing PASS/FAIL/breaker behavior."
     evidence_class: LOCAL
@@ -90,10 +96,24 @@ claims:
     scenario_ids: [SC_INTEGRATED_LOCAL]
   - claim_id: INTEGRATED_LIVE_FINANCIAL_CAUSALITY
     statement: "The integrated vault is live on Arc and PASS→pay, FAIL→no-pay, breaker→refund are proven by live receipts."
-    evidence_class: NOT_IMPLEMENTED
+    evidence_class: PARTIAL
     truth_state: UNKNOWN
-    graph_status: MISSING
+    graph_status: PARTIAL
     scenario_ids: [SC_INTEGRATED_LIVE]
+    proven_edges:
+      - "integrated mainnet deployment"
+      - "exact init-code binding"
+      - "constructor binding"
+    missing_edges:
+      - "policy creation"
+      - "real policy funding"
+      - "hidden precommit"
+      - "provider output lock"
+      - "canary reveal"
+      - "deterministic resolve"
+      - "PASS -> pay"
+      - "FAIL -> no-pay"
+      - "breaker -> refund"
 
 scenarios:
   - scenario_id: SC_T0_LOCAL_REVALIDATION
@@ -152,6 +172,11 @@ scenarios:
       - RUN_T0_MAINNET_CONFIGURED_PAYOUT
       - RUN_T0_MAINNET_REMAINING_REFUND
       - RUN_T0_MAINNET_COMPLETION
+  - scenario_id: SC_INTEGRATED_MAINNET_DEPLOYMENT
+    scenario_type: SUCCESS
+    preconditions: ["Arc chain 5042", "Human-authorized exact integrated deployment", "Bound init code and constructor config"]
+    expected_consequence: "AssuranceVault exists at the predicted Arc address with exact init-code and constructor bindings."
+    runtime_execution_ids: [RUN_INTEGRATED_MAINNET_DEPLOYMENT]
   - scenario_id: SC_INTEGRATED_LOCAL
     scenario_type: SUCCESS
     preconditions: ["Integrated branch clean-room build"]
@@ -159,9 +184,9 @@ scenarios:
     runtime_execution_ids: [RUN_INTEGRATED_LOCAL]
   - scenario_id: SC_INTEGRATED_LIVE
     scenario_type: SUCCESS
-    preconditions: ["Integrated vault deployed on Arc"]
+    preconditions: ["Integrated vault deployed on Arc", "Policy exists and is funded", "Opaque precommit precedes provider output"]
     expected_consequence: "Live financial causality and recovery are independently reconstructed."
-    runtime_execution_ids: []
+    runtime_execution_ids: [RUN_INTEGRATED_MAINNET_DEPLOYMENT]
 
 runtime_executions:
   - execution_id: RUN_T0_LOCAL
@@ -245,6 +270,15 @@ runtime_executions:
     repository: Faadil1/ARC_ASSURANCE_01
     commit_sha: 6cae32c7b891bb0db296f37020343e6afccda692
     deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_INTEGRATED_MAINNET_DEPLOYMENT
+    runtime: "Arc mainnet + GitHub Actions receipt/source verification"
+    observed_at: "2026-10-02T16:53:49Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_INTEGRATED_MAINNET_DEPLOYMENT]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 84efcb9d67085f12f171988fa21e5ebff7c79b76
+    deployment_id: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
   - execution_id: RUN_INTEGRATED_LOCAL
     runtime: "GitHub Actions clean-room / local EVM"
     observed_at: "2026-09-30"
@@ -318,6 +352,10 @@ receipts:
     artifact_pointer: "Arc tx 0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932 / GitHub Actions run 36985388199"
     observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
     contains_secret: false
+  - receipt_id: RCPT_INTEGRATED_MAINNET_DEPLOYMENT
+    artifact_pointer: "Arc tx 0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272 / GitHub Actions run 37036958146 / artifact 11241455626"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
   - receipt_id: RCPT_INTEGRATED_AUDIT
     artifact_pointer: "PR #30 / GitHub Actions run 36671284825"
     observed_or_generated: GENERATED_FROM_RUNTIME
@@ -328,12 +366,20 @@ state_binding:
   active_state_pr: 44
   execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
   current_branch_head_rule: "Resolve dynamically from PR #44. Later documentation-only commits are not execution receipts."
-  next_operational_gate: T0_CYCLE_CLOSED
+  next_operational_gate: G2_POLICY_CREATION_AUTHORIZATION
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: BLOCKED
 
-deployments: []
+deployments:
+  - deployment_id: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    runtime: ARC_MAINNET
+    contract: AssuranceVault
+    chain_id: 5042
+    tx_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+    block_number: 23909824
+    init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+    receipt_id: RCPT_INTEGRATED_MAINNET_DEPLOYMENT
 
 unresolved_edges:
-  - "INTEGRATED_LIVE_FINANCIAL_CAUSALITY: live runtime/receipt/deployment edges missing."
+  - "INTEGRATED_LIVE_FINANCIAL_CAUSALITY: deployment/source binding is proven; policy creation, funding, hidden precommit, provider output, reveal, resolve and financial-consequence edges remain missing."
 terminal_claims_allowed: false
