@@ -7,7 +7,8 @@ g0:
   merged_pr: 1
   merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
 blockers:
-  - PUBLIC_ROLE_ADDRESSES_NOT_FINALIZED
+  - PROVIDER_SIGNER_ADDRESS_NOT_FINALIZED
+  - PAYOUT_RECIPIENT_ADDRESS_NOT_FINALIZED
   - INTEGRATED_MAINNET_DEPLOYMENT_NOT_PROVEN
   - LIVE_BATCH_COMMIT_NOT_EXECUTED
 target:
@@ -78,6 +79,14 @@ repository_graph:
   executable_source_changed: false
   classification: ACCEPTED_INTEGRATION_HISTORY_DEBT
 public_role_addresses:
-  authority_funder: KNOWN_T0_WALLET_CANDIDATE_NOT_YET_LOCKED_FOR_INTEGRATED
-  provider_signer: NOT_FINALIZED
-  payout_recipient: NOT_FINALIZED
+  authority_funder:
+    status: LOCKED
+    address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    role: "integrated authority + funder"
+    provenance: "dedicated Arc T0 wallet; previously proven EOA and protected signer"
+  provider_signer:
+    status: NOT_FINALIZED
+    requirement: "fresh distinct EOA; no application funds required"
+  payout_recipient:
+    status: NOT_FINALIZED
+    requirement: "fresh distinct EOA; must differ from authority/funder and provider signer"
