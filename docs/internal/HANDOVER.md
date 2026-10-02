@@ -1055,3 +1055,39 @@ It requests only the authorized contract-creation transaction and performs
 local checks before opening MetaMask.
 
 Current checkpoint: **HUMAN METAMASK CONFIRMATION**.
+
+
+## 52. Integrated AssuranceVault deployment — PROVEN
+
+Arc tx:
+`0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272`
+
+Contract:
+`0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
+
+Verification:
+- G2 Deployment Receipt run `37036958146` — **SUCCESS**
+- verification head `84efcb9d67085f12f171988fa21e5ebff7c79b76`
+- artifact `11241455626`
+- digest `sha256:a502c42de338950a9f526c8ca1aeb37935a8d47ee7d7bfa8566fb99f316922d4`
+- same-head reproducible build `37036958053` — **SUCCESS**
+
+Observed:
+- block 23909824;
+- deployer nonce 6 consumed; pending nonce after = 7;
+- exact init-code hash matches the approved preflight;
+- runtime exists, 15,618 bytes;
+- constructor bindings match authority, Arc 5042, Arc USDC interface and 0.05 USDC deployment cap;
+- initial policy count, liability, custody, released value and contract balance are all zero;
+- gas used = 3,464,938;
+- effective gas cost = **0.074496167 native USDC**.
+
+The one-time integrated deployment authorization is consumed.
+
+**Next protected gate: `G2_POLICY_CREATION_AUTHORIZATION`.**
+
+No `createPolicy`, funding, `commitBatch`, provider output lock, reveal, resolve
+or refund action is authorized yet.
+
+G2 / PRECOMMIT itself remains **NOT PROVEN** until an opaque batch commitment is
+observed onchain before provider output lock for the same live policy/batch.
