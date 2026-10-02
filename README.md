@@ -42,7 +42,9 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - T0 operational cycle: **CLOSED / PROVEN**
 - G1 T0_MAINNET_CUSTODY: **PROVEN**
 - G0 sequencing blocker: **CLEARED**
-- Current PRD product gate: **G2 PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN**
+- Integrated AssuranceVault deployment: **PROVEN** on Arc Mainnet at `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
+- Current PRD product gate: **G2 PRECOMMIT — DEPLOYMENT PROVEN / LIVE PRECOMMIT NOT PROVEN**
+- Next protected gate: **G2_POLICY_CREATION_AUTHORIZATION — NOT GRANTED**
 - Integrated Live Core Loop / DELIVER: **BLOCKED**
 
 The default branch `main` now contains the merged G0 governance baseline. The
