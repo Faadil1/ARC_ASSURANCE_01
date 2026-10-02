@@ -38,9 +38,12 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - T0 real contract funding (0.010 USDC): **PROVEN**
 - T0 configured payout (0.001 USDC): **PROVEN**
 - T0 remaining-funds refund (0.009 USDC): **PROVEN**
-- Operational next gate: **T0_COMPLETION_AUTHORIZATION — HUMAN / PROTECTED / NOT YET GRANTED**
-- G1 T0_MAINNET_CUSTODY: **ACTIVE / PARTIAL / NOT PROVEN**
-- Live Core Loop / DELIVER: **BLOCKED**
+- T0 completion: **PROVEN**
+- T0 operational cycle: **CLOSED / PROVEN**
+- G1 T0_MAINNET_CUSTODY: **PROVEN**
+- Formal sequencing blocker: **G0 PRD_READY remains NOT PROVEN**
+- Next PRD product gate after G0: **G2 PRECOMMIT**
+- Integrated Live Core Loop / DELIVER: **BLOCKED**
 
 The default branch `main` is still the bootstrap line and must not be treated as
 the current project-state surface until G0 is merged. Current operational state
