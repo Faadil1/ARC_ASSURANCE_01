@@ -228,14 +228,14 @@ t0_mainnet_custody:
     tests_passed: 35
     tests_failed: 0
     note: "LOCAL evidence only. Arc Foundry is not present on generic CI; forge-std is not vendored (lib/ is gitignored)."
-  unverified:
+  historical_unverified_at_that_checkpoint:
     - "Arc mainnet deployment"
     - "real mainnet funding"
     - "real payout"
     - "real refund"
     - "mainnet gas cost"
     - "runtime/commit binding"
-  gate_status: "G1 T0_MAINNET_CUSTODY is ACTIVE and NOT PROVEN. Local test success does not satisfy the gate."
+  historical_gate_status: "At this checkpoint G1 T0_MAINNET_CUSTODY was ACTIVE / NOT PROVEN. Superseded by g1_t0_mainnet_custody.status = PROVEN."
   protected_action: "Human-controlled mainnet signing/funding required."
 
 
@@ -368,12 +368,11 @@ system_control_plane_reconciliation_2026_10_01:
   adoption_timing: "Applied prospectively at this ACTIVE project's next material touch; no history backdated."
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
-  current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_COMPLETION_EXECUTION
-  exact_next_action: >-
-    Human authorization is explicit for exactly one complete(policyId) call on
-    the locked T0 policy. Revalidate Refunded + fully drained state, then the
-    human-local signer may broadcast.
+  historical_operational_track: T0_MAINNET_CUSTODY
+  historical_exact_next_gate: T0_COMPLETION_EXECUTION
+  historical_exact_next_action: >-
+    At that checkpoint, the next action was complete(policyId). This snapshot is
+    superseded by T0_CYCLE_CLOSED / G1_T0_MAINNET_CUSTODY = PROVEN.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -507,14 +506,14 @@ t0_post_funding_wallet_receipt_2026_10_01:
       - "native USDC value matches 0.51"
       - "wallet remains EOA"
       - "wallet balance remains within hard ceiling"
-  next_gate:
+  historical_next_gate:
     id: T0_DEPLOYMENT_AUTHORIZATION
-    status: ACTIVE
+    status_at_that_time: ACTIVE
     owner: HUMAN
-    authorization_granted: false
-  truth_boundary:
-    - "T0_FINAL_PRE_TRANSFER_REVALIDATION proves readiness only."
-    - "G1 T0_MAINNET_CUSTODY remains ACTIVE / NOT PROVEN."
+    authorization_granted_at_that_time: false
+  historical_truth_boundary:
+    - "At that checkpoint T0_FINAL_PRE_TRANSFER_REVALIDATION proved readiness only."
+    - "At that checkpoint G1 T0_MAINNET_CUSTODY was ACTIVE / NOT PROVEN; this is superseded by the completed live lifecycle."
 
 
 t0_wallet_topup_execution_2026_10_01:
@@ -958,13 +957,13 @@ t0_refund_execution_2026_10_02:
     id: T0_REFUND_AUTHORIZATION
     occurrence_limit: 1
     remaining_occurrences: 0
-  next_gate:
+  historical_next_gate:
     id: T0_COMPLETION_AUTHORIZATION
-    status: ACTIVE
+    status_at_that_time: ACTIVE
     owner: HUMAN
     protected_action: true
-    authorization_granted: false
-  still_not_authorized:
+    authorization_granted_at_that_time: false
+  historical_still_not_authorized_at_that_time:
     - complete
 
 
@@ -981,9 +980,9 @@ t0_completion_authorization_2026_10_02:
     - any additional completion transaction
     - any new policy
     - any new funding/payout/refund action
-  next_gate:
+  historical_next_gate:
     id: T0_COMPLETION_EXECUTION
-    status: ACTIVE
+    status_at_that_time: ACTIVE
     owner: HUMAN_SIGNER
 
 
@@ -1002,7 +1001,7 @@ t0_completion_preflight_2026_10_02:
     - "totalCustodyReceived == 0.010 native USDC"
     - "totalValueReleased == 0.001 native USDC"
     - "contract balance == 0"
-  next_action:
+  historical_next_action:
     function: "complete(bytes32)"
     policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
     tx_value_wei: "0"
