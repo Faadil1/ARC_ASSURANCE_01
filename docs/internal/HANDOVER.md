@@ -56,46 +56,31 @@ Agent Wallets, Nanopayments, x402, ERC-8004 and ERC-8183 are not required for pr
 
 ## 4. Current gate
 
-**G0 — PRD_READY**
+**G2 — PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN**
 
-This workstream establishes:
+G0 / PRD_READY is **PROVEN**. PR #1 was owner-signed off and merged to `main`
+at `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`.
 
-- `product/PRD.md`
-- `docs/internal/CANONICAL-STATE.yaml`
-- `docs/internal/HANDOVER.md`
-- `docs/internal/WORKSPLIT.md`
-- contribution rules
-
-No consequential product build should be treated as promoted until G0 is merged/reviewed.
+G1 / T0_MAINNET_CUSTODY is also **PROVEN** from the complete live Arc receipt chain.
 
 ## 5. Immediate structural state
 
-The collaborator invitation is **ACCEPTED**; GitHub reports write permission for `opeblow`.
-
-Current repository reality:
-
-- `main` is still the bootstrap line at `b874462`; it is **not** the current project-state surface.
-- formal G0 remains unproven because PR #1 is still open/unmerged.
-- active operational state is carried by PR #44 on `ops/t0-funding-readiness`.
-- stacked PR history remains relevant, but a reader must resolve the active PR branch before interpreting current state.
-
-This does not block the already-approved DESIGN technical spike. It does block treating `main` as canonical current state or promoting formal G0/DELIVER. Merge ordering remains an administrative integration task before mainline promotion.
+- `main` now contains the G0 governance baseline.
+- `opeblow` has write permission.
+- Opeyemi review is recommended but non-blocking for G0; technical-owner review is mandatory only at later gates where the affected surface falls under that owner's explicit accountability.
+- active operational state remains on PR #44 / `ops/t0-funding-readiness` until stacked state is integrated.
+- the integrated AssuranceVault line currently diverges from the new `main` because the G0 policy-correction commits landed after that stack was created.
 
 ## 6. Next gates — operational vs product
 
-**Operational next gate: `T0_DEPLOYMENT_EXECUTION` — ACTIVE / HUMAN SIGNER / PROTECTED.**
+**T0 operational cycle: `CLOSED / PROVEN`.**
 
-`T0_FINAL_PRE_TRANSFER_REVALIDATION` is already PROVEN on execution head `4f7f3b254a29e6023d539a85e5b126a7f21e1955`.
+**Product-level gate: G2 — PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN.**
 
-The wallet top-up and POST_FUNDING_WALLET_RECEIPT are now PROVEN. The concrete Arc transaction hash is bound to the funded-wallet state. STOP until a separate explicit human deployment authorization is given.
+G2 uses the integrated `AssuranceVault` product core, not a proof-only standalone contract.
+Before any live G2 action, reconcile the integrated line with merged G0, rerun exact-source readiness, and preserve the protected-action boundary for deployment/policy/funding/commit calls.
 
-**Product-level gate: G1 — T0_MAINNET_CUSTODY — ACTIVE / NOT PROVEN.**
-
-Owner for contract/runtime work: Opeyemi.
-
-G1 still requires real Arc receipts for deploy → custody → configured payout → remaining-funds refund → completion, bound to the approved source/runtime.
-
-Do not claim the broader product is mainnet-proven merely because T0 succeeds. T0 proves only the custody/payment primitive.
+Do not promote G2 until a real opaque commitment exists on Arc mainnet before provider execution/output lock for the same batch.
 
 ## 7. Parallel work after G0
 
@@ -573,7 +558,7 @@ historical receipts.
 
 - active state branch: `ops/t0-funding-readiness`
 - active state PR: **#44**
-- default branch `main`: bootstrap-only until formal G0 is merged
+- default branch `main`: G0 governance baseline is now merged/proven; latest operational state still lives ahead on stacked branches
 - current branch head: resolve dynamically from PR #44
 
 ### Head semantics
@@ -589,9 +574,9 @@ historical receipts.
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
 - operational next gate: **T0_CYCLE_CLOSED — PROVEN**
 - G1 T0_MAINNET_CUSTODY: **PROVEN**
-- formal sequencing blocker: **G0 PRD_READY remains NOT PROVEN**
-- next PRD product gate after G0: **G2 PRECOMMIT**
-- DELIVER: **BLOCKED** on G0 + integrated live product-depth evidence
+- G0 PRD_READY: **PROVEN**
+- current PRD product gate: **G2 PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN**
+- DELIVER: **BLOCKED** on integrated live product-depth evidence and external product evidence
 - Product Exploitation Loop: **NOT YET TRIGGERED** because T0 is a live custody primitive, not the first live integrated product vertical slice
 
 ### Reading order
@@ -900,26 +885,26 @@ precommit, genuine provider work/signing, deterministic scoring, fail->no-pay,
 circuit breaker, integrated live core loop and external-user product evidence
 remain separate.
 
-Formal G0 / PRD_READY is still unproven because PR #1 is open/unmerged. After
-G0, the next PRD promotion gate is G2 / PRECOMMIT.
+G0 / PRD_READY is now PROVEN via merged PR #1. The current PRD promotion gate
+is G2 / PRECOMMIT.
 
 
-## 47. G0 review boundary + G2 integrated readiness — 2026-10-02
+## 47. G0 governance correction + G2 integrated readiness — 2026-10-02
 
 ### G0
 
-PR #1 is technically clean and mergeable, but **G0 remains NOT PROVEN** because
-the required Opeyemi review has not yet been submitted.
+The earlier project-local rule requiring Opeyemi approval for G0 was corrected.
+
+Final G0 rule:
+- Faadil owner sign-off + technically clean merge is sufficient for PRD_READY;
+- collaborator review is recommended / non-blocking;
+- technical-owner review becomes mandatory only at later surface-specific gates where that owner is explicitly accountable.
 
 Observed:
-- PR #1 base: `main`
-- PR #1 head: `docs/prd-v0.1`
-- requested reviewer: `opeblow`
-- submitted reviews: **0**
-- mergeable state: **clean**
-
-A focused G0 reviewer checklist and direct @opeblow ping were added to PR #1.
-Do not self-bypass this review requirement.
+- `opeblow` permission: **write**
+- PR #1: **MERGED**
+- merge SHA: `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
+- G0 / PRD_READY: **PROVEN**
 
 ### G2 vehicle decision
 
@@ -960,4 +945,23 @@ No integrated deployment, policy creation, funding, `commitBatch`, output-lock,
 reveal or resolve action is currently authorized.
 
 Current order:
-`G0 review + merge -> reconcile integrated line -> protected live G2 execution`.
+`reconcile integrated line with merged G0 -> rerun readiness -> protected live G2 execution`.
+
+
+## 48. G0 merge receipt + current G2 blocker — 2026-10-02
+
+PR #1 merged successfully into `main` with merge commit:
+
+`1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
+
+The merge includes the corrected review policy:
+- owner sign-off is sufficient for G0;
+- collaborator review is recommended/non-blocking at G0;
+- later technical-owner review remains surface-specific.
+
+Current G2 status:
+- G0: **PROVEN**
+- G1: **PROVEN**
+- PR #45 readiness: **clean-room SUCCESS**
+- live G2 proof: **NOT PROVEN**
+- remaining structural blocker: the integrated AssuranceVault branch must absorb/reconcile the new G0 mainline commits before any live protected action.
