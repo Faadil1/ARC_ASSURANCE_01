@@ -40,7 +40,7 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 - Funding amount (native 18-decimal units): `10000000000000000` — **EXECUTED / PROVEN**
 - Funding amount (USDC display): **0.010 USDC — EXECUTED / PROVEN**
 - Payout amount: **0.001 USDC — EXECUTED / PROVEN**
-- Expected refund remainder: **0.009 USDC — NOT YET EXECUTED**
+- Expected refund remainder: **0.009 USDC — EXECUTED / PROVEN**
 - Deployment spend cap (immutable): `50000000000000000`
 
 ## Preflight (read-only)
@@ -110,14 +110,18 @@ Hard ceiling enforced by the driver: `0.05` native USDC = `50000000000000000` we
 
 ## Refund
 
-- Tx hash:
-- Explorer:
-- Block / log index:
-- `RemainingFundsRefunded` event:
-- `PolicyRefunded` event:
-- Contract balance after:
-- `totalLiability()` after:
-- Funder balance delta (gas accounted separately):
+- Tx hash: `0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024`
+- Verification: GitHub Actions run `36984307453`
+- Receipt status: **SUCCESS / LIVE ARC**
+- Function: `refundRemaining(bytes32)`
+- Transaction value: **0**
+- `RemainingFundsRefunded` event: **PROVEN; amount = 0.009 USDC**
+- State immediately after verified refund: `Refunded`
+- Contract balance after: **0**
+- `remainingFor(policyId)` after: **0**
+- `totalLiability()` after: **0**
+- `totalCustodyReceived()` remains **0.010 USDC**
+- `totalValueReleased()` remains **0.001 USDC**
 
 ## Completion
 
@@ -153,7 +157,9 @@ Paste the decoded `snapshot(policyId)` result.
 - Funding receipt and immediate post-state are independently verified.
 - Configured payout of exactly **0.001 native USDC** is proven.
 - **0.009 native USDC** remained in policy custody immediately after payout.
-- Refund/completion remain unproven.
+- Remaining-funds refund of exactly **0.009 native USDC** is proven.
+- Contract custody and liability are now **0**.
+- Completion remains unproven.
 
 ### INFERRED
 
