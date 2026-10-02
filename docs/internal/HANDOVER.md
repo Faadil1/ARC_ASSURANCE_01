@@ -962,6 +962,26 @@ The merge includes the corrected review policy:
 Current G2 status:
 - G0: **PROVEN**
 - G1: **PROVEN**
-- PR #45 readiness: **clean-room SUCCESS**
+- PR #45 readiness: **content-reconciled / clean-room SUCCESS**
+- readiness head: `21ff1ac9b138e2271018bae696de744268bfc223`
+- clean-room run: `37006382193` on parent `ccbf1aa...`; parent→head delta is readiness YAML only
+- executable delta from `c3aaa11...`: **NONE**
 - live G2 proof: **NOT PROVEN**
-- remaining structural blocker: the integrated AssuranceVault branch must absorb/reconcile the new G0 mainline commits before any live protected action.
+- immediate non-protected blocker: public integrated provider/payout addresses are not finalized.
+
+
+## 49. G2 post-G0 readiness — GREEN
+
+PR #45 has been synchronized at the content/governance level with the merged G0
+policy. The post-reconciliation clean-room run `37006382193` succeeded.
+
+No executable source changed from the previously proven integrated source:
+the delta from `c3aaa11bf7454e1f3afe0fb740c8c0ccd7fedd5c` touches governance/readiness
+documents only.
+
+Current next input boundary:
+- authority/funder candidate: dedicated Arc T0 wallet exists, but is not yet locked for integrated deployment;
+- provider signer: **NOT FINALIZED**;
+- payout recipient: **NOT FINALIZED**.
+
+No integrated deployment/policy/funding/commit authorization has been granted.
