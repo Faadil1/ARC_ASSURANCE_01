@@ -107,9 +107,9 @@ jobs:
           [ "$CHAIN_ID" = "$EXPECTED_CHAIN_ID" ]
           [ "${USDC,,}" = "${EXPECTED_USDC,,}" ]
           [ "$CAP" = "$EXPECTED_CAP" ]
-          [ "$POLICY_COUNT" = "0" ]
-          [ "$LIABILITY" = "0" ]
-          [ "$RECEIVED" = "0" ]
+          # Mutable lifecycle state is recorded but not asserted here. The deployment
+          # receipt is historical proof of contract creation; later authorized
+          # transactions may legitimately change policyCount/liability/custody.
 
           python3 - <<'PY'
           import json, os
@@ -128,9 +128,9 @@ jobs:
             "expected_chain_id": "$CHAIN_ID",
             "usdc_erc20_interface": "$USDC",
             "deployment_spend_cap_wei": "$CAP",
-            "policy_count": "$POLICY_COUNT",
-            "total_liability": "$LIABILITY",
-            "total_custody_received": "$RECEIVED",
+            "current_policy_count": "$POLICY_COUNT",
+            "current_total_liability": "$LIABILITY",
+            "current_total_custody_received": "$RECEIVED",
             "verified": true
           }
           EOF
