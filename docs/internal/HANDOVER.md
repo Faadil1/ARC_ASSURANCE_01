@@ -56,37 +56,34 @@ Agent Wallets, Nanopayments, x402, ERC-8004 and ERC-8183 are not required for pr
 
 ## 4. Current gate
 
-**G0 — PRD_READY**
+**G2 — PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN**
 
-This workstream establishes:
+G0 / PRD_READY is **PROVEN** via PR #1 merged at
+`1220fc5d39b2262f0b66d0ae4713629b10f3ca29`.
 
-- `product/PRD.md`
-- `docs/internal/CANONICAL-STATE.yaml`
-- `docs/internal/HANDOVER.md`
-- `docs/internal/WORKSPLIT.md`
-- contribution rules
+The corrected G0 rule is owner sign-off + clean merge. Opeyemi review is
+recommended/non-blocking for G0 and remains mandatory only at later gates where
+his explicit technical surface is materially affected.
 
-No consequential product build should be treated as promoted until G0 is merged/reviewed.
+G1 / T0_MAINNET_CUSTODY is **PROVEN** on the separate live T0 evidence line.
 
 ## 5. Immediate blocker
 
-Faadil has already sent Opeyemi (`opeblow`) a collaborator invitation with the intended write access.
+No human review blocker remains for G0.
 
-Current status:
-
-- collaborator invitation: **INVITE_PENDING**
-- next action: **Opeyemi accepts the existing GitHub invitation**
-- after acceptance, verify that `opeblow` can push a branch/open a PR and request him on PR #1.
-
-No new invitation is required unless the existing one expires or is declined.
+Before live G2 execution, this integrated line must be reconciled with the merged
+G0 mainline, exact-source readiness must be rerun, and each consequential
+mainnet action must receive separate explicit human authorization.
 
 ## 6. Next gate
 
-**G1 — T0_MAINNET_CUSTODY**
+**G2 — PRECOMMIT**
 
-Owner: Opeyemi.
+Use the integrated `AssuranceVault` product core. G2 requires a real opaque
+commitment on Arc mainnet before provider execution/output lock for the same
+batch.
 
-Before UI work, prove with a minimal contract on Arc mainnet:
+Historical G1 primitive proved on the separate T0 line:
 
 ```
 real USDC
@@ -1012,3 +1009,13 @@ exact creation bytecode
 ```
 
 No private key is needed for that next step.
+
+
+## G0 mainline reconciliation — 2026-10-02
+
+- PR #1 merged to `main`: `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
+- G0: **PROVEN**
+- collaborator review at G0: **RECOMMENDED / NON-BLOCKING**
+- G1 T0 custody: **PROVEN** on PR #44
+- current product gate: **G2 PRECOMMIT**
+- live G2 protected actions: **NOT AUTHORIZED**
