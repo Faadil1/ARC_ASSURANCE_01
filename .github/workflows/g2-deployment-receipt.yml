@@ -1,0 +1,75 @@
+name: G2 Deployment Receipt
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install Node dependencies from lock
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install pinned Solidity libraries
+        run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+
+      - name: Build exact source
+        run: |
+          npm run golden:write
+          npm run test:all-js
+          forge build
+
+      - name: Generate reproducible build manifest
+        env:
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: npm run build:manifest
+
+      - name: Generate exact deployment manifest for Solidity cross-check
+        run: |
+          node script/generate-deployment-manifest.mjs             build/reproducible-build-manifest.json             build/deployment-manifest.ci.json
+
+      - name: Run Solidity tests
+        run: forge test -vv
+
+      - name: Verify real Arc deployment receipt and exact init-code binding
+        run: |
+          node script/g2_verify_deployment_receipt.mjs             "$ARC_MAINNET_RPC_URL"             ops/g2-deployment-receipt-input.json             out/AssuranceVault.sol/AssuranceVault.json             | tee build/g2-deployment-receipt.json
+
+      - name: Upload deployment evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: g2-deployment-receipt-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ops/g2-deployment-receipt-input.json
+            build/g2-deployment-receipt.json
+            build/reproducible-build-manifest.json
+            build/deployment-manifest.ci.json
+            out/AssuranceVault.sol/AssuranceVault.json
+          if-no-files-found: error
+          retention-days: 90
