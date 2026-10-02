@@ -1,6 +1,6 @@
 # G2 PRECOMMIT — Live Readiness Packet
 
-**Status:** BLOCKED_BY_G0_AND_PROTECTED_LIVE_ACTIONS  
+**Status:** READY_FOR_POST_RECONCILIATION_PREFLIGHT__LIVE_PROOF_NOT_PROVEN  
 **Gate:** G2 / PRECOMMIT  
 **Target runtime:** Arc mainnet (chain 5042)  
 **Target contract:** integrated `AssuranceVault`  
@@ -139,16 +139,16 @@ No private key or seed may be requested, stored or transmitted.
 Current sequencing:
 
 ```text
-G0 PRD_READY       NOT PROVEN — waiting for @opeblow review + merge
+G0 PRD_READY       PROVEN
 G1 T0 CUSTODY      PROVEN
-G2 PRECOMMIT       READINESS ACTIVE / PROMOTION BLOCKED BY G0 + LIVE EXECUTION
+G2 PRECOMMIT       READINESS ACTIVE / LIVE PROOF NOT PROVEN
 ```
 
-No G2 live transaction should be initiated before G0 is proven.
+G0 is proven. No G2 live transaction should be initiated until this integrated branch is reconciled with `main`, exact-source readiness is rerun, and the relevant protected action is explicitly authorized.
 
 ## 8. Live execution plan after G0
 
-After G0:
+G0 is now proven. Next:
 
 1. rebase/reconcile the integrated branch against the merged governance baseline;
 2. rerun clean-room build/tests and prove creation-bytecode continuity or explain any delta;
@@ -177,13 +177,21 @@ G2 readiness is complete when:
 - [x] bytecode hash is recorded;
 - [x] hidden-preimage handling rule is explicit;
 - [x] protected-action boundaries are explicit;
-- [ ] G0 PRD_READY is proven;
+- [x] G0 PRD_READY is proven;
 - [ ] integrated deployment runtime/source binding is live-proven;
 - [ ] bounded policy + funding are live-proven;
 - [ ] hidden commitment generated privately;
 - [ ] `BatchCommitted` live receipt verified;
 - [ ] no earlier `ProviderOutputLocked` exists for the same batch.
 
-Until the final five live conditions are satisfied:
+Until the remaining live conditions are satisfied:
 
-`G2_PRECOMMIT = BLOCKED / NOT PROVEN`.
+`G2_PRECOMMIT = ACTIVE_READINESS / NOT PROVEN`.
+
+
+## 10. G0 merge receipt
+
+- PR #1: **MERGED**
+- merge SHA: `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
+- G0 review policy: owner sign-off + clean merge; collaborator review recommended/non-blocking
+- immediate next step: structurally reconcile this branch with merged `main`, then rerun clean-room and read-only Arc predeploy checks
