@@ -595,7 +595,8 @@ t0_deployment_authorization_gate:
   authorization_granted: true
   scope:
     - mainnet_contract_deploy
-    - one_policy_registration_in_same_broadcast
+    - one_policy_registration
+  execution_method_note: "Under the no-admin browser fallback, deployment and policy registration were executed as two separate MetaMask-signed transactions; both are now PROVEN."
   does_not_authorize:
     - contract_funding
     - payout
