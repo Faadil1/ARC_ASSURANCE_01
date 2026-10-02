@@ -541,7 +541,7 @@ state_resolution_2026_10_01:
   default_branch_role: BOOTSTRAP_ONLY_UNTIL_G0_MERGED
   execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
   current_branch_head_rule: "Resolve PR #44 head dynamically."
-  operational_next_gate: T0_DEPLOYMENT_EXECUTION
+  operational_next_gate: T0_POLICY_REGISTRATION_EXECUTION
   macro_product_gate: G1_T0_MAINNET_CUSTODY
   prebuild_reality: PROVEN
   external_user_operator_product_evidence: BLOCKED
@@ -603,11 +603,27 @@ t0_deployment_authorization_gate:
 
 
 t0_deployment_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  method: "Remix + MetaMask browser extension fallback"
+  deployment_tx_hash: "0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  verification_run: 36975671614
+  runtime_source_binding: PROVEN
+  rule: "Deployment proof does not authorize contract funding."
+
+
+t0_policy_registration_execution_gate:
   status: ACTIVE
   owner: HUMAN_SIGNER
   protected_action: true
-  public_config: ops/t0-deployment-config.json
-  safe_env_template: ops/t0-deployment-public.env
-  private_key_boundary: HUMAN_LOCAL_ONLY
-  command: "./script/t0-mainnet-proof.sh deploy --confirm"
-  completion_rule: "Capture Arc deployment tx hash, contract address, code readback, authority, chain binding, USDC binding, and policy registration. Then STOP before contract funding."
+  authorization: PROVEN_LIMITED_SCOPE
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_config: ops/t0-deployment-config.json
+  completion_rule: "Exactly one createPolicy receipt must be captured and verified, then STOP before contract funding."
+  does_not_authorize:
+    - contract_funding
+    - payout
+    - refund
+    - complete
