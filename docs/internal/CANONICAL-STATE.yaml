@@ -111,17 +111,17 @@ current_gate:
 next_gate:
   scope: PRODUCT_GATE
   id: G2_PRECOMMIT
-  status: ACTIVE_READINESS__LIVE_PROOF_NOT_PROVEN
+  status: CONTENT_RECONCILED__READINESS_GREEN__LIVE_PROOF_NOT_PROVEN
   blocked_by:
-    - INTEGRATED_BRANCH_RECONCILIATION_WITH_MERGED_G0
+    - PUBLIC_ROLE_ADDRESSES_NOT_FINALIZED
     - INTEGRATED_ASSURANCE_VAULT_MAINNET_DEPLOYMENT_NOT_PROVEN
     - LIVE_BATCH_COMMIT_NOT_EXECUTED
   owner: project
   note: >-
-    G0 and G1 are PROVEN. G2 readiness exists in PR #45 on the integrated
-    AssuranceVault line. Live promotion still requires a reconciled integrated
-    branch, protected deployment/policy/funding actions, and an onchain opaque
-    commitment before provider output lock.
+    G0 and G1 are PROVEN. PR #45 is content-reconciled with merged G0 and
+    post-reconciliation clean-room is green. Live promotion still requires
+    finalized public role addresses, protected deployment/policy/funding actions,
+    and an onchain opaque commitment before provider output lock.
   review_queue_for_opeblow:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
@@ -1092,11 +1092,14 @@ g2_precommit_readiness_2026_10_02:
   readiness_branch: ops/g2-precommit-readiness
   readiness_pr: 45
   readiness_verification:
-    head: cff4605cdb7d4a33d8fc48369dfeacedf1eec3be
-    clean_room_run: 36986875427
+    content_reconciled_head: 21ff1ac9b138e2271018bae696de744268bfc223
+    clean_room_verified_parent: ccbf1aa522e2ef6716130466b25ce57a96a0a0d4
+    clean_room_run: 37006382193
     result: SUCCESS
-    artifact_digest: "sha256:d809069ca0837abb4e2b9ebfce56279c6efdc0a4e2622c1aeff238844e838842"
-    delta_from_source_base: "two documentation files only; no executable/build inputs changed"
+    clean_room_parent_artifact: "post-G0 content reconciliation verified green"
+    parent_to_head_delta: "one machine-readable readiness YAML file only"
+    executable_delta_from_source_base: "NONE; compare from c3aaa11 touches governance/readiness docs only"
+    repository_graph_note: "Stack predates G0 merge commit; relevant G0 content is synchronized. Graph ancestry is accepted integration-history debt, not a live-evidence claim."
   readiness_artifacts:
     - docs/internal/G2-PRECOMMIT-READINESS.md
     - docs/internal/G2-PRECOMMIT-READINESS.yaml
