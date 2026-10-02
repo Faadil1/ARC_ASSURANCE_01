@@ -275,3 +275,23 @@ execution evidence unless executable T0 inputs change.
 `POST_FUNDING_WALLET_RECEIPT = PROVEN`.
 
 The next state is `T0_DEPLOYMENT_AUTHORIZATION`. No deployment is authorized yet.
+
+
+## Real Arc PolicyCustody deployment — 2026-10-02
+
+### OBSERVED
+
+- Deployment tx: `0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24`.
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`.
+- Arc receipt verification run `36975671614`: SUCCESS.
+- Transaction is a successful zero-value contract creation from the dedicated T0 wallet at nonce 0.
+- Runtime code exists at the expected contract address.
+- Runtime getters match the locked authority, chain 5042, Arc USDC interface and 0.05-USDC deployment spend cap.
+- Before policy registration: policyCount = 0, totalLiability = 0, totalCustodyReceived = 0.
+- Executable runtime bytecode matches the canonical source build after stripping only Solidity CBOR metadata.
+
+### CONSEQUENCE
+
+`T0_DEPLOYMENT_EXECUTION = PROVEN`.
+
+Next: exactly one authorized `createPolicy` registration using the locked T0 policy config. Contract funding remains unauthorized.
