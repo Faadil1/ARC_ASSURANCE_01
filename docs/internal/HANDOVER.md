@@ -1016,3 +1016,20 @@ No signing or broadcast occurred.
 
 **Next checkpoint: G2_INTEGRATED_DEPLOYMENT_AUTHORIZATION.**
 Deployment only; no downstream policy/funding/commit authorization is implied.
+
+
+## 51. Protected authorization — integrated deployment only
+
+Human owner authorization received verbatim:
+
+> J’autorise uniquement le déploiement de l’AssuranceVault intégré sur Arc Mainnet.
+
+Scope is **deployment only** from the dedicated authority wallet on Arc Mainnet,
+bound to evidence head `1933b9d5bfd9722450b099f7e054fe610ab017dc` and init-code hash
+`0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93`.
+
+Still unauthorized: policy creation, funding, commitBatch, provider output lock,
+canary reveal, resolve, refund and additional top-up.
+
+A fresh read-only revalidation on the same exact SHA is mandatory immediately
+before the human MetaMask broadcast.
