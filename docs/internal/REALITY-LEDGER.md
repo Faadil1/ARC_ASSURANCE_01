@@ -488,3 +488,45 @@ integrated role addresses must be finalized:
 - payout recipient.
 
 No mainnet action is authorized by this readiness state.
+
+
+## G2 integrated Arc read-only predeploy — 2026-10-02
+
+### OBSERVED
+
+- executable/readiness head: `1933b9d5bfd9722450b099f7e054fe610ab017dc`;
+- reproducible build run `37022813711`: SUCCESS;
+- G2 read-only predeploy run `37022813189`: SUCCESS;
+- all three configured role addresses are distinct EOAs;
+- authority/funder nonce = 6 and balance = **0.450904799 native USDC**;
+- provider signer nonce = 0, balance = 0;
+- payout recipient nonce = 0, balance = 0;
+- exact init-code hash = `0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93`;
+- predicted CREATE address at nonce 6 =
+  `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- Arc `eth_estimateGas` for exact creation = **3,493,605 gas**;
+- observed gas price = 20,000,000,000 wei/gas;
+- observed deployment estimate = **0.0698721 USDC**;
+- conservative full-hero budget with safety multipliers = **0.3060238 USDC** peak;
+- current authority wallet balance exceeds that conservative peak by **0.144880999 USDC**.
+
+### CONSEQUENCE
+
+`G2_READONLY_PREDEPLOY = PROVEN`.
+
+The current wallet is sufficient under the observed conservative budget; no
+additional wallet top-up is presently required.
+
+### TRUTH BOUNDARY
+
+This is read-only evidence only. No private key was consumed, no transaction was
+signed or broadcast, and no funds moved. The predicted contract address is valid
+only while deployer nonce remains 6 and the exact init code remains unchanged.
+
+### CURRENT PROTECTED BOUNDARY
+
+`G2_INTEGRATED_DEPLOYMENT_AUTHORIZATION = ACTIVE / HUMAN / NOT GRANTED`.
+
+A deployment authorization, if granted, covers deployment only. Policy creation,
+funding, `commitBatch`, provider output lock, reveal and resolve remain separate
+protected actions.
