@@ -1,0 +1,170 @@
+name: G2 Read-Only Predeploy
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  predeploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      DEPLOY_AUTHORITY: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      DEPLOYER_ADDRESS: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      POLICY_FUNDER: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      POLICY_PROVIDER: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+      POLICY_PAYOUT_RECIPIENT: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+      DEPLOYMENT_SPEND_CAP_WEI: "50000000000000000"
+      POLICY_MAX_FAILURES: "2"
+      POLICY_MAX_SPEND_CAP_WEI: "20000000000000000"
+      POLICY_UNIT_PAYOUT_WEI: "2000000000000000"
+      POLICY_EXPIRY: "1792033200"
+
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install Node dependencies from lock
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install pinned Solidity libraries
+        run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+
+      - name: Validate public pre-mainnet parameters
+        run: npm run premainnet:check -- ops/g2-predeploy-parameters.json
+
+      - name: Verify role addresses are distinct EOAs
+        run: |
+          set -euo pipefail
+          A="${DEPLOY_AUTHORITY,,}"
+          P="${POLICY_PROVIDER,,}"
+          R="${POLICY_PAYOUT_RECIPIENT,,}"
+          [ "$A" != "$P" ]
+          [ "$A" != "$R" ]
+          [ "$P" != "$R" ]
+
+          ACODE="$(cast code "$DEPLOY_AUTHORITY" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          PCODE="$(cast code "$POLICY_PROVIDER" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          RCODE="$(cast code "$POLICY_PAYOUT_RECIPIENT" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          [ "$ACODE" = "0x" ]
+          [ "$PCODE" = "0x" ]
+          [ "$RCODE" = "0x" ]
+
+          ANONCE="$(cast nonce "$DEPLOY_AUTHORITY" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          PNONCE="$(cast nonce "$POLICY_PROVIDER" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          RNONCE="$(cast nonce "$POLICY_PAYOUT_RECIPIENT" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          ABAL="$(cast balance "$DEPLOY_AUTHORITY" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          PBAL="$(cast balance "$POLICY_PROVIDER" --rpc-url "$ARC_MAINNET_RPC_URL")"
+          RBAL="$(cast balance "$POLICY_PAYOUT_RECIPIENT" --rpc-url "$ARC_MAINNET_RPC_URL")"
+
+          mkdir -p build
+          cat > build/g2-role-state.json <<EOF
+          {
+            "schema": "ARC_ASSURANCE_G2_ROLE_STATE_V1",
+            "chain_id": 5042,
+            "authority_funder": {"address":"$DEPLOY_AUTHORITY","nonce":"$ANONCE","balance_wei":"$ABAL","code":"$ACODE"},
+            "provider_signer": {"address":"$POLICY_PROVIDER","nonce":"$PNONCE","balance_wei":"$PBAL","code":"$PCODE"},
+            "payout_recipient": {"address":"$POLICY_PAYOUT_RECIPIENT","nonce":"$RNONCE","balance_wei":"$RBAL","code":"$RCODE"},
+            "all_distinct": true,
+            "all_eoa": true,
+            "safety": {"private_key_consumed":false,"transaction_signed":false,"transaction_broadcast":false,"funds_moved":false}
+          }
+          EOF
+
+      - name: Run exact-head tests and build
+        run: |
+          npm run golden:write
+          npm run test:all-js
+          forge build
+          forge test -vv
+
+      - name: Generate reproducible build manifest
+        env:
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: npm run build:manifest
+
+      - name: Derive deterministic public policy identifiers
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync } from "node:fs";
+          import { keccak256, stringToHex } from "viem";
+          const policyId = keccak256(stringToHex("ARC_ASSURANCE_01:G2_POLICY_V1"));
+          const scorer = keccak256(stringToHex("ARC_ASSURANCE_SCORER_V1:invoice-exact-v1"));
+          appendFileSync(process.env.GITHUB_ENV, `POLICY_ID=${policyId}\nPOLICY_SCORER_ID_HASH=${scorer}\n`);
+          console.log(JSON.stringify({policy_id:policyId, scorer_id_hash:scorer}, null, 2));
+          NODE
+
+      - name: Generate exact deployment manifest
+        run: |
+          node script/generate-deployment-manifest.mjs             build/reproducible-build-manifest.json             build/g2-deployment-manifest.json
+
+      - name: Generate exact Arc predeploy gas snapshot
+        run: |
+          node script/exact-predeploy-gas-snapshot.mjs             build/g2-deployment-manifest.json             out/AssuranceVault.sol/AssuranceVault.json             build/g2-predeploy-gas-snapshot.json
+
+      - name: Record exact-head gas report
+        run: forge test --gas-report | tee build/g2-gas-report.txt
+
+      - name: Generate execution gas evidence
+        env:
+          GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          node script/parse-gas-unit-evidence.mjs             build/g2-gas-report.txt             build/g2-gas-unit-evidence.json
+
+      - name: Build conservative wallet-budget input
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from "node:fs";
+          const cfg=JSON.parse(readFileSync("ops/g2-predeploy-parameters.json","utf8"));
+          const dep=JSON.parse(readFileSync("build/g2-predeploy-gas-snapshot.json","utf8"));
+          const gas=JSON.parse(readFileSync("build/g2-gas-unit-evidence.json","utf8"));
+          cfg.gas_budget.deploy_gas_units=dep.deployment_gas.eth_estimateGas_units;
+          cfg.gas_budget.execution_gas_units=gas.lifecycle.full_hero_one_pass_two_fail_breaker_refund_max_sum_gas;
+          cfg.gas_budget.status="EXACT_PREDEPLOY_PLUS_EXACT_HEAD_HERO_REHEARSAL";
+          cfg.gas_budget.source_evidence={
+            deploy:"Arc eth_estimateGas over exact init code",
+            execution:"Foundry per-function MAX full hero lifecycle"
+          };
+          writeFileSync("build/g2-wallet-budget-input.json", JSON.stringify(cfg,null,2)+"\n");
+          NODE
+
+      - name: Evaluate read-only Arc wallet budget
+        run: |
+          node script/read-only-gas-budget.mjs             wallet-budget             build/g2-wallet-budget-input.json             | tee build/g2-wallet-budget.json
+
+      - name: Upload G2 read-only predeploy evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: g2-readonly-predeploy-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ops/g2-predeploy-parameters.json
+            build/reproducible-build-manifest.json
+            build/g2-role-state.json
+            build/g2-deployment-manifest.json
+            build/g2-predeploy-gas-snapshot.json
+            build/g2-gas-report.txt
+            build/g2-gas-unit-evidence.json
+            build/g2-wallet-budget-input.json
+            build/g2-wallet-budget.json
+            out/AssuranceVault.sol/AssuranceVault.json
+          if-no-files-found: error
+          retention-days: 90
