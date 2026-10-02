@@ -1,0 +1,10 @@
+{
+  "schema": "ARC_ASSURANCE_T0_COMPLETION_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "completion_tx_hash": "0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932",
+  "contract_address": "0x0377D371d6981c98CE9C650338D7E1E80819B572",
+  "expected_sender": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 5,
+  "expected_tx_value_wei": "0",
+  "policy_id": "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+}
