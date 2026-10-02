@@ -695,3 +695,27 @@ To preserve evidence quality:
 - stop before any contract funding.
 
 The authorization scope is unchanged: deployment + one policy registration only.
+
+
+## 40. Real Arc deployment — PROVEN
+
+Deployment transaction:
+`0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24`
+
+PolicyCustody:
+`0x0377D371d6981c98CE9C650338D7E1E80819B572`
+
+Verification run `36975671614` on head
+`872975bc1c5428222d063a0ac9f5dc9b7d327c33` succeeded.
+
+Verified:
+- Arc chain 5042;
+- successful contract-creation receipt from the dedicated T0 wallet at nonce 0;
+- zero transaction value;
+- deployed runtime code present;
+- authority, chain binding, USDC interface and spend cap match the locked config;
+- policyCount, totalLiability and totalCustodyReceived are still zero before policy registration;
+- deployed executable runtime matches the canonical compiled executable runtime after stripping Solidity CBOR metadata.
+
+Next protected action: exactly one `createPolicy` call using the locked T0 policy values.
+STOP after its receipt is captured and verified. Contract funding remains unauthorized.
