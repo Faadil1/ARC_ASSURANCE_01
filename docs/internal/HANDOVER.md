@@ -678,3 +678,20 @@ The next action is the human-local signing/broadcast of
 This authorization covers deployment + the one configured policy registration only.
 STOP immediately after deployment evidence capture; contract funding and the
 payout/refund/complete leg remain unauthorized.
+
+
+## 39. Deployment execution method delta — Remix fallback
+
+The human workstation has no admin rights, so WSL/Arc Foundry cannot be installed
+locally. The protected mainnet execution will therefore use Remix + the MetaMask
+browser extension, without exporting the private key.
+
+To preserve evidence quality:
+- compile the unchanged `PolicyCustody.sol` with exact solc `0.8.24`;
+- connect Remix to Arc mainnet through MetaMask, never Remix VM;
+- deploy `PolicyCustody` with the locked constructor parameters;
+- verify the deployment receipt before the separate `createPolicy` transaction;
+- use the already-locked policy values;
+- stop before any contract funding.
+
+The authorization scope is unchanged: deployment + one policy registration only.
