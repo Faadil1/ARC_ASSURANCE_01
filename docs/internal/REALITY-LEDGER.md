@@ -395,3 +395,39 @@ This proves the remaining-funds refund leg. It does **not** prove completion.
 `T0_COMPLETION_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
 
 No completion transaction is authorized by the refund approval.
+
+
+## Real Arc completion + T0/G1 close — 2026-10-02
+
+### OBSERVED
+
+- Completion tx: `0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932`.
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`.
+- Verification run `36985388199`: SUCCESS.
+- Transaction is a successful `complete(bytes32)` call from the dedicated T0 wallet at nonce 5.
+- Transaction value is zero.
+- `PolicyCompleted` records final contract balance = 0.
+- `PolicyStateChanged` proves `Refunded -> Completed`.
+- Final observed chain state: state = Completed, remaining = 0, totalLiability = 0, totalCustodyReceived = 0.010 native USDC, totalValueReleased = 0.001 native USDC, contract balance = 0.
+
+### CONSEQUENCE
+
+`T0_COMPLETION_EXECUTION = PROVEN`.
+
+`G1_T0_MAINNET_CUSTODY = PROVEN`.
+
+The full bounded T0 Arc lifecycle is now live and receipt-backed:
+deployment -> policy registration -> 0.010 custody -> 0.001 configured payout ->
+0.009 remaining-funds refund -> completion.
+
+### TRUTH BOUNDARY
+
+This G1 promotion proves the Arc-native custody/payment primitive only. It does
+not prove G2+ behavior: hidden-test precommitment, genuine provider execution,
+signed provider output, deterministic canary scoring, FAIL -> no-pay causality,
+circuit breaking, the integrated live product loop, or external-user adoption.
+
+### CURRENT PRODUCT BOUNDARY
+
+Formal `G0_PRD_READY` remains unproven because PR #1 is still open/unmerged.
+The next product promotion gate after G0 is `G2_PRECOMMIT`.
