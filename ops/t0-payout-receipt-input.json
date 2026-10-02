@@ -1,0 +1,12 @@
+{
+  "schema": "ARC_ASSURANCE_T0_PAYOUT_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "payout_tx_hash": "0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34",
+  "contract_address": "0x0377D371d6981c98CE9C650338D7E1E80819B572",
+  "expected_sender": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 3,
+  "expected_tx_value_wei": "0",
+  "policy_id": "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000",
+  "expected_payout_wei": "1000000000000000",
+  "expected_remaining_wei": "9000000000000000"
+}
