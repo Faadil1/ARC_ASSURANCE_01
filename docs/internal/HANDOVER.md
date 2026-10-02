@@ -585,7 +585,7 @@ historical receipts.
 - Pre-Build Reality: **PROVEN**
 - External User/Operator Product Evidence: **BLOCKED**
 - T0_FINAL_PRE_TRANSFER_REVALIDATION: **PROVEN**
-- operational next gate: **T0_COMPLETION_AUTHORIZATION**
+- operational next gate: **T0_CYCLE_CLOSED — PROVEN**
 - G1 T0_MAINNET_CUSTODY: **ACTIVE / NOT PROVEN**
 - DELIVER: **BLOCKED**
 - Product Exploitation Loop: **NOT YET TRIGGERED**
@@ -849,3 +849,52 @@ The one-time refund authorization is now consumed.
 
 **Next protected checkpoint: `T0_COMPLETION_AUTHORIZATION`.**
 No `complete(policyId)` transaction may be signed or broadcast until separate explicit human authorization.
+
+
+## 46. Real Arc completion + G1 close — PROVEN
+
+Completion transaction:
+`0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932`
+
+Contract:
+`0x0377D371d6981c98CE9C650338D7E1E80819B572`
+
+Verification run `36985388199` on head
+`6cae32c7b891bb0db296f37020343e6afccda692` succeeded.
+
+Verified:
+- Arc chain 5042;
+- sender is the dedicated T0 wallet;
+- nonce = 5;
+- function selector = `complete(bytes32)`;
+- policy id matches the locked T0 policy;
+- transaction `msg.value = 0`;
+- `PolicyCompleted.finalBalance = 0`;
+- `PolicyStateChanged` proves `Refunded -> Completed`;
+- final state = `Completed`;
+- final remaining = 0;
+- final totalLiability = 0;
+- final contract native balance = 0.
+
+The one-time completion authorization is consumed. No additional T0 financial
+action is authorized or required.
+
+### T0 / G1 result
+
+`G1_T0_MAINNET_CUSTODY = PROVEN`.
+
+Live Arc receipt chain:
+1. deploy;
+2. register policy;
+3. fund 0.010 native USDC;
+4. release configured payout 0.001;
+5. refund remaining 0.009;
+6. complete with zero remaining liability.
+
+Truth boundary: this does not promote G2+ assurance behavior. Hidden-canary
+precommit, genuine provider work/signing, deterministic scoring, fail->no-pay,
+circuit breaker, integrated live core loop and external-user product evidence
+remain separate.
+
+Formal G0 / PRD_READY is still unproven because PR #1 is open/unmerged. After
+G0, the next PRD promotion gate is G2 / PRECOMMIT.
