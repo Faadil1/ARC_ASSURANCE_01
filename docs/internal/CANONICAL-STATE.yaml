@@ -1,8 +1,8 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-10-02T03:05:00-04:00"
+updated_at: "2026-10-02T04:06:17-04:00"
 source_of_truth: true
 project_status: ACTIVE
-phase: ACTIVE_DESIGN_T0_CONTRACT_FUNDING_EXECUTION_BOUNDARY
+phase: ACTIVE_DESIGN_T0_PAYOUT_AUTHORIZATION_BOUNDARY
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -125,12 +125,13 @@ next_gate:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
 
 operational_next_gate:
-  id: T0_CONTRACT_FUNDING_EXECUTION
+  id: T0_PAYOUT_AUTHORIZATION
   status: ACTIVE
-  owner: HUMAN_SIGNER
+  owner: HUMAN
   protected_action: true
-  prerequisite: "T0_CONTRACT_FUNDING_AUTHORIZATION is PROVEN."
-  machine_boundary: "Exactly one fund(policyId) transaction carrying 0.010 native USDC is authorized. STOP after receipt verification. Payout/refund/complete remain separately unauthorized."
+  authorization_granted: false
+  prerequisite: "T0_CONTRACT_FUNDING_EXECUTION is PROVEN."
+  machine_boundary: "STOP. No releaseConfiguredPayout transaction may be signed or broadcast until separate explicit human authorization. Refund/complete remain separately protected."
 
 collaboration:
   faadil:
@@ -371,12 +372,11 @@ system_control_plane_reconciliation_2026_10_01:
   project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
   current_macro_stage: DESIGN
   current_operational_track: T0_MAINNET_CUSTODY
-  exact_next_gate: T0_CONTRACT_FUNDING_EXECUTION
+  exact_next_gate: T0_PAYOUT_AUTHORIZATION
   exact_next_action: >-
-    Human authorization is explicit for exactly one 0.010 native-USDC fund(policyId)
-    transaction on the registered T0 policy. Revalidate state and fee head, then the
-    human-local signer may broadcast. STOP after receipt verification; payout/refund/
-    complete remain separately unauthorized.
+    Real Arc contract funding is proven at exactly 0.010 native USDC. STOP until
+    the human explicitly authorizes the configured payout of 0.001 native USDC.
+    Refund and completion remain separately unauthorized.
   lifecycle_coverage:
     status: PROVEN
     artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
@@ -443,7 +443,7 @@ state_precedence_2026_10_01:
   current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
   historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
   prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
-  next_gate_rule: "T0_CONTRACT_FUNDING_AUTHORIZATION is PROVEN for exactly one 0.010 native-USDC fund(policyId) transaction. Operational next gate is T0_CONTRACT_FUNDING_EXECUTION; G1 remains ACTIVE / PARTIAL / NOT PROVEN."
+  next_gate_rule: "T0_CONTRACT_FUNDING_EXECUTION is PROVEN. Operational next gate is T0_PAYOUT_AUTHORIZATION; G1 remains ACTIVE / PARTIAL / NOT PROVEN until payout, refund and completion receipts are proven."
 
 
 t0_final_pre_transfer_revalidation_2026_10_01:
@@ -765,3 +765,48 @@ t0_contract_funding_authorization_2026_10_02:
     id: T0_CONTRACT_FUNDING_EXECUTION
     status: ACTIVE
     owner: HUMAN_SIGNER
+
+
+t0_contract_funding_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 2
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "10000000000000000"
+  tx_value_usdc: "0.010"
+  verification:
+    head: 593acc5b016a0fccfadc2f012a7e787dbd4256f8
+    workflow_run: 36982128480
+    result: SUCCESS
+    artifact_digest: "sha256:d3540a85355c5d30c16bcc6b4c76761e758d704d05d4b2d21d4a994f8cb80ae2"
+    proven:
+      - "successful fund(policyId) transaction on Arc"
+      - "function selector matches fund(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "msg.value == 0.010 native USDC"
+      - "PolicyFunded event matches exact amount"
+      - "state == Funded immediately after funding verification"
+      - "remaining == 0.010 native USDC immediately after funding verification"
+      - "totalLiability == 0.010 native USDC immediately after funding verification"
+      - "totalCustodyReceived == 0.010 native USDC immediately after funding verification"
+      - "contract native balance == 0.010 native USDC immediately after funding verification"
+      - "totalValueReleased == 0 immediately after funding verification"
+  authorization_consumed:
+    id: T0_CONTRACT_FUNDING_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  next_gate:
+    id: T0_PAYOUT_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+  still_not_authorized:
+    - releaseConfiguredPayout
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
