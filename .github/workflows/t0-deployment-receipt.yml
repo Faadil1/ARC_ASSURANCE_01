@@ -62,7 +62,10 @@ jobs:
 
           printf '#!/bin/sh\nexec cast "$@"\n' > /usr/local/bin/arc-cast
           sudo chmod 0755 /usr/local/bin/arc-cast
+          printf '#!/bin/sh\nexec forge "$@"\n' > /usr/local/bin/arc-forge
+          sudo chmod 0755 /usr/local/bin/arc-forge
           arc-cast --version
+          arc-forge --version
 
       - name: Install forge-std and compile canonical runtime
         run: |
