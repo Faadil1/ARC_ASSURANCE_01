@@ -295,3 +295,28 @@ The next state is `T0_DEPLOYMENT_AUTHORIZATION`. No deployment is authorized yet
 `T0_DEPLOYMENT_EXECUTION = PROVEN`.
 
 Next: exactly one authorized `createPolicy` registration using the locked T0 policy config. Contract funding remains unauthorized.
+
+
+## Real Arc policy registration — 2026-10-02
+
+### OBSERVED
+
+- createPolicy tx: `0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7`.
+- Contract: `0x0377D371d6981c98CE9C650338D7E1E80819B572`.
+- Verification run `36976421698`: SUCCESS.
+- Transaction is successful, zero-value, nonce 1, from the dedicated T0 wallet.
+- Function selector and decoded calldata match the locked policy configuration.
+- The emitted `PolicyCreated` event matches the same policy configuration.
+- Read-only chain state after registration: policyCount 1, policy exists, state Created, zero remaining, zero liability, zero custody received, zero value released.
+
+### CONSEQUENCE
+
+`T0_POLICY_REGISTRATION_EXECUTION = PROVEN`.
+
+This proves policy registration only. It does **not** prove custody or settlement.
+
+### CURRENT BOUNDARY
+
+`T0_CONTRACT_FUNDING_AUTHORIZATION = ACTIVE / HUMAN / PROTECTED / NOT GRANTED`.
+
+No contract funding, payout, refund or completion is authorized by prior approvals.
