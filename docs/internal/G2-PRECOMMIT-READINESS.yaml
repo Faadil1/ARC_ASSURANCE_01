@@ -7,8 +7,6 @@ g0:
   merged_pr: 1
   merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
 blockers:
-  - PROVIDER_SIGNER_ADDRESS_NOT_FINALIZED
-  - PAYOUT_RECIPIENT_ADDRESS_NOT_FINALIZED
   - INTEGRATED_MAINNET_DEPLOYMENT_NOT_PROVEN
   - LIVE_BATCH_COMMIT_NOT_EXECUTED
 target:
@@ -85,8 +83,19 @@ public_role_addresses:
     role: "integrated authority + funder"
     provenance: "dedicated Arc T0 wallet; previously proven EOA and protected signer"
   provider_signer:
-    status: NOT_FINALIZED
-    requirement: "fresh distinct EOA; no application funds required"
+    status: LOCKED
+    address: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+    account_label: "ARC Provider Signer"
+    requirement: "distinct EOA; no application funds required before provider output signing"
   payout_recipient:
-    status: NOT_FINALIZED
-    requirement: "fresh distinct EOA; must differ from authority/funder and provider signer"
+    status: LOCKED
+    address: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+    account_label: "ARC Payout Recipient"
+    requirement: "distinct EOA; intentionally separated from authority/funder and provider signer"
+
+
+role_topology:
+  distinct_addresses_proven_by_configuration: true
+  authority_funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  provider_signer: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
