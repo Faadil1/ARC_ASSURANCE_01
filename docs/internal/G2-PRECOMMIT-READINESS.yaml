@@ -1,0 +1,55 @@
+schema: ARC_ASSURANCE_G2_PRECOMMIT_READINESS_V1
+project: ARC_ASSURANCE_01
+gate: G2_PRECOMMIT
+status: BLOCKED
+blockers:
+  - G0_PRD_READY_NOT_PROVEN
+  - INTEGRATED_MAINNET_DEPLOYMENT_NOT_PROVEN
+  - LIVE_BATCH_COMMIT_NOT_EXECUTED
+target:
+  chain_id: 5042
+  contract: AssuranceVault
+  source_base_sha: c3aaa11bf7454e1f3afe0fb740c8c0ccd7fedd5c
+  source_base_branch: ops/exact-predeploy-gas-snapshot
+  creation_bytecode_hash: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+source_evidence:
+  clean_room_workflow: 36680776957
+  javascript_tests:
+    passed: 72
+    failed: 0
+  solidity_tests:
+    passed: 29
+    failed: 0
+  predeploy_snapshot_test: PASS
+required_live_edges:
+  - runtime_source_binding
+  - policy_created
+  - sufficient_real_policy_liability
+  - hidden_preimage_generated_privately_after_contract_address_known
+  - batch_committed_receipt
+  - no_prior_provider_output_locked_for_same_batch
+  - provider_execution_starts_after_commit_receipt
+hidden_preimage_publication:
+  before_output_lock: FORBIDDEN
+  public_before_output_lock:
+    - opaque_commitment_only
+protected_actions:
+  integrated_deployment: NOT_AUTHORIZED
+  policy_creation: NOT_AUTHORIZED
+  policy_funding: NOT_AUTHORIZED
+  commit_batch: NOT_AUTHORIZED
+  provider_output_lock: NOT_AUTHORIZED
+  reveal: NOT_AUTHORIZED
+  resolve: NOT_AUTHORIZED
+truth_boundary:
+  proves_when_complete:
+    - opaque_commitment_onchain_before_output_lock
+    - integrated_contract_enforces_commit_before_lock
+  does_not_prove:
+    - canary_indistinguishability_from_non_contractual_features
+    - genuine_provider_execution
+    - signed_output_correctness
+    - deterministic_resolution
+    - fail_no_pay
+    - breaker
+    - adoption
