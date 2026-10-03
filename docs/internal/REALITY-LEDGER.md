@@ -685,3 +685,21 @@ No signature was created, no transaction was broadcast, and sensitive temp mater
 ### NOT PROVEN / NOT AUTHORIZED
 
 Provider EIP-712 signature, output lock, reveal, resolve, and financial consequence remain separately gated.
+
+
+## Recovery Policy v2 provider signature readiness — 2026-10-03
+
+### PROVEN READ-ONLY
+
+The exact ProviderOutput EIP-712 request was built from a fresh rerun of the protected real-work compute.
+
+Public binding includes workId, inputHash, actual provider outputHash, scorerIdHash, signed nonce 1, and deadline equal to policy expiry.
+
+Local EIP-712 digest and live contract `providerOutputDigest(...)` both equal:
+`0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1`.
+
+The digest is not consumed. No signature was created and no transaction was sent.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+Provider wallet signature, output lock, reveal, resolve, and financial consequence remain separately gated.
