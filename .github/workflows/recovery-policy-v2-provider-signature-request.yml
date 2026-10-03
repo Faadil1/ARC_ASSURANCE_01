@@ -1,0 +1,89 @@
+name: Recovery Policy V2 Provider Signature Request Read-Only
+
+on:
+  push:
+    branches:
+      - ops/recovery-policy-v2-readiness
+    paths:
+      - ".github/recovery-policy-v2-signature-request"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arc-assurance-recovery-v2-signature-request
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    environment: g3-live-secret
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+          cache: npm
+
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Materialize protected v2 reveal packet
+        shell: bash
+        env:
+          G2_SECRET_REVEAL_PACKET: ${{ secrets.G2_SECRET_REVEAL_PACKET }}
+        run: |
+          set -euo pipefail
+          test -n "${G2_SECRET_REVEAL_PACKET:-}"
+          umask 077
+          printf '%s' "$G2_SECRET_REVEAL_PACKET" > "$RUNNER_TEMP/v2-secret-reveal.json"
+
+      - name: Re-run exact provider real compute without signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          node script/recovery_policy_v2_prepare_real_work.mjs             "$RUNNER_TEMP/v2-secret-reveal.json"             "$RUNNER_TEMP/v2-sensitive-compute.json"             > "$RUNNER_TEMP/v2-real-work-public.log"
+
+      - name: Build public EIP-712 request and cross-check contract digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          node script/recovery_policy_v2_build_signature_request.mjs             https://rpc.mainnet.arc.io             "$RUNNER_TEMP/v2-sensitive-compute.json"             build/recovery-policy-v2-provider-signature-request.json             | tee "$RUNNER_TEMP/v2-signature-public.log"
+
+      - name: Enforce public artifact boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require("fs");
+          const p="build/recovery-policy-v2-provider-signature-request.json";
+          const raw=fs.readFileSync(p,"utf8");
+          const x=JSON.parse(raw);
+          if(x.result!=="PASS") throw new Error("REQUEST_NOT_PASS");
+          if(x.checks.provider_signature_created!==false) throw new Error("SIGNATURE_CREATED");
+          if(x.checks.transaction_sent!==false) throw new Error("TRANSACTION_SENT");
+          for(const k of ["input_text","expected_canonical_output","expected_output_hash","salt","canary_key","canonical_output"]) {
+            if(raw.includes('"'+k+'"')) throw new Error("FORBIDDEN_FIELD:"+k);
+          }
+          console.log("PUBLIC_SIGNATURE_REQUEST_BOUNDARY: PASS");
+          NODE
+
+      - name: Upload public signature request only
+        uses: actions/upload-artifact@v5
+        with:
+          name: recovery-policy-v2-provider-signature-request-${{ github.sha }}
+          path: build/recovery-policy-v2-provider-signature-request.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Destroy sensitive runner material
+        if: always()
+        shell: bash
+        run: |
+          rm -f             "$RUNNER_TEMP/v2-secret-reveal.json"             "$RUNNER_TEMP/v2-sensitive-compute.json"             "$RUNNER_TEMP/v2-real-work-public.log"             "$RUNNER_TEMP/v2-signature-public.log"
