@@ -1,6 +1,6 @@
 # Recovery Policy v2 — createPolicy Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION  
+**Status:** CONSUMED  
 **Action:** one exact `createPolicy` transaction on Arc Mainnet.
 
 ## Exact bound action
@@ -58,6 +58,23 @@ Received in chat on 2026-10-03:
 
 Authorization is one-shot and applies only to the exact bound action above.
 
-Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+Current authorization state: **CONSUMED**.
 
 After one matching transaction is broadcast, this authorization becomes **CONSUMED** whether the receipt succeeds or reverts. Any retry requires a new explicit authorization.
+
+
+## Execution receipt — 2026-10-03
+
+- tx: `0x0bb6e1ef61504f8f1ea4f899c88cccc9a65c10ea0646867e9ebac87a57341fd4`
+- status: `SUCCESS`
+- block: `24052629`
+- sender: `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`
+- target: `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
+- nonce: `10`
+- value: `0`
+- gas used: `248358`
+- gas limit: `255200`
+- actual fee: `0.005339697 native USDC`
+- method selector: `0xd2a6f88d`
+
+The one-shot createPolicy authorization is consumed. No retry is authorized.
