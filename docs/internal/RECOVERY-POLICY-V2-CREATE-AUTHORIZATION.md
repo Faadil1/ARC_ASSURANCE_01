@@ -1,6 +1,6 @@
 # Recovery Policy v2 — createPolicy Authorization
 
-**Status:** NOT AUTHORIZED  
+**Status:** AUTHORIZED_PENDING_EXECUTION  
 **Action:** one exact `createPolicy` transaction on Arc Mainnet.
 
 ## Exact bound action
@@ -50,4 +50,14 @@ It does **not** authorize:
 - `resolveBatch`;
 - v1 cancellation or refund.
 
-Current authorization state remains **NOT AUTHORIZED**.
+## Human authorization
+
+Received in chat on 2026-10-03:
+
+> J’autorise cette transaction `createPolicy` v2 exacte sur Arc Mainnet.
+
+Authorization is one-shot and applies only to the exact bound action above.
+
+Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+
+After one matching transaction is broadcast, this authorization becomes **CONSUMED** whether the receipt succeeds or reverts. Any retry requires a new explicit authorization.
