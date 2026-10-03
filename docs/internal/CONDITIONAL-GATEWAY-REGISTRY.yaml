@@ -966,7 +966,7 @@ recovery_policy_v2_lock_provider_output_gate_2026_10_03:
   calldata_keccak256: "0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b"
   eth_call: PROVEN
   gas_estimate: 220294
-  authorization: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+  authorization: AUTHORIZED_PENDING_EXECUTION
   protected_actions:
     lockProviderOutput: BLOCKED_PENDING_HUMAN_AUTHORIZATION
     revealCanary: BLOCKED
@@ -1055,5 +1055,5 @@ recovery_policy_v2_resolve_batch_gate_2026_10_03:
   gas_estimate: 178343
   authorization: BLOCKED_PENDING_HUMAN_AUTHORIZATION
   protected_actions:
-    resolveBatch: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    resolveBatch: AUTHORIZED_PENDING_EXECUTION
   evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH-PREFLIGHT.md
