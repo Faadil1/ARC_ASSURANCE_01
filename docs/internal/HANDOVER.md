@@ -1458,3 +1458,34 @@ Exact candidate calldata hash:
 Pending funder nonce = 15. Gas estimate = 178343.
 
 The settlement transaction remains NOT AUTHORIZED pending a separate explicit human authorization.
+
+
+## Recovery Policy v2 resolveBatch live settlement — 2026-10-03
+
+The exact authorized settlement transaction succeeded:
+
+- tx: `0x43c2d82be1016f9783ff14def12e01e7f6900051051c7aed8ec04ea033a765a5`
+- block: `24106680`
+- nonce: `15`
+- calldata hash: `0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320`
+- gas used: `167221`
+- actual fee: `0.0035952515 native USDC`.
+
+Independent verification run `37151830845` passed on exact head `109cca52e72a5108f48fa73e8274ae9d2ff7fa91`.
+
+Observed live consequence:
+- `BatchResolved`: passed = true, directive = PAY;
+- `PaymentReleased`: exact amount 0.002 native USDC;
+- recipient `0x6B8ad09233dF44eD57B99aF8839129303955590C`;
+- historical recipient balance delta at the receipt edge = +0.002 native USDC;
+- v2 batch = Resolved;
+- v2 active batch = zero;
+- v2 protected remainder = 0.008 native USDC;
+- total liability = 0.018 native USDC;
+- total value released = 0.002 native USDC;
+- vault balance = 0.018 native USDC;
+- v1 remains Committed and unchanged.
+
+The v2 success path is now proven end-to-end, including the real financial consequence. There are no remaining protected v2 actions in this cycle.
+
+Remaining separate obligation: recover the original v1 lost-secret batch only after its expiry path becomes valid.
