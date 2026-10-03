@@ -574,3 +574,26 @@ Observed:
 ### NOT PROVEN
 
 Funding, canary generation, commitBatch, provider signing, output lock, reveal, resolve, and v1 expiry recovery remain separately gated.
+
+
+## Recovery Policy v2 funding read-only preflight — 2026-10-03
+
+### OBSERVED / PROVEN READ-ONLY
+
+Workflow `37124943731` queried Arc Mainnet without a signer.
+
+It confirmed:
+- v1 remains Committed and unchanged;
+- v2 exists, is unfunded, and has no active batch;
+- vault pre-state remains 0.010 native USDC liability / custody / balance, with 0 released;
+- exact proposed funding value is 0.010 native USDC;
+- pending nonce = 11;
+- exact calldata hash = `0xdc6ad0cd75e1a2b9bebdbc26530f2669a8c6ea25f60d8bb993dfbd3fc6986646`;
+- `eth_estimateGas` passed at 82230 gas;
+- projected custody after funding = 0.020 / 0.050, leaving 0.030 capacity.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+No funding transaction was signed or broadcast and no funds moved.
+
+Canary generation, commitBatch, provider signing, lock, reveal, resolve and v1 expiry recovery remain separately gated.
