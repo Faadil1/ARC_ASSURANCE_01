@@ -523,3 +523,32 @@ The hidden reveal packet remains human-local and was not stored in the repositor
 - external user/operator adoption.
 
 No downstream transaction is authorized by this evidence.
+
+
+## Recovery Policy v2 preflight — 2026-10-03
+
+### OBSERVED / PROVEN READ-ONLY
+
+GitHub Actions workflow `37122442113` on exact head `7ffccd7497add9a5636e4ff64057cdb93592ef7c` queried Arc Mainnet without a signer.
+
+It confirmed:
+- the stranded v1 policy still has the exact proven active batch and commitment;
+- batch state remains `Committed`;
+- protected liability and vault balance remain 0.010 native USDC;
+- total custody received remains 0.010;
+- total value released remains 0;
+- deployment spend cap remains 0.050.
+
+The proposed independent v2 policy is:
+`0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`.
+
+Its exact createPolicy call passed `eth_estimateGas` at 255200 gas. Observed gas price was 20 gwei and the estimated fee was 0.005104 native USDC.
+
+### NOT PROVEN / NOT AUTHORIZED
+
+No v2 policy exists yet. No transaction was signed or broadcast. No funds moved.
+
+Funding, canary generation, commitBatch, provider signing, lock, reveal, resolve, and v1 expiry recovery all remain separately gated.
+
+Artifact digest:
+`sha256:7a540ab48b4b12432349c6e9ea5aad6cd0e088be2514a850a2919563e4b057b1`.
