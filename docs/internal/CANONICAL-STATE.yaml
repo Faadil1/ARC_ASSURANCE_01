@@ -113,7 +113,7 @@ prior_product_gate:
 
 next_gate:
   id: RECOVERY_POLICY_V2_RESOLVE_BATCH
-  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
+  status: AUTHORIZED_PENDING_EXECUTION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
