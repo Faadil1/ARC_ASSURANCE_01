@@ -1,6 +1,6 @@
 # Recovery Policy v2 — commitBatch Authorization
 
-**Status:** NOT AUTHORIZED
+**Status:** AUTHORIZED_PENDING_EXECUTION
 
 ## Exact bound action
 
@@ -41,3 +41,16 @@ It does **not** authorize:
 - `revealCanary`;
 - `resolveBatch`;
 - any v1 cancellation/refund.
+
+
+## Human authorization — 2026-10-03
+
+Received in chat:
+
+> J’autorise cette transaction `commitBatch` v2 exacte sur Arc Mainnet.
+
+This authorization is one-shot and applies only to the exact bound action in this document.
+
+Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+
+After one matching transaction is broadcast, this authorization becomes **CONSUMED**, whether the receipt succeeds or reverts. Any retry requires a new explicit authorization.
