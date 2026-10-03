@@ -1009,3 +1009,18 @@ recovery_policy_v2_reveal_canary_gate_2026_10_03:
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
   evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY-PREFLIGHT.md
+
+
+recovery_policy_v2_reveal_bridge_local_gate_2026_10_03:
+  status: PROVEN
+  transport: RSA_OAEP_EPHEMERAL_BROWSER_BRIDGE
+  commitment_reconstruction: PROVEN
+  exact_calldata_binding: PROVEN
+  canary_key_unused: PROVEN
+  secret_values_printed: false
+  transaction_sent: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-BRIDGE-LOCAL-PRECHECK.md
+  next_gate: RECOVERY_POLICY_V2_REVEAL_CANARY
+  protected_actions:
+    revealCanary: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    resolveBatch: BLOCKED
