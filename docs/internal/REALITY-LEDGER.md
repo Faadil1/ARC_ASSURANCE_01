@@ -762,3 +762,24 @@ The salt, raw calldata, and reveal packet were not published. Temporary secret m
 ### NOT AUTHORIZED / NOT PROVEN
 
 The reveal transaction has not been broadcast. Resolution and financial consequence remain unproven and separately gated.
+
+
+## Recovery Policy v2 reveal bridge local precheck — 2026-10-03
+
+### PROVEN LOCAL / SECRET-SAFE
+
+The RSA-OAEP ciphertext was decrypted only in the browser holding the ephemeral private key. The resulting hidden reveal values reconstructed the exact live commitment and exact expected reveal calldata hash without being printed.
+
+Publicly observed binding:
+- sender funder exact;
+- pending nonce 14;
+- batch OutputLocked;
+- canary key `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`;
+- canary key unused;
+- calldata hash `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`;
+- gas estimate 124601;
+- transaction sent = false.
+
+### READY BUT NOT AUTHORIZED
+
+The exact reveal transaction is technically ready. Broadcast remains separately human-authorization gated. Resolve remains NOT AUTHORIZED.
