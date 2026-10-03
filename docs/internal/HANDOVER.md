@@ -1117,3 +1117,23 @@ Do not run `lockProviderOutput`, `revealCanary` or `resolveBatch` from this read
 
 
 G3 readiness validation: draft PR #46 at head `84cb2a7b4f43ae443939d9e988d9d3f529ac3083` triggered reproducible-build-candidate run `37088856971`, which completed **SUCCESS**. This is regression/build evidence only; it does not execute the human-local canary and does not promote G3.
+
+
+## G3 lost-preimage incident — 2026-10-03
+
+The original G2 hidden-canary reveal packet for the live committed batch is no longer available after the managed endpoint security incident.
+
+Do not rerun the original canary generator in an attempt to recover that commitment. New random values cannot open the existing commitment.
+
+Canonical recovery:
+- G2 remains PROVEN.
+- Original policy/batch remains Committed and is held untouched until expiry.
+- Policy expiry is 2026-10-15T03:00:00Z.
+- After expiry, use fresh read-only preflights and separate human authorization for `cancelExpiredBatch`, then `refundProtectedRemainder`.
+- Immediate project continuation should use a new independent policy on the already-deployed AssuranceVault, a new batch, and a new hidden canary.
+- The 0.05 native-USDC deployment spend cap has only 0.01 cumulative funding so far; a fresh 0.01 policy would project to 0.02 cumulative funding, subject to a live preflight.
+- Store the new reveal packet directly in a protected GitHub Environment secret rather than a local plaintext file on the managed endpoint.
+
+Recovery detail: `docs/internal/G3-LOST-PREIMAGE-RECOVERY.md`.
+
+No new policy creation, funding, commit, signature, lock, reveal, resolve, cancellation, or refund is authorized by this handover update.
