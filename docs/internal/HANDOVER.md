@@ -1207,3 +1207,29 @@ Observed:
 Evidence: `docs/evidence/RECOVERY-POLICY-V2-FUNDING-PREFLIGHT.md`.
 
 Funding remains **NOT AUTHORIZED** pending a separate explicit one-shot authorization.
+
+
+## Recovery Policy v2 funding live receipt — 2026-10-03
+
+The exact authorized v2 funding transaction succeeded on Arc Mainnet.
+
+- tx: `0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348`
+- block: `24055978`
+- nonce: `11`
+- value: `0.010 native USDC`
+- gas used: `76633`
+- actual fee: `0.0016476095 native USDC`
+
+Post-state:
+- authority pending nonce = 12;
+- v2 total funded = 0.010 native USDC;
+- v2 active batch remains zero;
+- v1 remains Committed and unchanged with 0.010 native USDC;
+- vault total liability/custody/balance = 0.020 native USDC;
+- total value released remains zero.
+
+Evidence: `docs/evidence/RECOVERY-POLICY-V2-FUNDING.md`.
+
+The one-shot funding authorization is **CONSUMED**.
+
+Next gate: generate a brand-new v2 hidden canary and store the reveal packet directly in a protected GitHub Environment secret. No `commitBatch` or downstream action is authorized by the successful funding.
