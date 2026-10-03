@@ -1440,3 +1440,113 @@ g2_policy_creation_preflight_refresh_2026_10_02_2040_et:
     status: ACTIVE
     authorization: GRANTED_ONCE
     signer: HUMAN_METAMASK_ONLY
+
+
+g2_policy_creation_2026_10_02:
+  status: PROVEN
+  transaction_hash: "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162"
+  block_number: 23966937
+  authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 7
+  pending_nonce_after: 8
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  function: createPolicy
+  tx_value_wei: "0"
+  calldata_keccak256: "0x407d54a1632fa2d5cfc0231cc2eb3300c36d86ba6d97d312f7d4e5bb14b9c5b2"
+  gas_used: 265470
+  effective_gas_price_wei: "21500000000"
+  effective_fee_wei: "5707605000000000"
+  effective_fee_usdc: "0.005707605"
+  policy:
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+    payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+    scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+    max_failures: 2
+    failure_count: 0
+    max_spend_cap_wei: "20000000000000000"
+    unit_payout_wei: "2000000000000000"
+    expiry_unix: "1792033200"
+    created_at_unix: "1790988482"
+    funded_at_unix: "0"
+    total_funded_wei: "0"
+    total_paid_out_wei: "0"
+    total_refunded_wei: "0"
+    paused: false
+    closed: false
+    refund_issued: false
+    exists: true
+    active_batch_id: "0x0000000000000000000000000000000000000000000000000000000000000000"
+  vault_after:
+    policy_count: 1
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+  verification:
+    workflow_run: 37083767443
+    result: SUCCESS
+    verification_head: "4338c116e57bcc7a6b71b12a59abf63fd0419e23"
+    artifact_id: 11260325097
+    artifact_digest: "sha256:0f9dcd57c9c13505ecdfaaf00e010a14914d8b811a15c3c35c36add232e20f33"
+  authorization:
+    status: PROVEN_CONSUMED
+    occurrence_limit: 1
+    remaining_occurrences: 0
+
+g2_funding_preflight_2026_10_02:
+  status: PROVEN
+  workflow_run: 37084047411
+  evidence_head: "7e9f1d0f40638fbd19996c3310c3145a0b6ecb0e"
+  artifact_id: 11260370910
+  artifact_digest: "sha256:8834db90aeb9df780ca941b778d9754911506be54a8b124b61b0353f0f76aebc"
+  observed:
+    chain_id: 5042
+    block_number: 23967855
+    authority_pending_nonce: 8
+    authority_balance_wei: "370701027000000000"
+    authority_balance_usdc: "0.370701027"
+    policy_exists: true
+    policy_funded_at_unix: "0"
+    policy_total_funded_wei: "0"
+    contract_balance_wei: "0"
+    total_liability_wei: "0"
+  locked_transaction:
+    function: "fund(bytes32)"
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    tx_value_wei: "10000000000000000"
+    tx_value_usdc: "0.010"
+    calldata: "0xbf14c119d29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    calldata_keccak256: "0x326ce8c37cbc14991d1b739a96839f12ac3b9b9857dd2608831ceeb3dfd5d16a"
+    estimate_gas_units: "116049"
+    gas_price_wei: "20000010000"
+    estimated_fee_wei: "2320981160490000"
+    estimated_fee_usdc: "0.00232098116049"
+    estimated_total_wallet_outflow_wei: "12320981160490000"
+    estimated_total_wallet_outflow_usdc: "0.01232098116049"
+  expected_post_state_if_success:
+    policy_total_funded_wei: "10000000000000000"
+    total_liability_wei: "10000000000000000"
+    total_custody_received_wei: "10000000000000000"
+    contract_balance_wei: "10000000000000000"
+    funded_at_becomes_nonzero: true
+  safety:
+    private_key_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+
+g2_funding_authorization:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  exact_scope_if_granted: "One fund(policyId) call with exactly 0.010 native USDC to the locked G2 policy on the deployed AssuranceVault."
+  downstream_still_unauthorized:
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+    - additional_funding
