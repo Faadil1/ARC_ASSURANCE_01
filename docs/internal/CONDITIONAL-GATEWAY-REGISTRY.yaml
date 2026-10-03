@@ -914,3 +914,23 @@ recovery_policy_v2_precommit_live_gate_2026_10_03:
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
   rule: "A live precommit does not authorize provider signing, output lock, reveal, or resolve."
+
+
+recovery_policy_v2_provider_real_work_gate_2026_10_03:
+  status: PROVEN
+  workflow_run: 37128770177
+  exact_head: "5a19875e223d465a17e532f65b4082aeb3f915fe"
+  provider_execution: REAL_COMPUTE
+  fault_mode: NONE
+  hidden_expected_match: PROVEN
+  work_id_unused: PROVEN
+  secret_cleanup: PROVEN
+  signature_created: false
+  transaction_sent: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-REAL-WORK.md
+  next_gate: RECOVERY_POLICY_V2_PROVIDER_SIGNATURE
+  protected_actions:
+    provider_signature: BLOCKED_PENDING_READ_ONLY_TYPED_DATA_PREP_AND_HUMAN_AUTHORIZATION
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
