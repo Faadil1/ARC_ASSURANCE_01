@@ -1,0 +1,50 @@
+{
+  "schema": "ARC_ASSURANCE_RECOVERY_POLICY_V2_PLAN_V1",
+  "network": {
+    "chain_id": 5042,
+    "rpc": "https://rpc.mainnet.arc.io"
+  },
+  "contract": "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4",
+  "roles": {
+    "authority": "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb",
+    "funder": "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb",
+    "provider": "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe",
+    "payout_recipient": "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+  },
+  "v1_stranded_policy": {
+    "policy_id": "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30",
+    "batch_id": "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7",
+    "commitment": "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9",
+    "expected_batch_state": 1,
+    "expected_total_funded_wei": "10000000000000000",
+    "expiry_unix": "1792033200"
+  },
+  "v2_policy": {
+    "policy_id_seed": "ARC_ASSURANCE_01:RECOVERY_POLICY_V2:2026-10-03",
+    "scorer_id": "ARC_ASSURANCE_SCORER_V1:invoice-exact-v1",
+    "max_failures": 2,
+    "max_spend_cap_wei": "20000000000000000",
+    "initial_fund_amount_wei": "10000000000000000",
+    "unit_payout_wei": "2000000000000000",
+    "expiry_unix": "1792465200",
+    "expiry_utc": "2026-10-20T03:00:00Z"
+  },
+  "expected_vault_pre_state": {
+    "policy_count": "1",
+    "total_liability_wei": "10000000000000000",
+    "total_custody_received_wei": "10000000000000000",
+    "total_value_released_wei": "0",
+    "contract_balance_wei": "10000000000000000",
+    "deployment_spend_cap_wei": "50000000000000000"
+  },
+  "truth_boundary": {
+    "read_only_only": true,
+    "create_policy_authorized": false,
+    "fund_authorized": false,
+    "commit_batch_authorized": false,
+    "provider_signature_authorized": false,
+    "lock_authorized": false,
+    "reveal_authorized": false,
+    "resolve_authorized": false
+  }
+}
