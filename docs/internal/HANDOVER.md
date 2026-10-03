@@ -1114,3 +1114,6 @@ Still required:
 6. successful Arc receipt.
 
 Do not run `lockProviderOutput`, `revealCanary` or `resolveBatch` from this readiness branch without the corresponding gate and authorization.
+
+
+G3 readiness validation: draft PR #46 at head `84cb2a7b4f43ae443939d9e988d9d3f529ac3083` triggered reproducible-build-candidate run `37088856971`, which completed **SUCCESS**. This is regression/build evidence only; it does not execute the human-local canary and does not promote G3.
