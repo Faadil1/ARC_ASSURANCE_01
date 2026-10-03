@@ -93,13 +93,18 @@ scope:
     - "subjective outcome-proven claims"
 
 current_gate:
-  id: G0_PRD_READY
+  id: G2_PRECOMMIT
   status: PROVEN
   proven_by:
-    owner_signoff: Faadil
-    merged_pr: 1
-    merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
-    collaborator_review_policy: RECOMMENDED_NON_BLOCKING
+    evidence_file: docs/evidence/G2-PRECOMMIT.md
+    tx_hash: "0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e"
+    block: 23975010
+    batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+    commitment: "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9"
+    receipt_status: 1
+    calldata_exact_match: true
+    batch_committed_event_verified: true
+    post_state: COMMITTED
 
 prior_product_gate:
   id: G1_T0_MAINNET_CUSTODY
@@ -107,14 +112,14 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: G2_PRECOMMIT
-  status: ACTIVE_READINESS__LIVE_PROOF_NOT_PROVEN
+  id: G3_REAL_WORK
+  status: BLOCKED_PENDING_READINESS_AND_SEPARATE_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
-    - "integrated runtime/source binding on Arc mainnet"
-    - "real policy and sufficient native-USDC liability"
-    - "opaque commitment exists onchain before provider output lock"
-    - "no prior ProviderOutputLocked exists for the same batch"
+    - "real provider execution against the committed batch"
+    - "EIP-712 provider output bound to the exact policy/batch/work/input/scorer"
+    - "ProviderOutputLocked receipt after the proven G2 precommit"
+    - "no reveal before output lock"
   protected_live_actions_authorized: false
 
 collaboration:
@@ -484,7 +489,7 @@ integrated_assurance_vault:
     exact_head_compile_executed: true
     exact_head_tests_executed: true
     clean_room_evidence_sha: "a88d08a3a5fef63dac7b5093100fdb2d2c609cd7"
-    live_mainnet_deployment: NOT_IMPLEMENTED
+    live_mainnet_deployment: PROVEN
   promotion:
     Load_Bearing_Integration: BLOCKED
     Real_Consequence: BLOCKED
@@ -722,3 +727,48 @@ gas_unit_evidence_manifest:
     permanent_fee_quote: false
     execution_gas_planning_input: true
     deployment_gas_proven: false
+
+
+g2_precommit_live_proof_2026_10_02:
+  status: PROVEN
+  network: Arc Mainnet
+  chain_id: 5042
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+  commitment: "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9"
+  tx_hash: "0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e"
+  block: 23975010
+  nonce: 9
+  gas_used: 132026
+  receipt_status: 1
+  committed_at_block: 23975010
+  active_batch_after: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+  batch_state: COMMITTED
+  calldata_exact_match: true
+  batch_committed_event_verified: true
+  secret_reveal_packet:
+    location: HUMAN_LOCAL_OFF_REPO
+    disclosed_in_chat: false
+  authorization:
+    file: docs/internal/G2-COMMITBATCH-AUTHORIZATION.md
+    status: CONSUMED
+  evidence_file: docs/evidence/G2-PRECOMMIT.md
+  truth_boundary:
+    proven:
+      - "opaque commitment exists on Arc Mainnet before provider output lock"
+      - "exact policy/batch/commitment bound by calldata and BatchCommitted event"
+      - "integrated AssuranceVault currently records the batch as Committed"
+    not_proven:
+      - "provider execution"
+      - "provider output correctness"
+      - "reveal"
+      - "deterministic resolve"
+      - "PASS -> pay"
+      - "FAIL -> no-pay"
+      - "breaker -> refund"
+      - "external-user adoption"
+  downstream_protected_actions:
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
