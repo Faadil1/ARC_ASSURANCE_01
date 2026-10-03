@@ -893,3 +893,24 @@ recovery_policy_v2_precommit_gate_2026_10_03:
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
   rule: "A green precommit preflight never authorizes commitBatch or downstream actions."
+
+
+recovery_policy_v2_precommit_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07"
+  block: 24060767
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  batch_id: "0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19"
+  commitment: "0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17"
+  receipt_and_event: PROVEN
+  post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PRECOMMIT.md
+  next_gate: RECOVERY_POLICY_V2_PROVIDER_REAL_WORK
+  protected_actions:
+    provider_execution: ACTIVE_READ_ONLY_PREP
+    provider_signature: BLOCKED_PENDING_SEPARATE_AUTHORIZATION
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A live precommit does not authorize provider signing, output lock, reveal, or resolve."
