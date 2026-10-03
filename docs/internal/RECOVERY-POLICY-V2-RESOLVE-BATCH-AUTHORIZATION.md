@@ -1,6 +1,6 @@
 # Recovery Policy v2 — resolveBatch Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION
+**Status:** CONSUMED
 
 ## Exact candidate action
 
@@ -51,3 +51,22 @@ Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
 This authorization is one-shot. If the matching transaction is broadcast, it is consumed whether the transaction succeeds or reverts. Cancelling before broadcast does not consume it, but any retry requires a fresh preflight.
 
 No other transaction or payout is authorized.
+
+
+## Execution result — 2026-10-03
+
+The exact authorized `resolveBatch` transaction was broadcast and succeeded:
+
+- tx:
+  `0x43c2d82be1016f9783ff14def12e01e7f6900051051c7aed8ec04ea033a765a5`
+- block: `24106680`
+- nonce: `15`
+- calldata keccak256:
+  `0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320`
+- directive: `PAY`
+- exact payout:
+  `0.002 native USDC`
+- payout recipient:
+  `0x6B8ad09233dF44eD57B99aF8839129303955590C`
+
+The one-shot `resolveBatch` authorization is **CONSUMED**.
