@@ -1,0 +1,126 @@
+name: G3 Real Work Read-Only
+
+on:
+  push:
+    branches:
+      - ops/g3-real-work-readiness
+    paths:
+      - ".github/g3-run-request"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arc-assurance-g3-real-work-readonly
+  cancel-in-progress: false
+
+jobs:
+  g3-readonly:
+    name: G3 read-only provider compute
+    runs-on: ubuntu-latest
+    environment: g3-live-secret
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+          cache: npm
+
+      - name: Install from committed lock
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Materialize G2 reveal packet in ephemeral runner temp
+        shell: bash
+        env:
+          G2_SECRET_REVEAL_PACKET: ${{ secrets.G2_SECRET_REVEAL_PACKET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${G2_SECRET_REVEAL_PACKET:-}" ]; then
+            echo "G3_SECRET_MISSING"
+            exit 78
+          fi
+          umask 077
+          printf '%s' "$G2_SECRET_REVEAL_PACKET" > "$RUNNER_TEMP/g2-secret-reveal.json"
+          python3 - <<'PY'
+          import json, os
+          p=os.path.join(os.environ["RUNNER_TEMP"],"g2-secret-reveal.json")
+          with open(p,"r",encoding="utf-8-sig") as f:
+              j=json.load(f)
+          required=[
+              "chain_id","verifying_contract","policy_id","batch_id","work_id",
+              "input_text","input_hash","expected_canonical_output",
+              "expected_output_hash","scorer_id","scorer_id_hash","salt",
+              "canary_key","commitment"
+          ]
+          missing=[k for k in required if k not in j or j[k] in (None,"")]
+          if missing:
+              raise SystemExit("SECRET_PACKET_REQUIRED_FIELDS_MISSING")
+          if int(j["chain_id"]) != 5042:
+              raise SystemExit("SECRET_PACKET_WRONG_CHAIN")
+          if j["batch_id"].lower() != "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7":
+              raise SystemExit("SECRET_PACKET_WRONG_BATCH")
+          if j["commitment"].lower() != "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9":
+              raise SystemExit("SECRET_PACKET_WRONG_COMMITMENT")
+          print("SECRET_PACKET_STRUCTURE: PASS")
+          PY
+
+      - name: Run exact G3 read-only preparation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node script/g3_prepare_real_work.mjs \
+            "$RUNNER_TEMP/g2-secret-reveal.json" \
+            "$RUNNER_TEMP/g3-local-compute.json" \
+            | tee "$RUNNER_TEMP/g3-public.log"
+
+      - name: Enforce public-log boundary
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q "G3 REAL WORK — READ-ONLY PREP" "$RUNNER_TEMP/g3-public.log"
+          grep -q "RESULT: PASS" "$RUNNER_TEMP/g3-public.log"
+          grep -q "provider_execution: REAL_COMPUTE" "$RUNNER_TEMP/g3-public.log"
+          grep -q "provider_fault_mode: NONE" "$RUNNER_TEMP/g3-public.log"
+          grep -q "work_id_unused: true" "$RUNNER_TEMP/g3-public.log"
+          grep -q "provider_output_matches_hidden_expected: true" "$RUNNER_TEMP/g3-public.log"
+          grep -q "signature_created: false" "$RUNNER_TEMP/g3-public.log"
+          grep -q "transaction_sent: false" "$RUNNER_TEMP/g3-public.log"
+
+          if grep -Eiq '"(work_id|input_text|expected_canonical_output|expected_output_hash|salt|canary_key)"[[:space:]]*:' "$RUNNER_TEMP/g3-public.log"; then
+            echo "PUBLIC_LOG_BOUNDARY_VIOLATION"
+            exit 1
+          fi
+
+          {
+            echo "## G3 REAL WORK — READ-ONLY"
+            echo ""
+            echo "- Git SHA: \`${GITHUB_SHA}\`"
+            echo "- Node: \`$(node -v)\`"
+            echo "- Provider compute: **REAL_COMPUTE**"
+            echo "- Fault mode: **NONE**"
+            echo "- Hidden expected-output comparison: **PASS**"
+            echo "- Provider signature created: **NO**"
+            echo "- Transaction sent: **NO**"
+            echo "- Sensitive artifact uploaded: **NO**"
+            echo ""
+            echo "G3 remains blocked pending provider EIP-712 signature, independent signature verification, exact lockProviderOutput eth_call/gas preflight, and separate human authorization."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Destroy ephemeral sensitive material
+        if: always()
+        shell: bash
+        run: |
+          rm -f \
+            "$RUNNER_TEMP/g2-secret-reveal.json" \
+            "$RUNNER_TEMP/g3-local-compute.json" \
+            "$RUNNER_TEMP/g3-public.log"
