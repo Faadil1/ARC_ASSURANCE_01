@@ -1304,3 +1304,17 @@ No provider signature was created and no transaction was sent. Sensitive temp ma
 Evidence: `docs/evidence/RECOVERY-POLICY-V2-PROVIDER-REAL-WORK.md`.
 
 Next gate: prepare the exact public EIP-712 typed data for the provider wallet. Provider signature remains NOT AUTHORIZED until a separate explicit human authorization.
+
+
+## Recovery Policy v2 provider signature readiness — 2026-10-03
+
+Workflow `37129028790` completed successfully on exact head `c5ce231493d5ea450d0ef667c1afcb3c2af92722`.
+
+It reran the real provider compute from the protected reveal packet, built the exact public EIP-712 ProviderOutput payload, and cross-checked the typed-data digest against the live contract's `providerOutputDigest(...)`.
+
+Exact provider digest:
+`0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1`.
+
+No provider signature was created and no transaction was sent. The public artifact excludes input_text, expected output, salt, canary key, and canonical output.
+
+Next gate: one exact provider-wallet EIP-712 signature. It remains NOT AUTHORIZED pending a separate explicit human authorization. That signature will not itself authorize `lockProviderOutput`.
