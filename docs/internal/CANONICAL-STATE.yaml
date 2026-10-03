@@ -113,7 +113,7 @@ prior_product_gate:
 
 next_gate:
   id: RECOVERY_POLICY_V2_REVEAL_CANARY
-  status: READY_FOR_SECRET_BOUND_READ_ONLY_PREFLIGHT
+  status: READY_PENDING_SECURE_REVEAL_BRIDGE_AND_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1148,3 +1148,30 @@ recovery_policy_v2_lock_provider_output_live_2026_10_03:
     exact_head: "5fbd36138e488cb9460aa80ba9224d7506f8442b"
     result: SUCCESS
   evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT.md
+
+
+recovery_policy_v2_reveal_canary_preflight_2026_10_03:
+  status: PROVEN_READ_ONLY_SECRET_SAFE
+  workflow_run: 37148410230
+  exact_head: "e6416429ed4d5630f36fcf88d519a3d6b0c7cd49"
+  observed_block: 24100263
+  sender: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+  pending_nonce: 14
+  batch_state: OUTPUT_LOCKED
+  commitment_reconstruction_passed: true
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  canary_key_used: false
+  tx_value_wei: "0"
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  eth_call_passed: true
+  gas_estimate: 124601
+  estimated_fee_wei: "2492021432911500"
+  secret_boundary:
+    reveal_packet_runner_temp_only: true
+    salt_logged: false
+    raw_calldata_logged: false
+    cleanup_passed: true
+  authorization:
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY-PREFLIGHT.md
