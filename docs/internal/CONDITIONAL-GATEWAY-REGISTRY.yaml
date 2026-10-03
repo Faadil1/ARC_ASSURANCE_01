@@ -1024,3 +1024,20 @@ recovery_policy_v2_reveal_bridge_local_gate_2026_10_03:
   protected_actions:
     revealCanary: BLOCKED_PENDING_HUMAN_AUTHORIZATION
     resolveBatch: BLOCKED
+
+
+recovery_policy_v2_reveal_canary_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2"
+  block: 24104229
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  canary_revealed_event: PROVEN
+  commitment_reconstruction: PROVEN
+  deterministic_match: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY.md
+  next_gate: RECOVERY_POLICY_V2_RESOLVE_BATCH
+  protected_actions:
+    resolveBatch: BLOCKED_PENDING_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
+  rule: "A proven reveal does not authorize settlement."
