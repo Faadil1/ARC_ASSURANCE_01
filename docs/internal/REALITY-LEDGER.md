@@ -620,3 +620,29 @@ Observed:
 ### TRUTH BOUNDARY
 
 This proves v2 funding only. Hidden canary generation, commitBatch, provider signature, output lock, reveal, resolve, and v1 expiry recovery remain separately gated.
+
+
+## Recovery Policy v2 precommit read-only preflight — 2026-10-03
+
+### OBSERVED / PROVEN READ-ONLY
+
+Workflow `37126625964` validated the exact public v2 precommit on Arc Mainnet without reading the hidden reveal packet.
+
+Public binding:
+- policy `0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`;
+- batch `0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19`;
+- commitment `0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17`.
+
+Observed:
+- pending nonce `12`;
+- v2 funded at 0.010 native USDC and active batch zero;
+- v1 unchanged;
+- vault liability/custody/balance = 0.020 native USDC;
+- exact commitBatch `eth_call` and `eth_estimateGas` both passed;
+- gas estimate `137470`;
+- tx value `0`;
+- no secret, signer, broadcast, or value movement was used.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+The commitBatch transaction has not been broadcast. Provider signing, output lock, reveal and resolve remain separately gated.
