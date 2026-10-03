@@ -1185,3 +1185,25 @@ Evidence: `docs/evidence/RECOVERY-POLICY-V2-CREATE.md`.
 The one-shot createPolicy authorization is **CONSUMED**.
 
 Next gate is v2 funding. Funding remains **NOT AUTHORIZED** until a fresh read-only funding preflight passes and Faadil grants a separate explicit authorization.
+
+
+## Recovery Policy v2 funding read-only preflight — 2026-10-03
+
+GitHub Actions workflow `37124943731` passed on exact head `d6bdff050a2ca54f785fc19312be6f838a7c210b`.
+
+Observed:
+- v1 remains Committed and unchanged;
+- v2 exists, remains unfunded, and has no active batch;
+- vault pre-state remains 0.010 liability / 0.010 custody / 0.010 balance / 0 released;
+- exact proposed funding value = 0.010 native USDC;
+- pending nonce = 11;
+- calldata hash = `0xdc6ad0cd75e1a2b9bebdbc26530f2669a8c6ea25f60d8bb993dfbd3fc6986646`;
+- gas estimate = 82230;
+- estimated fee = 0.0016446008223 native USDC;
+- estimated total wallet outflow = 0.0116446008223 native USDC;
+- projected cumulative custody after success = 0.020 / 0.050;
+- no signer, no broadcast and no value movement occurred.
+
+Evidence: `docs/evidence/RECOVERY-POLICY-V2-FUNDING-PREFLIGHT.md`.
+
+Funding remains **NOT AUTHORIZED** pending a separate explicit one-shot authorization.
