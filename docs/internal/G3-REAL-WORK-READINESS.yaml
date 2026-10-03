@@ -1,0 +1,69 @@
+schema: ARC_ASSURANCE_G3_REAL_WORK_READINESS_V1
+project: ARC_ASSURANCE_01
+gate: G3_REAL_WORK
+status: BLOCKED_SECRET_PREIMAGE_LOST
+parent_gate:
+  id: G2_PRECOMMIT
+  status: PROVEN
+  evidence: docs/evidence/G2-PRECOMMIT.md
+
+live_binding:
+  chain_id: 5042
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+  commitment: "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9"
+  provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+
+read_only_prep:
+  script: script/g3_prepare_real_work.mjs
+  secret_packet_source: LOST_AFTER_ENDPOINT_SECURITY_INCIDENT
+  output_artifact: NOT_PRODUCED
+  private_key_required: false
+  provider_signature_created: false
+  transaction_sent: false
+  provider_transport: HTTP_LOOPBACK
+  provider_faults_enabled: false
+  chain_reads_only: true
+
+required_before_g3_proven:
+  - real provider HTTP computation observed against the committed work item
+  - provider output canonicalized under invoice-v1
+  - EIP-712 signature from exact policy-bound provider EOA
+  - signature independently verified against Arc 5042 + deployed AssuranceVault domain
+  - exact lockProviderOutput calldata constructed
+  - eth_call / callStatic preflight passes against current live state
+  - gas estimate captured
+  - separate human authorization for lockProviderOutput
+  - successful ProviderOutputLocked receipt after G2 commit block
+
+protected_actions:
+  provider_signature: NOT_AUTHORIZED_BY_READ_ONLY_PREP
+  lockProviderOutput: NOT_AUTHORIZED
+  revealCanary: NOT_AUTHORIZED
+  resolveBatch: NOT_AUTHORIZED
+
+recovery:
+  incident_date: "2026-10-03"
+  original_secret_preimage_recoverable: false
+  regenerate_for_existing_commitment_allowed: false
+  existing_batch_action: HOLD_UNTIL_POLICY_EXPIRY
+  expiry_unix: 1792033200
+  expiry_utc: "2026-10-15T03:00:00Z"
+  post_expiry_sequence:
+    - cancelExpiredBatch
+    - refundProtectedRemainder
+  continuation_strategy: NEW_POLICY_NEW_BATCH_NEW_CANARY_ON_SAME_DEPLOYMENT
+  note: "Never rerun the old canary generator expecting to recover the committed preimage."
+
+truth_boundary:
+  g3_status_after_read_only_prep: BLOCKED
+  live_core_loop: BLOCKED
+  financial_consequence: BLOCKED
+
+validation:
+  draft_pr: 46
+  head: "84cb2a7b4f43ae443939d9e988d9d3f529ac3083"
+  clean_room_workflow: 37088856971
+  result: SUCCESS
+  note: "Clean-room regression is green; local secret-bound G3 preparer still requires operator execution."

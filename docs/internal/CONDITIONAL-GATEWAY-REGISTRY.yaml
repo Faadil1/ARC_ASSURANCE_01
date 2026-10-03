@@ -779,3 +779,330 @@ g2_precommit_live_gate_2026_10_02:
     Load_Bearing_Integration: BLOCKED
     Real_Consequence: BLOCKED
     rationale: "A live precommit edge is proven, but the end-to-end provider/reveal/resolve/financial consequence loop is not."
+
+
+recovery_policy_v2_create_gate_2026_10_03:
+  status: ACTIVE
+  parent_incident: G3_SECRET_PREIMAGE_LOST
+  read_only_preflight: PROVEN
+  workflow_run: 37122442113
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PREFLIGHT.md
+  exact_policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  preflight_calldata_hash: "0x98718c6fab13f2fca8b94c91d1744c7a1d6c853c9ff1df2f6409e208b354fb66"
+  required_before_proven:
+    - "fresh chain/sender/nonce/calldata/gas recheck immediately before broadcast"
+    - "explicit one-shot human authorization"
+    - "successful Arc receipt"
+    - "exact receipt/event/post-state verification"
+  protected_actions:
+    createPolicy: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    fund: BLOCKED
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A green read-only preflight never authorizes createPolicy or any later action."
+
+
+recovery_policy_v2_create_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x0bb6e1ef61504f8f1ea4f899c88cccc9a65c10ea0646867e9ebac87a57341fd4"
+  block: 24052629
+  exact_policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  receipt_and_post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-CREATE.md
+  next_gate: RECOVERY_POLICY_V2_FUND
+  protected_actions:
+    fund: BLOCKED_PENDING_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "Successful createPolicy does not authorize funding or any downstream action."
+
+
+recovery_policy_v2_funding_gate_2026_10_03:
+  status: ACTIVE
+  read_only_preflight: PROVEN
+  workflow_run: 37124943731
+  exact_policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  exact_value_wei: "10000000000000000"
+  calldata_keccak256: "0xdc6ad0cd75e1a2b9bebdbc26530f2669a8c6ea25f60d8bb993dfbd3fc6986646"
+  pending_nonce_observed: 11
+  estimate_gas_units: 82230
+  evidence: docs/evidence/RECOVERY-POLICY-V2-FUNDING-PREFLIGHT.md
+  required_before_proven:
+    - "fresh chain/sender/policy-state/nonce/calldata/gas recheck immediately before broadcast"
+    - "explicit one-shot human authorization"
+    - "successful Arc funding receipt"
+    - "exact post-state verification"
+  protected_actions:
+    fund: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    canary_generation: BLOCKED
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A green funding preflight never authorizes the funding transaction or downstream actions."
+
+
+recovery_policy_v2_funding_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348"
+  block: 24055978
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  value_wei: "10000000000000000"
+  receipt_and_post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-FUNDING.md
+  next_gate: RECOVERY_POLICY_V2_CANARY
+  protected_actions:
+    canary_generation: READY_SECRET_SAFE_ONLY
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "Successful funding does not authorize canary precommit or any downstream transaction."
+
+
+recovery_policy_v2_precommit_gate_2026_10_03:
+  status: ACTIVE
+  read_only_preflight: PROVEN
+  workflow_run: 37126625964
+  exact_policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  exact_batch_id: "0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19"
+  exact_commitment: "0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17"
+  pending_nonce_observed: 12
+  calldata_keccak256: "0xbb2035436436b15588fe49896ce036d68b271f41d5499fb7297c371642e23b95"
+  estimate_gas_units: 137470
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PRECOMMIT-PREFLIGHT.md
+  required_before_proven:
+    - "fresh chain/sender/policy-state/nonce/calldata/gas recheck immediately before broadcast"
+    - "explicit one-shot human authorization"
+    - "successful Arc receipt"
+    - "exact event and post-state verification"
+  protected_actions:
+    commitBatch: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A green precommit preflight never authorizes commitBatch or downstream actions."
+
+
+recovery_policy_v2_precommit_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07"
+  block: 24060767
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  batch_id: "0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19"
+  commitment: "0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17"
+  receipt_and_event: PROVEN
+  post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PRECOMMIT.md
+  next_gate: RECOVERY_POLICY_V2_PROVIDER_REAL_WORK
+  protected_actions:
+    provider_execution: ACTIVE_READ_ONLY_PREP
+    provider_signature: BLOCKED_PENDING_SEPARATE_AUTHORIZATION
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A live precommit does not authorize provider signing, output lock, reveal, or resolve."
+
+
+recovery_policy_v2_provider_real_work_gate_2026_10_03:
+  status: PROVEN
+  workflow_run: 37128770177
+  exact_head: "5a19875e223d465a17e532f65b4082aeb3f915fe"
+  provider_execution: REAL_COMPUTE
+  fault_mode: NONE
+  hidden_expected_match: PROVEN
+  work_id_unused: PROVEN
+  secret_cleanup: PROVEN
+  signature_created: false
+  transaction_sent: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-REAL-WORK.md
+  next_gate: RECOVERY_POLICY_V2_PROVIDER_SIGNATURE
+  protected_actions:
+    provider_signature: BLOCKED_PENDING_READ_ONLY_TYPED_DATA_PREP_AND_HUMAN_AUTHORIZATION
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+
+
+recovery_policy_v2_provider_signature_gate_2026_10_03:
+  status: ACTIVE
+  read_only_typed_data_prep: PROVEN
+  workflow_run: 37129028790
+  provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  onchain_digest_crosscheck: PROVEN
+  digest_consumed: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-SIGNATURE-READINESS.md
+  required_before_proven:
+    - "explicit one-shot human authorization for the exact EIP-712 signature"
+    - "provider wallet address exact match"
+    - "locally recovered signer exact match"
+  protected_actions:
+    provider_signature: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+
+
+recovery_policy_v2_lock_provider_output_gate_2026_10_03:
+  status: ACTIVE
+  provider_signature: PROVEN
+  read_only_preflight: PROVEN
+  workflow_run: 37142060883
+  exact_head: "54e10212859650766d91de01d7571064b47b8ae2"
+  digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  calldata_keccak256: "0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b"
+  eth_call: PROVEN
+  gas_estimate: 220294
+  authorization: AUTHORIZED_PENDING_EXECUTION
+  protected_actions:
+    lockProviderOutput: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT-PREFLIGHT.md
+
+
+recovery_policy_v2_lock_provider_output_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x7de28364a63875b38f58649d8b85629422e8c5f2cebb29626e39ad157611ae78"
+  block: 24099169
+  calldata_keccak256: "0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b"
+  provider_digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  provider_output_consumed_event: PROVEN
+  provider_output_locked_event: PROVEN
+  post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT.md
+  next_gate: RECOVERY_POLICY_V2_REVEAL_CANARY
+  protected_actions:
+    revealCanary: BLOCKED_PENDING_SECRET_BOUND_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
+    resolveBatch: BLOCKED
+  rule: "A proven output lock does not authorize reveal or resolve."
+
+
+recovery_policy_v2_reveal_canary_gate_2026_10_03:
+  status: ACTIVE
+  secret_bound_read_only_preflight: PROVEN
+  workflow_run: 37148410230
+  exact_head: "e6416429ed4d5630f36fcf88d519a3d6b0c7cd49"
+  commitment_reconstruction: PROVEN
+  canary_key_unused: PROVEN
+  eth_call: PROVEN
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  gas_estimate: 124601
+  secret_boundary: PROVEN
+  authorization: BLOCKED_PENDING_SECURE_REVEAL_BRIDGE_AND_HUMAN_AUTHORIZATION
+  protected_actions:
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY-PREFLIGHT.md
+
+
+recovery_policy_v2_reveal_bridge_local_gate_2026_10_03:
+  status: PROVEN
+  transport: RSA_OAEP_EPHEMERAL_BROWSER_BRIDGE
+  commitment_reconstruction: PROVEN
+  exact_calldata_binding: PROVEN
+  canary_key_unused: PROVEN
+  secret_values_printed: false
+  transaction_sent: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-BRIDGE-LOCAL-PRECHECK.md
+  next_gate: RECOVERY_POLICY_V2_REVEAL_CANARY
+  protected_actions:
+    revealCanary: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    resolveBatch: BLOCKED
+
+
+recovery_policy_v2_reveal_canary_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2"
+  block: 24104229
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  canary_revealed_event: PROVEN
+  commitment_reconstruction: PROVEN
+  deterministic_match: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY.md
+  next_gate: RECOVERY_POLICY_V2_RESOLVE_BATCH
+  protected_actions:
+    resolveBatch: BLOCKED_PENDING_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
+  rule: "A proven reveal does not authorize settlement."
+
+
+recovery_policy_v2_resolve_batch_gate_2026_10_03:
+  status: ACTIVE
+  deterministic_match: PROVEN
+  read_only_preflight: PROVEN
+  workflow_run: 37150934605
+  exact_head: "abf027239cfca539a9aa297cfb2a65db772aeeab"
+  expected_directive: PAY
+  expected_payout_wei: "2000000000000000"
+  calldata_keccak256: "0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320"
+  gas_estimate: 178343
+  authorization: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+  protected_actions:
+    resolveBatch: AUTHORIZED_PENDING_EXECUTION
+  evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH-PREFLIGHT.md
+
+
+recovery_policy_v2_resolve_batch_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x43c2d82be1016f9783ff14def12e01e7f6900051051c7aed8ec04ea033a765a5"
+  block: 24106680
+  calldata_keccak256: "0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320"
+  deterministic_match: PROVEN
+  batch_resolved_event: PROVEN
+  payment_released_event: PROVEN
+  exact_payout_delta: PROVEN
+  directive: PAY
+  payout_wei: "2000000000000000"
+  protected_remainder_wei: "8000000000000000"
+  post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH.md
+
+recovery_policy_v2_end_to_end_live_gate_2026_10_03:
+  status: PROVEN
+  live_core_loop: PROVEN
+  load_bearing_integration: PROVEN
+  real_consequence: PROVEN
+  deterministic_success_path: PROVEN
+  observability_receipts: PROVEN
+  v2_protected_actions_remaining: NONE
+  next_gate: RECOVERY_POLICY_V2_POST_LIVE_AUDIT
+  separate_v1_recovery_obligation: ACTIVE
+
+
+recovery_policy_v2_post_live_audit_gate_2026_10_03:
+  status: PROVEN
+  workflow_run: 37152400894
+  exact_head: "c816117db3cde27df84d6d2be778e80ed5735241"
+  chain_replay_and_decode: PROVEN
+  transaction_nonce_sequence_10_15: PROVEN
+  final_state_invariants: PROVEN
+  exact_recipient_balance_delta: PROVEN
+  live_core_loop: PROVEN
+  real_consequence: PROVEN
+  v2_protected_actions_remaining: NONE
+  evidence: docs/evidence/RECOVERY-POLICY-V2-POST-LIVE-AUDIT.md
+
+recovery_policy_v2_pr_review_gate_2026_10_03:
+  status: ACTIVE
+  pr: 47
+  draft: true
+  merge: BLOCKED_PENDING_EXPLICIT_HUMAN_DECISION
+  v1_cleanup: SEPARATE_FUTURE_GATE

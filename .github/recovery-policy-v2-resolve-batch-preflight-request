@@ -1,0 +1,3 @@
+request: v2-resolve-batch-readonly-preflight
+broadcast: disabled
+freshness: final-exact-head-after-authorization-state-sync

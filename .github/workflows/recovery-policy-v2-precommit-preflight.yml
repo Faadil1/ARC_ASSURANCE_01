@@ -1,0 +1,69 @@
+name: Recovery Policy V2 Precommit Read-Only Preflight
+
+on:
+  push:
+    branches:
+      - ops/recovery-policy-v2-readiness
+    paths:
+      - ".github/recovery-policy-v2-precommit-preflight-request"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install pinned Solidity libraries
+        run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+
+      - name: Build exact artifact
+        run: forge build
+
+      - name: Run v2 precommit preflight without secret or signer
+        run: |
+          mkdir -p build
+          node script/recovery_policy_v2_precommit_preflight.mjs             https://rpc.mainnet.arc.io             ops/recovery-policy-v2-precommit.json             out/AssuranceVault.sol/AssuranceVault.json             | tee build/recovery-policy-v2-precommit-preflight.json
+
+      - name: Assert read-only boundary
+        run: |
+          node - <<'NODE'
+          const fs=require("fs");
+          const x=JSON.parse(fs.readFileSync("build/recovery-policy-v2-precommit-preflight.json","utf8"));
+          if(x.result!=="PASS") throw new Error("PREFLIGHT_NOT_PASS");
+          if(!x.commit_batch_preflight.eth_call_passed || !x.commit_batch_preflight.eth_estimateGas_passed) throw new Error("CALL_OR_ESTIMATE_FAILED");
+          for(const [k,v] of Object.entries(x.safety)) if(v!==false) throw new Error("SAFETY_BOUNDARY_FAILED:"+k);
+          if(x.secret_boundary.workflow_reads_secret!==false) throw new Error("SECRET_BOUNDARY_FAILED");
+          console.log("READ_ONLY_PRECOMMIT_BOUNDARY: PASS");
+          NODE
+
+      - name: Upload public precommit evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: recovery-policy-v2-precommit-preflight-${{ github.sha }}
+          path: build/recovery-policy-v2-precommit-preflight.json
+          if-no-files-found: error
+          retention-days: 90
