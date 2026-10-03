@@ -1,0 +1,20 @@
+{
+  "schema": "ARC_ASSURANCE_G2_POLICY_CREATION_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "transaction_hash": "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162",
+  "contract_address": "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4",
+  "expected_authority": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 7,
+  "expected_tx_value_wei": "0",
+  "policy": {
+    "policy_id": "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30",
+    "funder": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+    "provider": "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe",
+    "payout_recipient": "0x6B8ad09233dF44eD57B99aF8839129303955590C",
+    "scorer_id_hash": "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45",
+    "max_failures": 2,
+    "max_spend_cap_wei": "20000000000000000",
+    "unit_payout_wei": "2000000000000000",
+    "expiry_unix": "1792033200"
+  }
+}
