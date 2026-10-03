@@ -720,3 +720,30 @@ Exact `lockProviderOutput` eth_call passed while the batch remained Committed an
 The exact `lockProviderOutput` candidate is technically ready, with calldata hash `0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b`.
 
 Broadcast remains blocked pending a separate explicit human authorization. Reveal and resolve remain NOT AUTHORIZED.
+
+
+## Recovery Policy v2 lockProviderOutput live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x7de28364a63875b38f58649d8b85629422e8c5f2cebb29626e39ad157611ae78` succeeded canonically on Arc Mainnet in block `24099169`.
+
+Observed and independently verified:
+- sender/funder exact;
+- nonce 13;
+- value zero;
+- selector `0xaeca0071`;
+- exact authorized calldata hash;
+- exact `ProviderOutputConsumed` event;
+- exact `ProviderOutputLocked` event;
+- v2 batch state transitioned from Committed to OutputLocked;
+- workId is now consumed;
+- provider digest is now consumed;
+- authority pending nonce is 14;
+- v1 remains Committed and unchanged;
+- vault liability/custody/balance remains 0.020 native USDC;
+- total value released remains zero.
+
+### TRUTH BOUNDARY
+
+The live provider-output lock is proven. Canary reveal, deterministic resolution, settlement directive, and financial consequence are not yet proven and remain separately gated.
