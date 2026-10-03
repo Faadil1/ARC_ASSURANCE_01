@@ -747,3 +747,18 @@ Observed and independently verified:
 ### TRUTH BOUNDARY
 
 The live provider-output lock is proven. Canary reveal, deterministic resolution, settlement directive, and financial consequence are not yet proven and remain separately gated.
+
+
+## Recovery Policy v2 revealCanary preflight — 2026-10-03
+
+### PROVEN READ-ONLY / SECRET-SAFE
+
+The protected reveal packet reconstructs the exact live commitment for the OutputLocked batch.
+
+The exact `revealCanary` call succeeds under `eth_call`, with canary key `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`, calldata hash `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`, and gas estimate 124601.
+
+The salt, raw calldata, and reveal packet were not published. Temporary secret material was destroyed.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+The reveal transaction has not been broadcast. Resolution and financial consequence remain unproven and separately gated.
