@@ -1233,3 +1233,29 @@ Evidence: `docs/evidence/RECOVERY-POLICY-V2-FUNDING.md`.
 The one-shot funding authorization is **CONSUMED**.
 
 Next gate: generate a brand-new v2 hidden canary and store the reveal packet directly in a protected GitHub Environment secret. No `commitBatch` or downstream action is authorized by the successful funding.
+
+
+## Recovery Policy v2 precommit read-only preflight — 2026-10-03
+
+A fresh v2 hidden canary was generated in Remix after v2 funding. Only the public binding was retained in the repository:
+
+- policy: `0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`
+- batch: `0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19`
+- commitment: `0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17`
+
+The operator reports the full reveal packet was copied directly into protected GitHub Environment secret `G2_SECRET_REVEAL_PACKET` under `g3-live-secret`. The preflight did not read it.
+
+Workflow `37126625964` passed on exact head `a5ceab0e8ce861fbabb4d747c22098b45f837247`.
+
+Observed:
+- nonce 12;
+- v2 funded and active batch zero;
+- v1 unchanged;
+- vault liability/custody/balance = 0.020 native USDC;
+- exact commitBatch eth_call = PASS;
+- exact commitBatch eth_estimateGas = PASS;
+- gas estimate = 137470;
+- tx value = 0;
+- no signer, secret read, broadcast, or value movement.
+
+Next gate: exact v2 `commitBatch`, still NOT AUTHORIZED pending separate one-shot human authorization.
