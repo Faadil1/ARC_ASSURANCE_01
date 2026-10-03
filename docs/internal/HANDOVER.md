@@ -1144,3 +1144,46 @@ resolve, refund, additional top-up, or a second policy creation.
 
 A fresh read-only policy preflight is mandatory immediately before the human
 MetaMask signature.
+
+
+## 55. G2 policy creation — PROVEN
+
+Arc tx:
+`0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162`
+
+Receipt verifier run `37083767443`: **SUCCESS**.
+
+Observed:
+- block 23966937;
+- authority nonce 7 consumed; pending nonce after = 8;
+- target = deployed AssuranceVault;
+- function = `createPolicy`;
+- transaction value = 0;
+- calldata hash matches the locked preflight;
+- policy exists exactly with locked funder/provider/payout/scorer/caps/expiry;
+- failure count = 0;
+- fundedAt/totalFunded/paid/refunded = 0;
+- policy is open, unpaused and has no active batch;
+- policyCount = 1;
+- vault liability/custody/released/balance remain 0.
+
+The one-time createPolicy authorization is consumed.
+
+## 56. G2 funding preflight — PROVEN READ-ONLY
+
+Run `37084047411`: **SUCCESS**.
+
+Locked funding candidate:
+- function: `fund(policyId)`;
+- amount: **0.010 native USDC**;
+- authority nonce observed: **8**;
+- authority balance: **0.370701027 native USDC**;
+- gas estimate: **116,049**;
+- observed fee estimate: **~0.00232098116049 USDC**;
+- estimated total wallet outflow: **~0.01232098116049 USDC**;
+- policy and vault are still unfunded/empty.
+
+**Next protected gate: `G2_FUNDING_AUTHORIZATION`.**
+
+Funding is NOT authorized yet. `commitBatch`, provider output lock, reveal,
+resolve, refund and additional funding remain separately unauthorized.
