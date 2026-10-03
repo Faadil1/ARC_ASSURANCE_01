@@ -807,3 +807,18 @@ Observed and independently verified:
 ### TRUTH BOUNDARY
 
 The live reveal and deterministic PASS comparison are proven. Settlement and payout have not yet occurred and remain separately gated.
+
+
+## Recovery Policy v2 resolveBatch preflight — 2026-10-03
+
+### PROVEN READ-ONLY
+
+The revealed batch deterministically matches the locked provider output.
+
+Exact `resolveBatch` simulation returned `PAY`, with expected payout 0.002 native USDC to `0x6B8ad09233dF44eD57B99aF8839129303955590C`.
+
+The exact calldata hash is `0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320`; gas estimate 178343; pending funder nonce 15.
+
+### READY BUT NOT AUTHORIZED
+
+No settlement or payout has occurred. The live resolve transaction remains separately human-authorization gated.
