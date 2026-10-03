@@ -1,0 +1,3 @@
+request: v2-reveal-canary-readonly-preflight
+broadcast: disabled
+secret_logging: disabled
