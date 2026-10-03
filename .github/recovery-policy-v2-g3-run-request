@@ -1,3 +1,4 @@
 request: recovery-v2-g3-real-work-readonly
 protected_actions: none
 secret_source: environment:g3-live-secret/G2_SECRET_REVEAL_PACKET
+freshness: clean-rerun-after-log-assertion-fix
