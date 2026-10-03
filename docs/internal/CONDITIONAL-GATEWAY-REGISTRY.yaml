@@ -823,3 +823,27 @@ g2_policy_creation_authorization_gate:
   contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
   policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
   rule: "No createPolicy transaction may be signed or broadcast without separate explicit human authorization."
+
+
+g2_policy_creation_gate:
+  status: PROVEN
+  transaction_hash: "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162"
+  verification_run: 37083767443
+  authorization_status: PROVEN_CONSUMED
+  truth_boundary: "Policy exists live on Arc; no funding or precommit claim follows from creation alone."
+
+g2_funding_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  amount_wei: "10000000000000000"
+  amount_usdc: "0.010"
+  preflight_run: 37084047411
+  rule: "No fund(policyId) transaction may be signed or broadcast without separate explicit human authorization."
+  downstream_not_authorized:
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
