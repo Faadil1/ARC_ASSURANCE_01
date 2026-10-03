@@ -1,6 +1,6 @@
 # Recovery Policy v2 — revealCanary Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION
+**Status:** CONSUMED
 
 ## Exact candidate binding
 
@@ -51,5 +51,23 @@ The user explicitly authorized exactly one Arc Mainnet `revealCanary` transactio
 Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
 
 This authorization is one-shot. If the matching transaction is broadcast, it is consumed whether the transaction succeeds or reverts. Cancelling before broadcast does not consume it, but any retry still requires a fresh preflight.
+
+No authorization for `resolveBatch` is implied.
+
+
+## Execution result — 2026-10-03
+
+The exact authorized `revealCanary` transaction was broadcast and succeeded:
+
+- tx:
+  `0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2`
+- block: `24104229`
+- nonce: `14`
+- calldata keccak256:
+  `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`
+- canary key:
+  `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`
+
+The one-shot reveal authorization is **CONSUMED**.
 
 No authorization for `resolveBatch` is implied.
