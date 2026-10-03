@@ -1386,3 +1386,28 @@ g2_policy_creation_preflight_2026_10_02:
     owner: HUMAN
     protected_action: true
     authorization_granted: false
+
+
+g2_policy_creation_authorization_2026_10_02:
+  status: GRANTED
+  granted_by: HUMAN_OWNER
+  exact_user_authorization: "J’autorise uniquement la création de la policy G2 ci-dessus via createPolicy sur l’AssuranceVault déployé"
+  scope:
+    contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    function: "createPolicy(bytes32,address,address,address,bytes32,uint32,uint256,uint256,uint64)"
+    occurrence_limit: 1
+    allowed: "Create exactly the previously locked G2 policy"
+  downstream_still_unauthorized:
+    - fund
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+    - additional_wallet_topup
+    - second_policy_creation
+  required_pre_broadcast_revalidation:
+    status: ACTIVE
+  execution:
+    signer: HUMAN_METAMASK_ONLY
+    status: NOT_YET_BROADCAST
