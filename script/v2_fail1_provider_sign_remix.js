@@ -31,8 +31,8 @@
     if (!rawPacket) {
       STOP(
         "STOP: FAIL1 secret packet not found in sessionStorage. " +
-        "Re-run v2_fail1_hidden_canary_remix.js in the SAME browser session. " +
-        "Do not paste the secret into chat."
+        "Do NOT regenerate a new canary: it would not match the already committed batch. " +
+        "Do not paste any secret into chat."
       );
     }
 
