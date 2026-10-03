@@ -142,7 +142,10 @@ const out={
   }
 };
 const serialized=JSON.stringify(out,null,2);
-for(const forbiddenValue of [EXPECTED_OUTPUT_HASH,SALT,calldata]) {
-  if(serialized.toLowerCase().includes(String(forbiddenValue).toLowerCase())) throw new Error("PUBLIC_OUTPUT_SECRET_LEAK");
+for(const forbiddenField of ["expected_output_hash","salt","expected_canonical_output","input_text","canary_key_secret"]) {
+  if(serialized.toLowerCase().includes('"'+forbiddenField.toLowerCase()+'"')) throw new Error("PUBLIC_OUTPUT_SECRET_FIELD_LEAK");
+}
+for(const forbiddenValue of [SALT,calldata]) {
+  if(serialized.toLowerCase().includes(String(forbiddenValue).toLowerCase())) throw new Error("PUBLIC_OUTPUT_SECRET_VALUE_LEAK");
 }
 console.log(serialized);
