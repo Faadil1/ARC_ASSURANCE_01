@@ -56,37 +56,34 @@ Agent Wallets, Nanopayments, x402, ERC-8004 and ERC-8183 are not required for pr
 
 ## 4. Current gate
 
-**G0 — PRD_READY**
+**G2 — PRECOMMIT — READINESS ACTIVE / LIVE PROOF NOT PROVEN**
 
-This workstream establishes:
+G0 / PRD_READY is **PROVEN** via PR #1 merged at
+`1220fc5d39b2262f0b66d0ae4713629b10f3ca29`.
 
-- `product/PRD.md`
-- `docs/internal/CANONICAL-STATE.yaml`
-- `docs/internal/HANDOVER.md`
-- `docs/internal/WORKSPLIT.md`
-- contribution rules
+The corrected G0 rule is owner sign-off + clean merge. Opeyemi review is
+recommended/non-blocking for G0 and remains mandatory only at later gates where
+his explicit technical surface is materially affected.
 
-No consequential product build should be treated as promoted until G0 is merged/reviewed.
+G1 / T0_MAINNET_CUSTODY is **PROVEN** on the separate live T0 evidence line.
 
 ## 5. Immediate blocker
 
-Faadil has already sent Opeyemi (`opeblow`) a collaborator invitation with the intended write access.
+No human review blocker remains for G0.
 
-Current status:
-
-- collaborator invitation: **INVITE_PENDING**
-- next action: **Opeyemi accepts the existing GitHub invitation**
-- after acceptance, verify that `opeblow` can push a branch/open a PR and request him on PR #1.
-
-No new invitation is required unless the existing one expires or is declined.
+Before live G2 execution, this integrated line must be reconciled with the merged
+G0 mainline, exact-source readiness must be rerun, and each consequential
+mainnet action must receive separate explicit human authorization.
 
 ## 6. Next gate
 
-**G1 — T0_MAINNET_CUSTODY**
+**G2 — PRECOMMIT**
 
-Owner: Opeyemi.
+Use the integrated `AssuranceVault` product core. G2 requires a real opaque
+commitment on Arc mainnet before provider execution/output lock for the same
+batch.
 
-Before UI work, prove with a minimal contract on Arc mainnet:
+Historical G1 primitive proved on the separate T0 line:
 
 ```
 real USDC
@@ -1012,3 +1009,66 @@ exact creation bytecode
 ```
 
 No private key is needed for that next step.
+
+
+## G0 mainline reconciliation — 2026-10-02
+
+- PR #1 merged to `main`: `1220fc5d39b2262f0b66d0ae4713629b10f3ca29`
+- G0: **PROVEN**
+- collaborator review at G0: **RECOMMENDED / NON-BLOCKING**
+- G1 T0 custody: **PROVEN** on PR #44
+- current product gate: **G2 PRECOMMIT**
+- live G2 protected actions: **NOT AUTHORIZED**
+
+
+## G2 PRECOMMIT live proof — 2026-10-02
+
+G2 PRECOMMIT is now **PROVEN** on Arc Mainnet.
+
+Live transaction:
+
+- tx: `0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e`
+- block: `23975010`
+- transaction index: `2`
+- sender/funder: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- AssuranceVault: `0x6f79cdc961e30f2e1fac0f4eada6ca35e58290e4`
+- nonce: `9`
+- value: `0`
+- gas used: `132026`
+- receipt status: `1`
+
+Committed tuple:
+
+- policy: `0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30`
+- batch: `0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7`
+- commitment: `0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9`
+
+Read-only receipt verification proved:
+
+- exact sender / target / zero value;
+- exact `commitBatch(policy,batch,commitment)` calldata;
+- exact `BatchCommitted` event;
+- `committedAtBlock = 23975010`;
+- `activeBatchId = batchId`;
+- batch state = `Committed`.
+
+The secret reveal packet remains human-local, off-repo and undisclosed in chat.
+
+Canonical evidence:
+
+- `docs/evidence/G2-PRECOMMIT.md`
+- `docs/internal/G2-COMMITBATCH-AUTHORIZATION.md`
+
+The one-time `commitBatch` authorization is **CONSUMED**.
+
+### Current product gate
+
+`G2_PRECOMMIT = PROVEN`
+
+Next gate:
+
+`G3_REAL_WORK = BLOCKED_PENDING_READINESS_AND_SEPARATE_AUTHORIZATION`
+
+Do **not** run `lockProviderOutput`, `revealCanary`, `resolveBatch`, payout, breaker or refund actions until their own readiness checks and explicit human authorization are complete.
+
+G2 proves only the precommit causal edge. It does not yet prove provider execution, signed-output correctness, reveal, deterministic resolution, financial consequence, breaker/refund, or external adoption.

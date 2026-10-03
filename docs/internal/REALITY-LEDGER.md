@@ -475,3 +475,51 @@ exact init-code `eth_estimateGas` tied to a public deployer address and nonce sn
 ### TRUTH BOUNDARY
 
 These values are local exact-head EVM rehearsal evidence. They are not Arc receipts, a permanent fee quote, or funding authorization.
+
+
+## G2 PRECOMMIT live proof — 2026-10-02
+
+### OBSERVED / PROVEN
+
+A real `commitBatch` transaction succeeded on Arc Mainnet against the deployed integrated `AssuranceVault`.
+
+- tx: `0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e`
+- block: `23975010`
+- receipt status: `1`
+- nonce: `9`
+- value: `0`
+- gas used: `132026`
+- exact calldata: verified
+- exact `BatchCommitted` event: verified
+- post-state `activeBatchId`: exact committed batch
+- post-state batch state: `Committed`
+
+Committed batch:
+
+- policy: `0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30`
+- batch: `0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7`
+- commitment: `0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9`
+
+The hidden reveal packet remains human-local and was not stored in the repository or disclosed in chat.
+
+### PROMOTION
+
+- G2 PRECOMMIT: **PROVEN**
+- G3 REAL WORK: **BLOCKED**
+- Live Core Loop: **BLOCKED**
+- Load-Bearing Integration: **BLOCKED**
+- Real Consequence: **BLOCKED**
+
+### STILL UNKNOWN / NOT PROVEN
+
+- provider execution for this committed batch;
+- EIP-712 signed provider output for this batch;
+- provider output lock;
+- reveal correctness;
+- deterministic PASS/FAIL;
+- PASS -> payout;
+- FAIL -> no-pay;
+- breaker -> refund;
+- external user/operator adoption.
+
+No downstream transaction is authorized by this evidence.

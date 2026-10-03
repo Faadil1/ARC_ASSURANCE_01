@@ -1,0 +1,10 @@
+{
+  "schema": "ARC_ASSURANCE_G2_FUNDING_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "transaction_hash": "0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf",
+  "contract_address": "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4",
+  "expected_authority": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 8,
+  "expected_value_wei": "10000000000000000",
+  "policy_id": "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+}

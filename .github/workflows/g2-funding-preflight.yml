@@ -1,0 +1,56 @@
+name: G2 Funding Preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      G2_CONTRACT_ADDRESS: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install pinned Solidity libraries
+        run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+
+      - name: Build exact artifact
+        run: forge build
+
+      - name: Verify funding readiness without signing
+        run: |
+          mkdir -p build
+          node script/g2_funding_preflight.mjs             "$ARC_MAINNET_RPC_URL"             ops/g2-predeploy-parameters.json             out/AssuranceVault.sol/AssuranceVault.json             "$G2_CONTRACT_ADDRESS"             | tee build/g2-funding-preflight.json
+
+      - name: Upload read-only funding evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: g2-funding-preflight-${{ github.event.pull_request.head.sha || github.sha }}
+          path: build/g2-funding-preflight.json
+          if-no-files-found: error
+          retention-days: 90
