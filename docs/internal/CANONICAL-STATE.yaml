@@ -112,8 +112,8 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_PROVIDER_REAL_WORK
-  status: READY_FOR_SECRET_BOUND_READ_ONLY_PREP
+  id: RECOVERY_POLICY_V2_PROVIDER_SIGNATURE
+  status: READY_FOR_READ_ONLY_TYPED_DATA_PREP
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1031,3 +1031,26 @@ recovery_policy_v2_precommit_live_2026_10_03:
     lockProviderOutput: NOT_AUTHORIZED
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
+
+
+recovery_policy_v2_provider_real_work_2026_10_03:
+  status: PROVEN_READ_ONLY
+  workflow_run: 37128770177
+  exact_head: "5a19875e223d465a17e532f65b4082aeb3f915fe"
+  observed_block: 24061998
+  provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  execution: REAL_COMPUTE
+  fault_mode: NONE
+  work_id_unused: true
+  provider_output_matches_hidden_expected: true
+  secret_boundary:
+    source: g3-live-secret/G2_SECRET_REVEAL_PACKET
+    materialized_only_in_runner_temp: true
+    uploaded_secret_artifact: false
+    cleanup_passed: true
+  protected_actions:
+    provider_signature: NOT_AUTHORIZED
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-REAL-WORK.md
