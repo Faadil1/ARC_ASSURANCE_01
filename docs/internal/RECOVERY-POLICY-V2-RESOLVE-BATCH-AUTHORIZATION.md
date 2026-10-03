@@ -1,6 +1,6 @@
 # Recovery Policy v2 — resolveBatch Authorization
 
-**Status:** NOT_AUTHORIZED
+**Status:** AUTHORIZED_PENDING_EXECUTION
 
 ## Exact candidate action
 
@@ -33,3 +33,21 @@ Freshness observations:
 Any future authorization is one-shot and applies only to this exact action binding.
 
 A fresh preflight is required immediately before broadcast.
+
+
+## Human authorization — 2026-10-03
+
+The user explicitly authorized exactly one Arc Mainnet `resolveBatch` transaction bound to:
+
+- calldata keccak256:
+  `0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320`
+- expected directive: `PAY`
+- exact payout: `0.002 native USDC`
+- payout recipient:
+  `0x6B8ad09233dF44eD57B99aF8839129303955590C`
+
+Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+
+This authorization is one-shot. If the matching transaction is broadcast, it is consumed whether the transaction succeeds or reverts. Cancelling before broadcast does not consume it, but any retry requires a fresh preflight.
+
+No other transaction or payout is authorized.
