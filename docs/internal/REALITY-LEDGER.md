@@ -672,3 +672,16 @@ Observed:
 ### TRUTH BOUNDARY
 
 This proves the v2 public precommit edge only. Provider execution, provider signature, output lock, reveal, deterministic resolve and financial consequence are not yet proven and remain separately gated.
+
+
+## Recovery Policy v2 provider real work — 2026-10-03
+
+### PROVEN READ-ONLY
+
+GitHub Actions run `37128770177` on exact head `5a19875e223d465a17e532f65b4082aeb3f915fe` consumed the protected v2 reveal packet only ephemerally, verified the live committed binding, ran the provider's real compute path, observed fault mode NONE, confirmed the hidden workId is unused, and confirmed the provider output matches the hidden expected result.
+
+No signature was created, no transaction was broadcast, and sensitive temp material was deleted.
+
+### NOT PROVEN / NOT AUTHORIZED
+
+Provider EIP-712 signature, output lock, reveal, resolve, and financial consequence remain separately gated.
