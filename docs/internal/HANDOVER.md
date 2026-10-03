@@ -1259,3 +1259,35 @@ Observed:
 - no signer, secret read, broadcast, or value movement.
 
 Next gate: exact v2 `commitBatch`, still NOT AUTHORIZED pending separate one-shot human authorization.
+
+
+## Recovery Policy v2 commitBatch live receipt — 2026-10-03
+
+The exact authorized v2 `commitBatch` transaction succeeded on Arc Mainnet.
+
+- tx: `0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07`
+- block: `24060767`
+- nonce: `12`
+- value: `0`
+- gas used: `132014`
+- actual fee: `0.002838301 native USDC`
+
+Exact on-chain event:
+- policy: `0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`
+- batch: `0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19`
+- commitment: `0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17`
+
+Post-state:
+- authority pending nonce = 13;
+- v2 active batch equals the committed batch;
+- v2 batch state = Committed;
+- v2 total funded remains 0.010 native USDC;
+- v1 remains Committed and unchanged;
+- vault liability/custody/balance remains 0.020 native USDC;
+- total value released remains zero.
+
+Evidence: `docs/evidence/RECOVERY-POLICY-V2-PRECOMMIT.md`.
+
+The one-shot `commitBatch` authorization is **CONSUMED**.
+
+Next gate: secret-bound provider real-work preparation and provider typed-data signature readiness. No provider signature, output lock, reveal or resolve is authorized by this receipt.
