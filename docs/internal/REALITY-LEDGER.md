@@ -783,3 +783,27 @@ Publicly observed binding:
 ### READY BUT NOT AUTHORIZED
 
 The exact reveal transaction is technically ready. Broadcast remains separately human-authorization gated. Resolve remains NOT AUTHORIZED.
+
+
+## Recovery Policy v2 revealCanary live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2` succeeded canonically on Arc Mainnet in block `24104229`.
+
+Observed and independently verified:
+- funder sender exact;
+- nonce 14;
+- value zero;
+- exact authorized calldata hash;
+- exact `CanaryRevealed` event;
+- reveal preimage reconstructs the committed canary;
+- batch state transitioned to Revealed;
+- canary key is consumed;
+- locked provider output equals expected output;
+- authority pending nonce is 15;
+- vault principal and liability are unchanged before settlement.
+
+### TRUTH BOUNDARY
+
+The live reveal and deterministic PASS comparison are proven. Settlement and payout have not yet occurred and remain separately gated.
