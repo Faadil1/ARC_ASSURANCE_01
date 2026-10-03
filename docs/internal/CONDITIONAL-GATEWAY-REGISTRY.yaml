@@ -822,3 +822,29 @@ recovery_policy_v2_create_live_gate_2026_10_03:
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
   rule: "Successful createPolicy does not authorize funding or any downstream action."
+
+
+recovery_policy_v2_funding_gate_2026_10_03:
+  status: ACTIVE
+  read_only_preflight: PROVEN
+  workflow_run: 37124943731
+  exact_policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  exact_value_wei: "10000000000000000"
+  calldata_keccak256: "0xdc6ad0cd75e1a2b9bebdbc26530f2669a8c6ea25f60d8bb993dfbd3fc6986646"
+  pending_nonce_observed: 11
+  estimate_gas_units: 82230
+  evidence: docs/evidence/RECOVERY-POLICY-V2-FUNDING-PREFLIGHT.md
+  required_before_proven:
+    - "fresh chain/sender/policy-state/nonce/calldata/gas recheck immediately before broadcast"
+    - "explicit one-shot human authorization"
+    - "successful Arc funding receipt"
+    - "exact post-state verification"
+  protected_actions:
+    fund: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    canary_generation: BLOCKED
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A green funding preflight never authorizes the funding transaction or downstream actions."
