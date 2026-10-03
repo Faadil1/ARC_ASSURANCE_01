@@ -1041,3 +1041,19 @@ recovery_policy_v2_reveal_canary_live_gate_2026_10_03:
   protected_actions:
     resolveBatch: BLOCKED_PENDING_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
   rule: "A proven reveal does not authorize settlement."
+
+
+recovery_policy_v2_resolve_batch_gate_2026_10_03:
+  status: ACTIVE
+  deterministic_match: PROVEN
+  read_only_preflight: PROVEN
+  workflow_run: 37150934605
+  exact_head: "abf027239cfca539a9aa297cfb2a65db772aeeab"
+  expected_directive: PAY
+  expected_payout_wei: "2000000000000000"
+  calldata_keccak256: "0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320"
+  gas_estimate: 178343
+  authorization: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+  protected_actions:
+    resolveBatch: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+  evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH-PREFLIGHT.md
