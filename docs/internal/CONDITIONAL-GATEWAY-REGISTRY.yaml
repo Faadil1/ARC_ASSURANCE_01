@@ -848,3 +848,23 @@ recovery_policy_v2_funding_gate_2026_10_03:
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
   rule: "A green funding preflight never authorizes the funding transaction or downstream actions."
+
+
+recovery_policy_v2_funding_live_gate_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348"
+  block: 24055978
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  value_wei: "10000000000000000"
+  receipt_and_post_state: PROVEN
+  authorization: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-FUNDING.md
+  next_gate: RECOVERY_POLICY_V2_CANARY
+  protected_actions:
+    canary_generation: READY_SECRET_SAFE_ONLY
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "Successful funding does not authorize canary precommit or any downstream transaction."
