@@ -747,3 +747,35 @@ gas_unit_evidence_manifest_gate:
     status: BLOCKED
     next_gate: EXACT_INIT_CODE_ETH_ESTIMATE_GAS
   rule: "Execution rehearsal evidence may feed planning; deployment gas must come from a separate exact init-code estimate."
+
+
+g2_precommit_live_gate_2026_10_02:
+  status: PROVEN
+  supersedes_earlier_g2_source_candidate_status: true
+  vehicle: AssuranceVault
+  chain_id: 5042
+  evidence_file: docs/evidence/G2-PRECOMMIT.md
+  tx_hash: "0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e"
+  block: 23975010
+  proof:
+    exact_calldata: PROVEN
+    BatchCommitted_event: PROVEN
+    active_batch_binding: PROVEN
+    batch_state_committed: PROVEN
+    hidden_preimage_kept_off_repo: PROVEN_BY_OPERATOR_BOUNDARY
+  promotion_effect:
+    G2_PRECOMMIT: PROVEN
+    G3_REAL_WORK: BLOCKED
+    G4_REAL_FAILURE: BLOCKED
+    G5_FINANCIAL_CAUSALITY: BLOCKED
+    G6_INDEPENDENT_VERIFY: BLOCKED
+  protected_actions:
+    commitBatch: CONSUMED
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+  live_depth_effect:
+    Live_Core_Loop: BLOCKED
+    Load_Bearing_Integration: BLOCKED
+    Real_Consequence: BLOCKED
+    rationale: "A live precommit edge is proven, but the end-to-end provider/reveal/resolve/financial consequence loop is not."
