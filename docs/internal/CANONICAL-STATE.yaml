@@ -112,7 +112,7 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_PROVIDER_SIGNATURE
+  id: RECOVERY_POLICY_V2_LOCK_PROVIDER_OUTPUT
   status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
@@ -1076,3 +1076,36 @@ recovery_policy_v2_provider_signature_readiness_2026_10_03:
   secret_fields_excluded_from_public_artifact: true
   authorization:
     provider_signature: NOT_AUTHORIZED
+
+
+recovery_policy_v2_provider_signature_proven_2026_10_03:
+  status: PROVEN_OFFCHAIN
+  digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  recovered_provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  retry_authorization: CONSUMED
+  transaction_sent: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-SIGNATURE.md
+
+recovery_policy_v2_lock_provider_output_preflight_2026_10_03:
+  status: PROVEN_READ_ONLY
+  workflow_run: 37142060883
+  exact_head: "54e10212859650766d91de01d7571064b47b8ae2"
+  observed_block: 24088055
+  sender: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+  pending_nonce: 13
+  tx_value_wei: "0"
+  calldata_keccak256: "0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b"
+  eth_call_passed: true
+  eth_call_return_digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  gas_estimate: 220294
+  estimated_fee_wei: "4405880000000000"
+  signature_recovered_local: true
+  signature_recovered_onchain: true
+  digest_consumed: false
+  batch_state: COMMITTED
+  work_id_used: false
+  authorization:
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT-PREFLIGHT.md
