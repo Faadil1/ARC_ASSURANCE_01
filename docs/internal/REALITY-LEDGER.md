@@ -822,3 +822,33 @@ The exact calldata hash is `0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44
 ### READY BUT NOT AUTHORIZED
 
 No settlement or payout has occurred. The live resolve transaction remains separately human-authorization gated.
+
+
+## Recovery Policy v2 resolveBatch live settlement — 2026-10-03
+
+### PROVEN LIVE FINANCIAL CONSEQUENCE
+
+Transaction `0x43c2d82be1016f9783ff14def12e01e7f6900051051c7aed8ec04ea033a765a5` succeeded canonically on Arc Mainnet in block `24106680`.
+
+Independent verification proved:
+- exact authorized calldata hash;
+- nonce 15 and zero msg.value;
+- `BatchResolved(passed=true, directive=PAY)`;
+- `PaymentReleased` for exactly 0.002 native USDC;
+- recipient exact;
+- recipient historical balance delta exactly +0.002 native USDC;
+- v2 batch transitioned to Resolved;
+- v2 active batch cleared;
+- v2 protected remainder = 0.008 native USDC;
+- total liability = 0.018 native USDC;
+- total value released = 0.002 native USDC;
+- vault balance = 0.018 native USDC;
+- v1 remained unchanged.
+
+### END-TO-END V2 VERDICT
+
+The full v2 live success path is PROVEN end-to-end, including real provider work, cryptographic binding, hidden-canary reveal, deterministic resolution, and actual payout consequence.
+
+No v2 settlement claim remains simulated or pending.
+
+The original v1 lost-secret recovery remains a separate future expiry-bound obligation.
