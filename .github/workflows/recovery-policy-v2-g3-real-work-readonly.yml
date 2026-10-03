@@ -87,7 +87,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -q "RECOVERY V2 RECOVERY V2 G3 REAL WORK — READ-ONLY PREP" "$RUNNER_TEMP/g3-public.log"
+          grep -q "RECOVERY V2 G3 REAL WORK — READ-ONLY PREP" "$RUNNER_TEMP/g3-public.log"
           grep -q "RESULT: PASS" "$RUNNER_TEMP/g3-public.log"
           grep -q "provider_execution: REAL_COMPUTE" "$RUNNER_TEMP/g3-public.log"
           grep -q "provider_fault_mode: NONE" "$RUNNER_TEMP/g3-public.log"
