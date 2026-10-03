@@ -1,14 +1,12 @@
 schema: ARC_ASSURANCE_G2_PRECOMMIT_READINESS_V1
 project: ARC_ASSURANCE_01
 gate: G2_PRECOMMIT
-status: CONTENT_RECONCILED__READINESS_GREEN__LIVE_PROOF_NOT_PROVEN
+status: PROVEN
 g0:
   status: PROVEN
   merged_pr: 1
   merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
-blockers:
-  - INTEGRATED_MAINNET_DEPLOYMENT_NOT_PROVEN
-  - LIVE_BATCH_COMMIT_NOT_EXECUTED
+blockers: []
 target:
   chain_id: 5042
   contract: AssuranceVault
@@ -50,10 +48,10 @@ hidden_preimage_publication:
   public_before_output_lock:
     - opaque_commitment_only
 protected_actions:
-  integrated_deployment: NOT_AUTHORIZED
-  policy_creation: NOT_AUTHORIZED
-  policy_funding: NOT_AUTHORIZED
-  commit_batch: NOT_AUTHORIZED
+  integrated_deployment: PROVEN_ACTION_CONSUMED
+  policy_creation: PROVEN_ACTION_CONSUMED
+  policy_funding: PROVEN_ACTION_CONSUMED
+  commit_batch: PROVEN_ACTION_CONSUMED
   provider_output_lock: NOT_AUTHORIZED
   reveal: NOT_AUTHORIZED
   resolve: NOT_AUTHORIZED
@@ -99,3 +97,30 @@ role_topology:
   authority_funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
   provider_signer: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
   payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+
+
+live_precommit_proof:
+  status: PROVEN
+  evidence_file: docs/evidence/G2-PRECOMMIT.md
+  authorization_file: docs/internal/G2-COMMITBATCH-AUTHORIZATION.md
+  tx_hash: "0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e"
+  block: 23975010
+  transaction_index: 2
+  nonce: 9
+  gas_used: 132026
+  value: 0
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+  commitment: "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9"
+  receipt_status: 1
+  calldata_exact_match: true
+  batch_committed_event_verified: true
+  committed_at_block: 23975010
+  active_batch_after: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+  batch_state: COMMITTED
+  hidden_preimage_disclosed: false
+
+next_gate:
+  id: G3_REAL_WORK
+  status: BLOCKED_PENDING_READINESS_AND_SEPARATE_AUTHORIZATION
+  protected_action: lockProviderOutput
