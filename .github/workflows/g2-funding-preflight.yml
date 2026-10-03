@@ -1,7 +1,6 @@
 name: G2 Funding Preflight
 
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
