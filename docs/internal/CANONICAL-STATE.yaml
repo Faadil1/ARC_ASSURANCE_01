@@ -1577,3 +1577,34 @@ g2_funding_authorization_2026_10_02:
     signer: HUMAN_METAMASK_ONLY
     assistant_private_key_access: FORBIDDEN
     status: NOT_YET_BROADCAST
+
+
+g2_funding_preflight_refresh_after_authorization_2026_10_02:
+  status: PROVEN
+  workflow_run: 37084801020
+  evidence_head: "c065cda32402ae32beb06a8824e06fb18b2b877f"
+  artifact_id: 11260566119
+  artifact_digest: "sha256:d5d01158e5ab9f6cb6a972d0b9cca42fe3edda58fb0257b014ffe4603dc86b4b"
+  observed:
+    chain_id: 5042
+    block_number: 23969167
+    authority_pending_nonce: 8
+    authority_balance_wei: "370701027000000000"
+    policy_funded_at_unix: "0"
+    policy_total_funded_wei: "0"
+    contract_balance_wei: "0"
+    total_liability_wei: "0"
+    expiry_is_future: true
+  locked_transaction:
+    function: "fund(bytes32)"
+    tx_value_wei: "10000000000000000"
+    calldata_keccak256: "0x326ce8c37cbc14991d1b739a96839f12ac3b9b9857dd2608831ceeb3dfd5d16a"
+    estimate_gas_units: "116049"
+    gas_price_wei: "20000010000"
+    estimated_fee_wei: "2320981160490000"
+    estimated_total_wallet_outflow_wei: "12320981160490000"
+  next_gate:
+    id: G2_FUNDING_EXECUTION
+    status: ACTIVE
+    authorization: GRANTED_ONCE
+    signer: HUMAN_METAMASK_ONLY
