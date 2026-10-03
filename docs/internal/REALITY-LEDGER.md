@@ -703,3 +703,20 @@ The digest is not consumed. No signature was created and no transaction was sent
 ### NOT AUTHORIZED / NOT PROVEN
 
 Provider wallet signature, output lock, reveal, resolve, and financial consequence remain separately gated.
+
+
+## Recovery Policy v2 provider signature + lock preflight — 2026-10-03
+
+### PROVEN
+
+The provider signature for digest `0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1` was captured and recovers to `0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe`.
+
+Live contract read-only verification independently recovered the same provider and confirmed the digest is unconsumed.
+
+Exact `lockProviderOutput` eth_call passed while the batch remained Committed and the workId remained unused. No transaction was broadcast.
+
+### READY BUT NOT AUTHORIZED
+
+The exact `lockProviderOutput` candidate is technically ready, with calldata hash `0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b`.
+
+Broadcast remains blocked pending a separate explicit human authorization. Reveal and resolve remain NOT AUTHORIZED.
