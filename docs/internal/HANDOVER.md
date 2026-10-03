@@ -1291,3 +1291,16 @@ Evidence: `docs/evidence/RECOVERY-POLICY-V2-PRECOMMIT.md`.
 The one-shot `commitBatch` authorization is **CONSUMED**.
 
 Next gate: secret-bound provider real-work preparation and provider typed-data signature readiness. No provider signature, output lock, reveal or resolve is authorized by this receipt.
+
+
+## Recovery Policy v2 provider real work — 2026-10-03
+
+Workflow `37128770177` completed successfully on exact head `5a19875e223d465a17e532f65b4082aeb3f915fe`.
+
+It consumed the protected v2 reveal packet only in the GitHub-hosted runner temp directory, validated it against the live committed batch, executed the real provider compute path with fault mode NONE, confirmed the hidden workId is still unused, and confirmed the provider's actual output matches the hidden expected output.
+
+No provider signature was created and no transaction was sent. Sensitive temp material was destroyed and no secret-bearing artifact was uploaded.
+
+Evidence: `docs/evidence/RECOVERY-POLICY-V2-PROVIDER-REAL-WORK.md`.
+
+Next gate: prepare the exact public EIP-712 typed data for the provider wallet. Provider signature remains NOT AUTHORIZED until a separate explicit human authorization.
