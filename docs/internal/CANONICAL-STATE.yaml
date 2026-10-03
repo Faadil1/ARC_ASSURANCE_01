@@ -113,7 +113,7 @@ prior_product_gate:
 
 next_gate:
   id: RECOVERY_POLICY_V2_PROVIDER_SIGNATURE
-  status: READY_FOR_READ_ONLY_TYPED_DATA_PREP
+  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1054,3 +1054,25 @@ recovery_policy_v2_provider_real_work_2026_10_03:
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
   evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-REAL-WORK.md
+
+
+recovery_policy_v2_provider_signature_readiness_2026_10_03:
+  status: PROVEN_READ_ONLY
+  workflow_run: 37129028790
+  exact_head: "c5ce231493d5ea450d0ef667c1afcb3c2af92722"
+  artifact_id: 11276465548
+  artifact_digest: "sha256:4dced18e46af152fbacba932293bb1cd27a999cb784e545251a6e5fce8a88943"
+  provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  work_id: "0x1da28d151820e11db601bc1191886459174e203d264b6ed25d2f9709ffe196e0"
+  input_hash: "0x964cfaa6ed9ff3bd79e3eced7badce673af4ec99b8dc065e8cbed6dcb60cbcde"
+  output_hash: "0x6c029d4b7dae2c2dd9e1c1cd420518d7517a3ca7e243c46e1eb84dcc3739f018"
+  scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+  provider_output_nonce: 1
+  deadline_unix: "1792465200"
+  digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  onchain_digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  digest_crosscheck: true
+  digest_consumed: false
+  secret_fields_excluded_from_public_artifact: true
+  authorization:
+    provider_signature: NOT_AUTHORIZED
