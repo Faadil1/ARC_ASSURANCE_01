@@ -112,8 +112,8 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_COMMITBATCH
-  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
+  id: RECOVERY_POLICY_V2_PROVIDER_REAL_WORK
+  status: READY_FOR_SECRET_BOUND_READ_ONLY_PREP
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -999,3 +999,35 @@ recovery_policy_v2_precommit_preflight_2026_10_03:
     funds_moved: false
   authorization:
     commitBatch: NOT_AUTHORIZED
+
+
+recovery_policy_v2_precommit_live_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07"
+  block: 24060767
+  nonce: 12
+  tx_value_wei: "0"
+  gas_used: 132014
+  actual_fee_native_usdc: "0.002838301"
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  batch_id: "0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19"
+  commitment: "0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17"
+  post_state:
+    authority_pending_nonce: 13
+    v2_active_batch_matches: true
+    v2_batch_state: COMMITTED
+    v2_total_funded_wei: "10000000000000000"
+    v1_batch_state: COMMITTED
+    vault_total_liability_wei: "20000000000000000"
+    vault_total_custody_received_wei: "20000000000000000"
+    vault_total_value_released_wei: "0"
+    vault_balance_wei: "20000000000000000"
+  authorization:
+    commitBatch: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PRECOMMIT.md
+  downstream_protected_actions:
+    provider_execution: NOT_PROVEN
+    provider_signature: NOT_AUTHORIZED
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
