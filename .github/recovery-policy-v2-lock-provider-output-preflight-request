@@ -1,0 +1,3 @@
+request: v2-lock-provider-output-readonly-preflight
+protected_action: lockProviderOutput
+broadcast: disabled
