@@ -1137,3 +1137,25 @@ Canonical recovery:
 Recovery detail: `docs/internal/G3-LOST-PREIMAGE-RECOVERY.md`.
 
 No new policy creation, funding, commit, signature, lock, reveal, resolve, cancellation, or refund is authorized by this handover update.
+
+
+## Recovery Policy v2 read-only preflight — 2026-10-03
+
+A clean GitHub-hosted Arc preflight succeeded on exact head `7ffccd7497add9a5636e4ff64057cdb93592ef7c`, workflow `37122442113`.
+
+Observed:
+- v1 remains exactly `Committed` with 0.010 native USDC protected;
+- vault state has no unexpected drift;
+- proposed v2 policy ID is `0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`;
+- v2 createPolicy passes `eth_estimateGas`;
+- gas estimate = 255200 at observed 20 gwei;
+- estimated fee = 0.005104 native USDC;
+- projected custody after later 0.010 funding = 0.020 / 0.050;
+- no private key or secret was consumed;
+- no transaction was signed/broadcast and no funds moved.
+
+Canonical evidence: `docs/evidence/RECOVERY-POLICY-V2-PREFLIGHT.md`.
+
+Current next protected step is one exact v2 `createPolicy` transaction, but its authorization remains **NOT AUTHORIZED** in `docs/internal/RECOVERY-POLICY-V2-CREATE-AUTHORIZATION.md`.
+
+Do not infer permission for funding or any downstream operation from a future createPolicy authorization.
