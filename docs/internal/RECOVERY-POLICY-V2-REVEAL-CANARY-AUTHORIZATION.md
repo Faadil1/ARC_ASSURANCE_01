@@ -1,6 +1,6 @@
 # Recovery Policy v2 — revealCanary Authorization
 
-**Status:** NOT_AUTHORIZED
+**Status:** AUTHORIZED_PENDING_EXECUTION
 
 ## Exact candidate binding
 
@@ -35,5 +35,21 @@ Freshness observations:
 - estimated fee at observed gas price: approximately `0.0024920214329115 native USDC`
 
 A future one-shot authorization must bind to the exact calldata hash above. A fresh secret-bound preflight is required immediately before broadcast.
+
+No authorization for `resolveBatch` is implied.
+
+
+## Human authorization — 2026-10-03
+
+The user explicitly authorized exactly one Arc Mainnet `revealCanary` transaction bound to:
+
+- calldata keccak256:
+  `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`
+- expected canary key:
+  `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`
+
+Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+
+This authorization is one-shot. If the matching transaction is broadcast, it is consumed whether the transaction succeeds or reverts. Cancelling before broadcast does not consume it, but any retry still requires a fresh preflight.
 
 No authorization for `resolveBatch` is implied.
