@@ -1019,3 +1019,56 @@ No private key is needed for that next step.
 - G1 T0 custody: **PROVEN** on PR #44
 - current product gate: **G2 PRECOMMIT**
 - live G2 protected actions: **NOT AUTHORIZED**
+
+
+## G2 PRECOMMIT live proof — 2026-10-02
+
+G2 PRECOMMIT is now **PROVEN** on Arc Mainnet.
+
+Live transaction:
+
+- tx: `0xbfa8dcb6b354eda7cf2cb1a428fc95e9a99e433d85e27e8b4a1cf8bf7249a65e`
+- block: `23975010`
+- transaction index: `2`
+- sender/funder: `0x2ca7ba27ab8686f3a073c053fad6258c003a02bb`
+- AssuranceVault: `0x6f79cdc961e30f2e1fac0f4eada6ca35e58290e4`
+- nonce: `9`
+- value: `0`
+- gas used: `132026`
+- receipt status: `1`
+
+Committed tuple:
+
+- policy: `0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30`
+- batch: `0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7`
+- commitment: `0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9`
+
+Read-only receipt verification proved:
+
+- exact sender / target / zero value;
+- exact `commitBatch(policy,batch,commitment)` calldata;
+- exact `BatchCommitted` event;
+- `committedAtBlock = 23975010`;
+- `activeBatchId = batchId`;
+- batch state = `Committed`.
+
+The secret reveal packet remains human-local, off-repo and undisclosed in chat.
+
+Canonical evidence:
+
+- `docs/evidence/G2-PRECOMMIT.md`
+- `docs/internal/G2-COMMITBATCH-AUTHORIZATION.md`
+
+The one-time `commitBatch` authorization is **CONSUMED**.
+
+### Current product gate
+
+`G2_PRECOMMIT = PROVEN`
+
+Next gate:
+
+`G3_REAL_WORK = BLOCKED_PENDING_READINESS_AND_SEPARATE_AUTHORIZATION`
+
+Do **not** run `lockProviderOutput`, `revealCanary`, `resolveBatch`, payout, breaker or refund actions until their own readiness checks and explicit human authorization are complete.
+
+G2 proves only the precommit causal edge. It does not yet prove provider execution, signed-output correctness, reveal, deterministic resolution, financial consequence, breaker/refund, or external adoption.
