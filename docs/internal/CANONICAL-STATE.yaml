@@ -112,8 +112,8 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: G3_REAL_WORK
-  status: BLOCKED_SECRET_PREIMAGE_LOST_RECOVERY_REQUIRED
+  id: RECOVERY_POLICY_V2_CREATE
+  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -823,3 +823,51 @@ g3_real_work_readiness_2026_10_02:
     lockProviderOutput: NOT_AUTHORIZED
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
+
+
+recovery_policy_v2_readiness_2026_10_03:
+  status: PROVEN_READ_ONLY
+  branch: ops/recovery-policy-v2-readiness
+  exact_head: "7ffccd7497add9a5636e4ff64057cdb93592ef7c"
+  workflow_run: 37122442113
+  artifact_id: 11274216099
+  artifact_digest: "sha256:7a540ab48b4b12432349c6e9ea5aad6cd0e088be2514a850a2919563e4b057b1"
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PREFLIGHT.md
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  v1_continuity:
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+    batch_state: COMMITTED
+    protected_liability_native_usdc: "0.010"
+    state_drift_observed: false
+  v2:
+    policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+    expiry_utc: "2026-10-20T03:00:00Z"
+    max_failures: 2
+    max_spend_cap_native_usdc: "0.020"
+    planned_initial_funding_native_usdc: "0.010"
+    unit_payout_native_usdc: "0.002"
+    projected_cumulative_custody_native_usdc: "0.020"
+    projected_remaining_deployment_capacity_native_usdc: "0.030"
+  create_policy_preflight:
+    block: 24048642
+    pending_nonce_observed: 10
+    estimate_gas_units: 255200
+    gas_price_wei: "20000000000"
+    estimated_fee_native_usdc: "0.005104"
+    calldata_keccak256: "0x98718c6fab13f2fca8b94c91d1744c7a1d6c853c9ff1df2f6409e208b354fb66"
+    eth_estimateGas: PASS
+  protected_actions:
+    createPolicy: NOT_AUTHORIZED
+    fund: NOT_AUTHORIZED
+    commitBatch: NOT_AUTHORIZED
+    provider_signature: NOT_AUTHORIZED
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+    cancelExpiredBatch_v1: NOT_AUTHORIZED
+    refundProtectedRemainder_v1: NOT_AUTHORIZED
+  truth_boundary:
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
