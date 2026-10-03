@@ -4,9 +4,9 @@ status: ACTIVE_RECONCILED_POST_REVALIDATION
 project: ARC_ASSURANCE_01
 project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
 repository: Faadil1/ARC_ASSURANCE_01
-current_stage: DESIGN__G2_INTEGRATED_DEPLOYED__POLICY_AUTH_BOUNDARY
-exact_next_gate: G2_POLICY_CREATION_AUTHORIZATION
-exact_next_action: "Integrated AssuranceVault deployment is PROVEN on Arc mainnet. STOP until separate explicit human authorization for createPolicy on the locked G2 policy."
+current_stage: DESIGN__G2_POLICY_CREATED__FUNDING_AUTH_BOUNDARY
+exact_next_gate: G2_FUNDING_AUTHORIZATION
+exact_next_action: "Policy creation is PROVEN. Funding preflight is green for exactly 0.010 native USDC. STOP until separate explicit human funding authorization."
 last_updated: "2026-10-02T08:20:00-04:00"
 bootstrap:
   faadil_system_router_activated: true
@@ -98,3 +98,18 @@ g2_integrated_deployment:
   verification_run: 37036958146
   exact_init_code_match: true
   next_protected_gate: G2_POLICY_CREATION_AUTHORIZATION
+
+
+g2_policy_creation:
+  status: PROVEN
+  tx_hash: "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162"
+  verification_run: 37083767443
+  policy_count_after: 1
+
+g2_funding_preflight:
+  status: PROVEN_READ_ONLY
+  run: 37084047411
+  amount_wei: "10000000000000000"
+  amount_usdc: "0.010"
+  estimate_gas_units: 116049
+  next_protected_gate: G2_FUNDING_AUTHORIZATION
