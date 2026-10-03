@@ -847,3 +847,27 @@ g2_funding_authorization_gate:
     - revealCanary
     - resolveBatch
     - refundProtectedRemainder
+
+
+g2_funding_gate:
+  status: PROVEN
+  transaction_hash: "0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf"
+  amount_wei: "10000000000000000"
+  verification_run: 37085950306
+  authorization_status: PROVEN_CONSUMED
+  live_custody_after_wei: "10000000000000000"
+  truth_boundary: "Live custody is proven; no batch precommit or financial-causality claim follows from funding alone."
+
+g2_precommit_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  invariant: "A one-time hidden canary commitment must exist on Arc before provider output lock."
+  secrecy_rule: "The canary preimage/salt must remain off-repo/off-chain and undisclosed to the provider until reveal."
+  rule: "No commitBatch transaction may be signed or broadcast without separate explicit human authorization."
+  downstream_not_authorized:
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
