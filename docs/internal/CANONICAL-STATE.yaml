@@ -113,7 +113,7 @@ prior_product_gate:
 
 next_gate:
   id: RECOVERY_POLICY_V2_RESOLVE_BATCH
-  status: READY_FOR_READ_ONLY_PREFLIGHT
+  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1232,3 +1232,24 @@ recovery_policy_v2_reveal_canary_live_2026_10_03:
     exact_head: "0047a1d8e2fd3b00477fe8ba665bf74c65db48b3"
     result: SUCCESS
   evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY.md
+
+
+recovery_policy_v2_resolve_batch_preflight_2026_10_03:
+  status: PROVEN_READ_ONLY
+  workflow_run: 37150934605
+  exact_head: "abf027239cfca539a9aa297cfb2a65db772aeeab"
+  observed_block: 24105157
+  proposed_sender: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+  pending_nonce: 15
+  payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+  deterministic_match: true
+  expected_directive: PAY
+  expected_payout_wei: "2000000000000000"
+  protected_remainder_after_wei: "8000000000000000"
+  calldata_keccak256: "0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320"
+  eth_call_passed: true
+  gas_estimate: 178343
+  estimated_fee_wei: "3566861783430000"
+  authorization:
+    resolveBatch: NOT_AUTHORIZED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH-PREFLIGHT.md
