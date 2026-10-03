@@ -1,0 +1,3 @@
+request: v2-precommit-read-only
+protected_actions: none
+secret_reads: none
