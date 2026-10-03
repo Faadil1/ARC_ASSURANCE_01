@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-29T08:56:00-04:00"
+updated_at: "2026-10-03"
 source_of_truth: true
 phase: PRD_READY_CANDIDATE
 product_name:
@@ -113,13 +113,34 @@ prior_product_gate:
 
 next_gate:
   id: G3_REAL_WORK
-  status: BLOCKED_PENDING_READINESS_AND_SEPARATE_AUTHORIZATION
+  status: BLOCKED_SECRET_PREIMAGE_LOST_RECOVERY_REQUIRED
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
     - "EIP-712 provider output bound to the exact policy/batch/work/input/scorer"
     - "ProviderOutputLocked receipt after the proven G2 precommit"
     - "no reveal before output lock"
+  protected_live_actions_authorized: false
+
+g3_secret_loss_incident_2026_10_03:
+  status: ACTIVE_RECOVERY
+  affected_policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  affected_batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+  affected_commitment: "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9"
+  cause_boundary: "Original hidden-canary reveal packet unavailable after managed-endpoint security incident."
+  original_preimage_reconstructable_from_commitment: false
+  old_batch_strategy: HOLD_UNTIL_EXPIRY
+  expiry_unix: 1792033200
+  expiry_utc: "2026-10-15T03:00:00Z"
+  post_expiry_recovery:
+    - cancelExpiredBatch
+    - refundProtectedRemainder
+  immediate_continuation: NEW_POLICY_NEW_BATCH_NEW_CANARY_SAME_DEPLOYMENT
+  deployment_spend_cap_native_usdc: "0.05"
+  cumulative_funded_before_recovery_native_usdc: "0.01"
+  proposed_second_policy_funding_native_usdc: "0.01"
+  projected_cumulative_funded_native_usdc: "0.02"
+  evidence: docs/internal/G3-LOST-PREIMAGE-RECOVERY.md
   protected_live_actions_authorized: false
 
 collaboration:
