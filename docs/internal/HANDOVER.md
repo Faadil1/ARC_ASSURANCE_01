@@ -1159,3 +1159,29 @@ Canonical evidence: `docs/evidence/RECOVERY-POLICY-V2-PREFLIGHT.md`.
 Current next protected step is one exact v2 `createPolicy` transaction, but its authorization remains **NOT AUTHORIZED** in `docs/internal/RECOVERY-POLICY-V2-CREATE-AUTHORIZATION.md`.
 
 Do not infer permission for funding or any downstream operation from a future createPolicy authorization.
+
+
+## Recovery Policy v2 createPolicy live receipt — 2026-10-03
+
+The exact authorized v2 `createPolicy` transaction succeeded on Arc Mainnet.
+
+- tx: `0x0bb6e1ef61504f8f1ea4f899c88cccc9a65c10ea0646867e9ebac87a57341fd4`
+- block: `24052629`
+- nonce: `10`
+- value: `0`
+- gas used: `248358`
+- actual fee: `0.005339697 native USDC`
+
+Post-state:
+- `policyCount = 2`;
+- v2 policy exists and is unfunded;
+- v2 active batch is zero;
+- authority pending nonce = 11;
+- v1 remains Committed with its original batch/commitment and 0.010 native USDC funded;
+- vault still holds exactly 0.010 native USDC and has released 0.
+
+Evidence: `docs/evidence/RECOVERY-POLICY-V2-CREATE.md`.
+
+The one-shot createPolicy authorization is **CONSUMED**.
+
+Next gate is v2 funding. Funding remains **NOT AUTHORIZED** until a fresh read-only funding preflight passes and Faadil grants a separate explicit authorization.
