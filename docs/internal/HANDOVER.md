@@ -1406,3 +1406,31 @@ The local browser independently confirmed:
 The secure reveal bridge requirement is now satisfied.
 
 Next gate: exact `revealCanary` transaction, pending separate explicit human authorization. `resolveBatch` remains NOT AUTHORIZED.
+
+
+## Recovery Policy v2 revealCanary live receipt — 2026-10-03
+
+The exact authorized reveal transaction succeeded on Arc Mainnet:
+
+- tx: `0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2`
+- block: `24104229`
+- nonce: `14`
+- value: `0`
+- calldata hash: `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`
+- gas used: `119296`
+- actual fee: `0.002564864 native USDC`
+
+Independent verification run `37150611570` passed on head `0047a1d8e2fd3b00477fe8ba665bf74c65db48b3`.
+
+The exact `CanaryRevealed` event was observed, the on-chain reveal preimage reconstructs the committed canary, the canary key is consumed, and the batch is now Revealed.
+
+Critically, the locked provider output equals the revealed expected output, so the deterministic PASS condition is now true.
+
+Vault principal remains unchanged before settlement:
+- total liability/custody/balance = 0.020 native USDC;
+- total released = 0;
+- v2 paid out = 0.
+
+The one-shot reveal authorization is consumed.
+
+Next gate: read-only `resolveBatch` preflight. The settlement transaction remains NOT AUTHORIZED.
