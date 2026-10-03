@@ -1,6 +1,6 @@
 # Recovery Policy v2 — lockProviderOutput Authorization
 
-**Status:** NOT_AUTHORIZED
+**Status:** CONSUMED
 
 ## Exact candidate action
 
