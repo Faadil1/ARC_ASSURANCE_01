@@ -113,7 +113,7 @@ prior_product_gate:
 
 next_gate:
   id: RECOVERY_POLICY_V2_REVEAL_CANARY
-  status: READY_PENDING_SECURE_REVEAL_BRIDGE_AND_HUMAN_AUTHORIZATION
+  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1175,3 +1175,21 @@ recovery_policy_v2_reveal_canary_preflight_2026_10_03:
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
   evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY-PREFLIGHT.md
+
+
+recovery_policy_v2_reveal_bridge_local_precheck_2026_10_03:
+  status: PROVEN_LOCAL_SECRET_SAFE
+  sender: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+  pending_nonce: 14
+  batch_state: OUTPUT_LOCKED
+  commitment_reconstruction: true
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  canary_key_used: false
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  gas_estimate: 124601
+  secret_values_printed: false
+  transaction_sent: false
+  authorization:
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-BRIDGE-LOCAL-PRECHECK.md
