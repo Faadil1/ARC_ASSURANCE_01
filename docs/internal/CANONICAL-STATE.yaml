@@ -112,8 +112,8 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_FUND
-  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
+  id: RECOVERY_POLICY_V2_CANARY
+  status: READY_FOR_SECRET_SAFE_GENERATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -939,3 +939,35 @@ recovery_policy_v2_funding_preflight_2026_10_03:
     funds_moved: false
   authorization:
     fund: NOT_AUTHORIZED
+
+
+recovery_policy_v2_funding_live_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348"
+  block: 24055978
+  nonce: 11
+  value_wei: "10000000000000000"
+  gas_used: 76633
+  actual_fee_native_usdc: "0.0016476095"
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  post_state:
+    authority_pending_nonce: 12
+    policy_count: 2
+    v2_total_funded_wei: "10000000000000000"
+    v2_active_batch_zero: true
+    v1_total_funded_wei: "10000000000000000"
+    v1_batch_state: COMMITTED
+    total_liability_wei: "20000000000000000"
+    total_custody_received_wei: "20000000000000000"
+    total_value_released_wei: "0"
+    contract_balance_wei: "20000000000000000"
+  authorization:
+    fund: CONSUMED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-FUNDING.md
+  downstream_protected_actions:
+    canary_generation: READY_SECRET_SAFE_ONLY
+    commitBatch: NOT_AUTHORIZED
+    provider_signature: NOT_AUTHORIZED
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
