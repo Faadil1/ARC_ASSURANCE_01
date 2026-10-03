@@ -552,3 +552,25 @@ Funding, canary generation, commitBatch, provider signing, lock, reveal, resolve
 
 Artifact digest:
 `sha256:7a540ab48b4b12432349c6e9ea5aad6cd0e088be2514a850a2919563e4b057b1`.
+
+
+## Recovery Policy v2 createPolicy live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x0bb6e1ef61504f8f1ea4f899c88cccc9a65c10ea0646867e9ebac87a57341fd4` succeeded on Arc Mainnet.
+
+Observed:
+- block `24052629`;
+- sender `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`;
+- target `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- nonce `10`;
+- value `0`;
+- policyCount is now `2`;
+- v2 exists, remains unfunded, and has no active batch;
+- v1 remains Committed and unchanged;
+- vault still holds `0.010 native USDC`.
+
+### NOT PROVEN
+
+Funding, canary generation, commitBatch, provider signing, output lock, reveal, resolve, and v1 expiry recovery remain separately gated.
