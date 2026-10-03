@@ -112,8 +112,8 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_LOCK_PROVIDER_OUTPUT
-  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
+  id: RECOVERY_POLICY_V2_REVEAL_CANARY
+  status: READY_FOR_SECRET_BOUND_READ_ONLY_PREFLIGHT
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1109,3 +1109,42 @@ recovery_policy_v2_lock_provider_output_preflight_2026_10_03:
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
   evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT-PREFLIGHT.md
+
+
+recovery_policy_v2_lock_provider_output_live_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x7de28364a63875b38f58649d8b85629422e8c5f2cebb29626e39ad157611ae78"
+  block: 24099169
+  block_hash: "0x60ea034767674bd2b05681b5ce6921d7440f651ea1a1d6a4021e32bd5066895d"
+  nonce: 13
+  tx_value_wei: "0"
+  selector: "0xaeca0071"
+  calldata_keccak256: "0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b"
+  gas_used: 213863
+  effective_gas_price_wei: "21500000000"
+  actual_fee_native_usdc: "0.0045980545"
+  provider_digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  events:
+    provider_output_consumed: PROVEN
+    provider_output_locked: PROVEN
+  post_state:
+    authority_pending_nonce: 14
+    v2_batch_state: OUTPUT_LOCKED
+    work_id_used: true
+    provider_digest_consumed: true
+    v2_total_funded_wei: "10000000000000000"
+    v1_batch_state: COMMITTED
+    v1_total_funded_wei: "10000000000000000"
+    vault_total_liability_wei: "20000000000000000"
+    vault_total_custody_received_wei: "20000000000000000"
+    vault_total_value_released_wei: "0"
+    vault_balance_wei: "20000000000000000"
+  authorization:
+    lockProviderOutput: CONSUMED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
+  receipt_verification:
+    workflow_run: 37147983918
+    exact_head: "5fbd36138e488cb9460aa80ba9224d7506f8442b"
+    result: SUCCESS
+  evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT.md
