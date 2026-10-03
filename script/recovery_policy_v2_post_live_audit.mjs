@@ -44,15 +44,29 @@ const TXS = [
 
 const eq=(a,b)=>String(a).toLowerCase()===String(b).toLowerCase();
 
+const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+
 async function rpc(method, params=[]) {
-  const res = await fetch(rpcUrl,{
-    method:"POST",
-    headers:{"content-type":"application/json"},
-    body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})
-  });
-  const body = await res.json();
-  if(body.error) throw new Error(method+":"+JSON.stringify(body.error));
-  return body.result;
+  for(let attempt=1; attempt<=7; attempt++){
+    const res = await fetch(rpcUrl,{
+      method:"POST",
+      headers:{"content-type":"application/json"},
+      body:JSON.stringify({jsonrpc:"2.0",id:attempt,method,params})
+    });
+    const body = await res.json();
+    if(!body.error) return body.result;
+
+    const rateLimited =
+      body.error.code === -32005 ||
+      /rate limit/i.test(String(body.error.message || ""));
+
+    if(!rateLimited || attempt===7) {
+      throw new Error(method+":"+JSON.stringify(body.error));
+    }
+
+    await sleep(750 * attempt);
+  }
+  throw new Error(method+":RPC_RETRY_EXHAUSTED");
 }
 
 async function call(name,args=[],block="latest"){
@@ -121,23 +135,21 @@ for(const x of TXS){
   });
 }
 
-const [policy,batch,workUsed,digestConsumed,canaryUsed,recovered,liability,custody,released,vaultBalance,p1,b1,pendingNonce]=await Promise.all([
-  call("getPolicy",[POLICY]),
-  call("getBatch",[POLICY,BATCH]),
-  call("workIdUsed",[WORK]),
-  call("providerOutputConsumed",[DIGEST]),
-  call("canaryKeyUsed",[CANARY]),
-  call("recoverProvider",[{
-    provider:PROVIDER,policyId:POLICY,batchId:BATCH,workId:WORK,inputHash:INPUT,outputHash:OUTPUT,scorerIdHash:SCORER,nonce:1n,deadline:1792465200n
-  },SIGNATURE]),
-  call("totalLiability"),
-  call("totalCustodyReceived"),
-  call("totalValueReleased"),
-  rpc("eth_getBalance",[CONTRACT,"latest"]).then(BigInt),
-  call("getPolicy",[V1_POLICY]),
-  call("getBatch",[V1_POLICY,V1_BATCH]),
-  rpc("eth_getTransactionCount",[FUNDER,"pending"]).then(x=>Number(BigInt(x)))
-]);
+const policy=await call("getPolicy",[POLICY]);
+const batch=await call("getBatch",[POLICY,BATCH]);
+const workUsed=await call("workIdUsed",[WORK]);
+const digestConsumed=await call("providerOutputConsumed",[DIGEST]);
+const canaryUsed=await call("canaryKeyUsed",[CANARY]);
+const recovered=await call("recoverProvider",[{
+  provider:PROVIDER,policyId:POLICY,batchId:BATCH,workId:WORK,inputHash:INPUT,outputHash:OUTPUT,scorerIdHash:SCORER,nonce:1n,deadline:1792465200n
+},SIGNATURE]);
+const liability=await call("totalLiability");
+const custody=await call("totalCustodyReceived");
+const released=await call("totalValueReleased");
+const vaultBalance=BigInt(await rpc("eth_getBalance",[CONTRACT,"latest"]));
+const p1=await call("getPolicy",[V1_POLICY]);
+const b1=await call("getBatch",[V1_POLICY,V1_BATCH]);
+const pendingNonce=Number(BigInt(await rpc("eth_getTransactionCount",[FUNDER,"pending"])));
 
 if(!policy.exists || policy.paused || policy.closed || policy.refundIssued) throw new Error("V2_POLICY_FINAL_FLAGS");
 if(!eq(policy.funder,FUNDER)||!eq(policy.provider,PROVIDER)||!eq(policy.payoutRecipient,RECIPIENT)||!eq(policy.scorerIdHash,SCORER)) throw new Error("V2_POLICY_BINDING");
