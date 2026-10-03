@@ -934,3 +934,23 @@ recovery_policy_v2_provider_real_work_gate_2026_10_03:
     lockProviderOutput: BLOCKED
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
+
+
+recovery_policy_v2_provider_signature_gate_2026_10_03:
+  status: ACTIVE
+  read_only_typed_data_prep: PROVEN
+  workflow_run: 37129028790
+  provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  onchain_digest_crosscheck: PROVEN
+  digest_consumed: false
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PROVIDER-SIGNATURE-READINESS.md
+  required_before_proven:
+    - "explicit one-shot human authorization for the exact EIP-712 signature"
+    - "provider wallet address exact match"
+    - "locally recovered signer exact match"
+  protected_actions:
+    provider_signature: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
