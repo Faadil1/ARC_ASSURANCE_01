@@ -1,6 +1,6 @@
 # Recovery Policy v2 — commitBatch Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION
+**Status:** CONSUMED
 
 ## Exact bound action
 
@@ -51,6 +51,20 @@ Received in chat:
 
 This authorization is one-shot and applies only to the exact bound action in this document.
 
-Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+Current authorization state: **CONSUMED**.
 
 After one matching transaction is broadcast, this authorization becomes **CONSUMED**, whether the receipt succeeds or reverts. Any retry requires a new explicit authorization.
+
+
+## Execution receipt — 2026-10-03
+
+- tx: `0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07`
+- status: `SUCCESS`
+- block: `24060767`
+- nonce: `12`
+- value: `0`
+- gas used: `132014`
+- actual network fee: `0.002838301 native USDC`
+- calldata hash: `0xbb2035436436b15588fe49896ce036d68b271f41d5499fb7297c371642e23b95`
+
+The one-shot commitBatch authorization is consumed. No retry is authorized.
