@@ -597,3 +597,26 @@ It confirmed:
 No funding transaction was signed or broadcast and no funds moved.
 
 Canary generation, commitBatch, provider signing, lock, reveal, resolve and v1 expiry recovery remain separately gated.
+
+
+## Recovery Policy v2 funding live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348` succeeded on Arc Mainnet in block `24055978`.
+
+Observed:
+- sender `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`;
+- target `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- nonce `11`;
+- value `0.010 native USDC`;
+- gas used `76633`;
+- v2 total funded = `0.010 native USDC`;
+- authority pending nonce = `12`;
+- vault liability/custody/balance = `0.020 native USDC`;
+- total released remains zero;
+- v1 remains Committed and unchanged.
+
+### TRUTH BOUNDARY
+
+This proves v2 funding only. Hidden canary generation, commitBatch, provider signature, output lock, reveal, resolve, and v1 expiry recovery remain separately gated.
