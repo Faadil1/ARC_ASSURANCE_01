@@ -1,6 +1,6 @@
 # Recovery Policy v2 — Funding Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION
+**Status:** CONSUMED
 
 ## Exact bound action
 
@@ -43,6 +43,19 @@ Received in chat:
 
 This authorization is one-shot and applies only to the exact bound action in this document.
 
-Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+Current authorization state: **CONSUMED**.
 
 After one matching transaction is broadcast, this authorization becomes **CONSUMED**, whether the receipt succeeds or reverts. Any retry requires a new explicit authorization.
+
+
+## Execution receipt — 2026-10-03
+
+- tx: `0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348`
+- status: `SUCCESS`
+- block: `24055978`
+- nonce: `11`
+- value: `0.010 native USDC`
+- gas used: `76633`
+- actual network fee: `0.0016476095 native USDC`
+
+The one-shot funding authorization is consumed. No retry is authorized.
