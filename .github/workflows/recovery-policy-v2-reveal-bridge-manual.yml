@@ -1,0 +1,107 @@
+name: Recovery V2 Reveal Bridge One-Shot
+
+on:
+  push:
+    branches:
+      - ops/recovery-policy-v2-readiness
+    paths:
+      - ".github/workflows/recovery-policy-v2-reveal-bridge-manual.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  encrypt:
+    runs-on: ubuntu-latest
+    environment: g3-live-secret
+    timeout-minutes: 5
+
+    steps:
+      - name: Encrypt reveal material for browser
+        shell: bash
+        env:
+          SECRET_PACKET: ${{ secrets.G2_SECRET_REVEAL_PACKET }}
+        run: |
+          set -euo pipefail
+
+          node <<'NODE'
+          const crypto = require("crypto");
+
+          const packet = JSON.parse(process.env.SECRET_PACKET);
+
+          const jwk = {
+            kty: "RSA",
+            n: "r4i5vz7Oc9NN-agUYy-wBrX26zrV-u34RPFzvGwroJ8G99PPiF1OrPXezH-bIPH86ox3skENQnabI-ZUvKujnSjqyAaEqSkmO7AxkTlhm1GxaO-asTQqZv0wqVACd8bHYcvj1AJk4PhWHn_w2ugTSXGqAKvHV9olUpQ6RQpFoAcrFF1fhW7DnUFh6sTk9eIUAlXeBiJitUxEpI6x7aGUonrfaGNWqNyQDNMSG-hd_YPXuhQ8ZRC21vBd8NFJpbEtCZPpA5rz2GwtkHtEjLb-cDdCwhMeBXCFRUrny-E0cj1QLRa1X7WND4aW9osfA6HeJviRvLDYeeeRExRsE_JPhQ",
+            e: "AQAB",
+            alg: "RSA-OAEP-256",
+            ext: true
+          };
+
+          const expect = {
+            policy: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8",
+            batch: "0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19",
+            work: "0x1da28d151820e11db601bc1191886459174e203d264b6ed25d2f9709ffe196e0",
+            input: "0x964cfaa6ed9ff3bd79e3eced7badce673af4ec99b8dc065e8cbed6dcb60cbcde",
+            commitment: "0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17"
+          };
+
+          const eq = (a,b) => String(a).toLowerCase() === String(b).toLowerCase();
+
+          if (Number(packet.chain_id) !== 5042) throw new Error("CHAIN_MISMATCH");
+          if (!eq(packet.policy_id, expect.policy)) throw new Error("POLICY_MISMATCH");
+          if (!eq(packet.batch_id, expect.batch)) throw new Error("BATCH_MISMATCH");
+          if (!eq(packet.work_id, expect.work)) throw new Error("WORK_MISMATCH");
+          if (!eq(packet.input_hash, expect.input)) throw new Error("INPUT_MISMATCH");
+          if (!eq(packet.commitment, expect.commitment)) throw new Error("COMMITMENT_MISMATCH");
+
+          if (!/^0x[0-9a-fA-F]{64}$/.test(packet.expected_output_hash))
+            throw new Error("EXPECTED_OUTPUT_HASH_INVALID");
+
+          if (!/^0x[0-9a-fA-F]{64}$/.test(packet.salt))
+            throw new Error("SALT_INVALID");
+
+          const plaintext = Buffer.concat([
+            Buffer.from(packet.expected_output_hash.slice(2), "hex"),
+            Buffer.from(packet.salt.slice(2), "hex")
+          ]);
+
+          const publicKey = crypto.createPublicKey({
+            key: jwk,
+            format: "jwk"
+          });
+
+          const ciphertext = crypto.publicEncrypt({
+            key: publicKey,
+            oaepHash: "sha256",
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING
+          }, plaintext);
+
+          const canonical = JSON.stringify({
+            kty: jwk.kty,
+            n: jwk.n,
+            e: jwk.e,
+            alg: "RSA-OAEP-256",
+            ext: true
+          });
+
+          const fingerprint = crypto
+            .createHash("sha256")
+            .update(canonical)
+            .digest("hex");
+
+          console.log("RECOVERY_V2_REVEAL_BRIDGE PASS");
+          console.log("PUBLIC_KEY_FINGERPRINT", fingerprint);
+          console.log("CIPHERTEXT_BASE64URL", ciphertext.toString("base64url"));
+          console.log(
+            "EXPECTED_CALLDATA_HASH",
+            "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+          );
+          console.log(
+            "EXPECTED_CANARY_KEY",
+            "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+          );
+          console.log("SECRET_PLAINTEXT_PRINTED false");
+          console.log("TRANSACTION_SENT false");
+
+          plaintext.fill(0);
+          NODE
