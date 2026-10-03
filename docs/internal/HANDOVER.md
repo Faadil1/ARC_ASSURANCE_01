@@ -1204,3 +1204,36 @@ reveal, resolve, refund, or any later lifecycle action.
 
 A fresh read-only funding preflight is mandatory immediately before the human
 MetaMask signature.
+
+
+## 58. G2 live funding — PROVEN
+
+Arc tx:
+`0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf`
+
+Receipt verifier run `37085950306`: **SUCCESS**.
+
+Observed:
+- block 23970786;
+- authority nonce 8 consumed; pending nonce after = 9;
+- function = `fund(policyId)`;
+- exact value = **0.010 native USDC**;
+- policy fundedAt = 1790990435;
+- policy totalFunded = **0.010**;
+- policy totalPaidOut/refunded = 0;
+- active batch = zero;
+- vault totalLiability = **0.010**;
+- vault totalCustodyReceived = **0.010**;
+- contract balance = **0.010**;
+- totalValueReleased = 0;
+- effective gas fee = **0.0023831675 native USDC**.
+
+The one-time funding authorization is consumed.
+
+**Next protected gate: `G2_PRECOMMIT_AUTHORIZATION`.**
+
+Before requesting it, generate one-time hidden canary material locally and retain
+the preimage off-repo/off-chain. Only its opaque commitment may be submitted
+through `commitBatch`.
+
+Provider output lock, reveal, resolve and refund remain separately unauthorized.
