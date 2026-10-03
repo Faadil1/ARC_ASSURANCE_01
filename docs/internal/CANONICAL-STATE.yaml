@@ -1608,3 +1608,59 @@ g2_funding_preflight_refresh_after_authorization_2026_10_02:
     status: ACTIVE
     authorization: GRANTED_ONCE
     signer: HUMAN_METAMASK_ONLY
+
+
+g2_funding_2026_10_02:
+  status: PROVEN
+  transaction_hash: "0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf"
+  block_number: 23970786
+  authority_funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 8
+  pending_nonce_after: 9
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  function: fund
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  tx_value_wei: "10000000000000000"
+  tx_value_usdc: "0.010"
+  calldata_keccak256: "0x326ce8c37cbc14991d1b739a96839f12ac3b9b9857dd2608831ceeb3dfd5d16a"
+  gas_used: 110845
+  effective_gas_price_wei: "21500000000"
+  effective_fee_wei: "2383167500000000"
+  effective_fee_usdc: "0.0023831675"
+  policy_after:
+    funded_at_unix: "1790990435"
+    total_funded_wei: "10000000000000000"
+    total_paid_out_wei: "0"
+    total_refunded_wei: "0"
+    active_batch_id: "0x0000000000000000000000000000000000000000000000000000000000000000"
+    paused: false
+    closed: false
+    refund_issued: false
+  vault_after:
+    policy_count: 1
+    total_liability_wei: "10000000000000000"
+    total_custody_received_wei: "10000000000000000"
+    total_value_released_wei: "0"
+    contract_balance_wei: "10000000000000000"
+  verification:
+    workflow_run: 37085950306
+    result: SUCCESS
+    verification_head: "610f413e9f18a4f6d85b6383bc06ffa2f8e862be"
+    artifact_id: 11259859534
+    artifact_digest: "sha256:dadf74866716607c17ffd3665ea92ab6048cb6be9967a544146e329556da8864"
+  authorization:
+    status: PROVEN_CONSUMED
+    occurrence_limit: 1
+    remaining_occurrences: 0
+
+g2_precommit_authorization:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  prerequisite: "Generate and locally preserve a one-time hidden canary preimage; only the opaque commitment may be submitted onchain."
+  downstream_still_unauthorized:
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
