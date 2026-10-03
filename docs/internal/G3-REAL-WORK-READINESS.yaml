@@ -47,3 +47,10 @@ truth_boundary:
   g3_status_after_read_only_prep: BLOCKED
   live_core_loop: BLOCKED
   financial_consequence: BLOCKED
+
+validation:
+  draft_pr: 46
+  head: "84cb2a7b4f43ae443939d9e988d9d3f529ac3083"
+  clean_room_workflow: 37088856971
+  result: SUCCESS
+  note: "Clean-room regression is green; local secret-bound G3 preparer still requires operator execution."
