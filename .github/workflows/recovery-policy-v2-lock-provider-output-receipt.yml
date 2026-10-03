@@ -1,0 +1,32 @@
+name: Recovery Policy V2 lockProviderOutput Receipt
+
+on:
+  push:
+    branches:
+      - ops/recovery-policy-v2-readiness
+    paths:
+      - ".github/recovery-policy-v2-lock-provider-output-receipt-request"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+      - run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+          forge build
+      - run: node script/recovery_policy_v2_verify_lock_provider_output_receipt.mjs https://rpc.mainnet.arc.io out/AssuranceVault.sol/AssuranceVault.json
