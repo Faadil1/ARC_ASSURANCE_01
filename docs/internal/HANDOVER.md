@@ -1128,3 +1128,19 @@ Locked createPolicy:
 
 No policy creation is authorized yet. Funding and all batch actions remain
 separately unauthorized even after policy creation.
+
+
+## 54. Protected authorization — G2 createPolicy only
+
+Human owner authorization received verbatim:
+
+> J’autorise uniquement la création de la policy G2 ci-dessus via `createPolicy` sur l’AssuranceVault déployé.
+
+Scope is one exact `createPolicy` transaction on
+`0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`.
+
+Still unauthorized: funding, `commitBatch`, provider output lock, reveal,
+resolve, refund, additional top-up, or a second policy creation.
+
+A fresh read-only policy preflight is mandatory immediately before the human
+MetaMask signature.
