@@ -1318,3 +1318,21 @@ Exact provider digest:
 No provider signature was created and no transaction was sent. The public artifact excludes input_text, expected output, salt, canary key, and canonical output.
 
 Next gate: one exact provider-wallet EIP-712 signature. It remains NOT AUTHORIZED pending a separate explicit human authorization. That signature will not itself authorize `lockProviderOutput`.
+
+
+## Recovery Policy v2 provider signature + lock preflight — 2026-10-03
+
+The separately authorized provider-signature retry succeeded and returned usable signature bytes for digest `0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1`. Local recovery returned the exact provider `0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe`. No transaction was sent.
+
+Read-only `lockProviderOutput` preflight run `37142060883` on exact head `54e10212859650766d91de01d7571064b47b8ae2` passed:
+- live contract recovery returned the exact provider;
+- digest remains unconsumed;
+- batch remains Committed;
+- workId remains unused;
+- exact eth_call returns the authorized digest;
+- pending funder nonce = 13;
+- calldata hash = `0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b`;
+- gas estimate = 220294;
+- no vault principal moved.
+
+Next gate: exact `lockProviderOutput` transaction, pending separate explicit human authorization. Reveal and resolve remain NOT AUTHORIZED.
