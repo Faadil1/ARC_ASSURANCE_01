@@ -668,3 +668,21 @@ for **0.010 native USDC**, with estimated gas **116,049** and estimated fee
 
 A future funding authorization covers one exact 0.010-USDC `fund(policyId)`
 call only. It does not authorize `commitBatch` or any later lifecycle action.
+
+
+## G2 funding authorization — 2026-10-02
+
+### AUTHORIZATION OBSERVED
+
+The human owner explicitly authorized one exact `fund(policyId)` call with
+**0.010 native USDC** on the deployed integrated AssuranceVault.
+
+### SCOPE BOUNDARY
+
+Allowed: one exact first funding transaction for the locked G2 policy.
+
+Not authorized: additional funding, `commitBatch`, provider output lock,
+canary reveal, resolve, refund, or any later action.
+
+Final signing remains a human MetaMask action. A fresh read-only funding
+preflight must pass immediately before broadcast.
