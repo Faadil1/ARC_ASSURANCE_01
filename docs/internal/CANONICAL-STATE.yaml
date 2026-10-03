@@ -112,8 +112,8 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_REVEAL_CANARY
-  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
+  id: RECOVERY_POLICY_V2_RESOLVE_BATCH
+  status: READY_FOR_READ_ONLY_PREFLIGHT
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -1193,3 +1193,42 @@ recovery_policy_v2_reveal_bridge_local_precheck_2026_10_03:
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
   evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-BRIDGE-LOCAL-PRECHECK.md
+
+
+recovery_policy_v2_reveal_canary_live_2026_10_03:
+  status: PROVEN
+  tx_hash: "0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2"
+  block: 24104229
+  block_hash: "0x5204e96fd53bb61ccd7d6dec9e27d7843d7890bfdb224b8f67f9960696efc72d"
+  nonce: 14
+  tx_value_wei: "0"
+  selector: "0x2f02a092"
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  gas_used: 119296
+  effective_gas_price_wei: "21500000000"
+  actual_fee_native_usdc: "0.002564864"
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  event:
+    canary_revealed: PROVEN
+    commitment_reconstruction: PROVEN
+  post_state:
+    authority_pending_nonce: 15
+    v2_batch_state: REVEALED
+    canary_key_used: true
+    provider_output_matches_expected: true
+    v2_total_funded_wei: "10000000000000000"
+    v2_total_paid_out_wei: "0"
+    v1_batch_state: COMMITTED
+    v1_total_funded_wei: "10000000000000000"
+    vault_total_liability_wei: "20000000000000000"
+    vault_total_custody_received_wei: "20000000000000000"
+    vault_total_value_released_wei: "0"
+    vault_balance_wei: "20000000000000000"
+  authorization:
+    revealCanary: CONSUMED
+    resolveBatch: NOT_AUTHORIZED
+  receipt_verification:
+    workflow_run: 37150611570
+    exact_head: "0047a1d8e2fd3b00477fe8ba665bf74c65db48b3"
+    result: SUCCESS
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY.md
