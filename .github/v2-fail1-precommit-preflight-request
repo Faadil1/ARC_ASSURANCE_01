@@ -1,7 +1,8 @@
 request: v2-fail1-precommit-secret-safe-preflight
 broadcast: disabled
-authorization: NOT_AUTHORIZED
+authorization: AUTHORIZED_PENDING_EXECUTION
 policy_id: 0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8
 batch_id: 0xd26aeb0909d66737fcb5aee2e4475bc2b9c2b2a3a9182c328a07be46036cbbb3
 commitment: 0xc617f5fbc3ccfaaa179e43d9ec7e26d0f4c291303a434dd7cb8c2e756f9c1bc2
 scenario: CONTROLLED_FAIL_1_WITHHOLD
+freshness: final-before-authorized-execution
