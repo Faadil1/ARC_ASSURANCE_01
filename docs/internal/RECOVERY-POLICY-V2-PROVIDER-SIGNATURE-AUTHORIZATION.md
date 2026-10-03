@@ -1,6 +1,6 @@
 # Recovery Policy v2 — Provider Signature Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION
+**Status:** CONSUMED_RESULT_NOT_RECOVERED
 
 ## Exact signature request
 
@@ -45,8 +45,13 @@ Received in chat:
 
 This authorization is one-shot and applies only to the exact EIP-712 typed-data payload bound in this document.
 
-Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+Current authorization state: **CONSUMED_RESULT_NOT_RECOVERED**.
 
 The authorization is consumed only if the provider wallet actually returns a signature over the exact authorized typed data. Cancelling or rejecting the wallet request does not consume the authorization.
 
 A successful signature does not authorize any transaction, including `lockProviderOutput`.
+
+
+## Result note — first attempt
+
+The first authorized request was confirmed in MetaMask, but Remix timed out before returning the signature bytes. No usable signature evidence was recovered from that attempt. A separately authorized retry was therefore required.
