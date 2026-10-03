@@ -1237,3 +1237,28 @@ the preimage off-repo/off-chain. Only its opaque commitment may be submitted
 through `commitBatch`.
 
 Provider output lock, reveal, resolve and refund remain separately unauthorized.
+
+
+## 59. Hidden-canary local generation tooling — READY
+
+A browser-local Remix generator now exists on the G2 implementation branch:
+
+`script/g2_generate_hidden_canary_remix.js`
+
+Implementation commit:
+`ea7cabfb10e807d8004d18e91533f7174006108a`
+
+Properties:
+- generates fresh batchId, workId and salt locally with browser CSPRNG;
+- generates a fresh structured-invoice canary locally;
+- canonicalizes the expected invoice under the locked invoice-v1 scorer format;
+- computes inputHash, expectedOutputHash and scorerIdHash locally;
+- computes the commitment using the exact Solidity commitment domain;
+- cross-checks the result against deployed `computeCanaryCommitment()` via read-only Arc call;
+- signs/broadcasts no transaction;
+- writes no secret into GitHub.
+
+Only `batch_id` and `commitment` are shareable for the next gate.
+The SECRET_REVEAL_PACKET must remain local/off-repo/off-chain until reveal.
+
+`G2_PRECOMMIT_AUTHORIZATION` remains NOT GRANTED.
