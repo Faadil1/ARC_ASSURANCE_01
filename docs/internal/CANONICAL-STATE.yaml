@@ -112,14 +112,13 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_RESOLVE_BATCH
-  status: AUTHORIZED_PENDING_EXECUTION
+  id: RECOVERY_POLICY_V2_POST_LIVE_AUDIT
+  status: READY
   vehicle: AssuranceVault
   required_proof:
-    - "real provider execution against the committed batch"
-    - "EIP-712 provider output bound to the exact policy/batch/work/input/scorer"
-    - "ProviderOutputLocked receipt after the proven G2 precommit"
-    - "no reveal before output lock"
+    - "final v2 evidence reconciliation"
+    - "no unresolved v2 protected action"
+    - "v1 lost-secret recovery remains separately tracked until expiry"
   protected_live_actions_authorized: false
 
 g3_secret_loss_incident_2026_10_03:
@@ -1253,3 +1252,66 @@ recovery_policy_v2_resolve_batch_preflight_2026_10_03:
   authorization:
     resolveBatch: NOT_AUTHORIZED
   evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH-PREFLIGHT.md
+
+
+recovery_policy_v2_resolve_batch_live_2026_10_03:
+  status: PROVEN
+  tx_hash: "0x43c2d82be1016f9783ff14def12e01e7f6900051051c7aed8ec04ea033a765a5"
+  block: 24106680
+  block_hash: "0x43d5db7717660c700938d9d8d373984f2ea9ababe728ea769b7e2d9a8e6b8e61"
+  nonce: 15
+  tx_value_wei: "0"
+  selector: "0x3339f903"
+  calldata_keccak256: "0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320"
+  gas_used: 167221
+  effective_gas_price_wei: "21500000000"
+  actual_fee_native_usdc: "0.0035952515"
+  events:
+    batch_resolved: PROVEN
+    payment_released: PROVEN
+  settlement:
+    directive: PAY
+    passed: true
+    payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+    payout_wei: "2000000000000000"
+    payout_native_usdc: "0.002"
+    recipient_balance_delta_proven: true
+    protected_remainder_wei: "8000000000000000"
+  post_state:
+    authority_pending_nonce: 16
+    v2_batch_state: RESOLVED
+    v2_directive: PAY
+    v2_active_batch_zero: true
+    v2_total_paid_out_wei: "2000000000000000"
+    failure_count: 0
+    paused: false
+    vault_total_liability_wei: "18000000000000000"
+    vault_total_custody_received_wei: "20000000000000000"
+    vault_total_value_released_wei: "2000000000000000"
+    vault_balance_wei: "18000000000000000"
+    v1_batch_state: COMMITTED
+    v1_total_funded_wei: "10000000000000000"
+  authorization:
+    resolveBatch: CONSUMED
+  receipt_verification:
+    workflow_run: 37151830845
+    exact_head: "109cca52e72a5108f48fa73e8274ae9d2ff7fa91"
+    result: SUCCESS
+  evidence: docs/evidence/RECOVERY-POLICY-V2-RESOLVE-BATCH.md
+
+recovery_policy_v2_live_cycle_2026_10_03:
+  status: PROVEN_END_TO_END
+  path:
+    - createPolicy
+    - fund
+    - commitBatch
+    - real_provider_work
+    - provider_eip712_signature
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch_PAY
+    - exact_payout
+  financial_consequence_proven: true
+  exact_payout_native_usdc: "0.002"
+  unresolved_v2_protected_actions: false
+  v1_recovery_obligation_remains: true
