@@ -1,0 +1,50 @@
+name: Recovery Policy V2 revealCanary Preflight
+
+on:
+  push:
+    branches:
+      - ops/recovery-policy-v2-readiness
+    paths:
+      - ".github/recovery-policy-v2-reveal-canary-preflight-request"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    environment: g3-live-secret
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+      - run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+          forge build
+      - name: Materialize protected reveal packet
+        shell: bash
+        env:
+          G2_SECRET_REVEAL_PACKET: ${{ secrets.G2_SECRET_REVEAL_PACKET }}
+        run: |
+          set -euo pipefail
+          test -n "${G2_SECRET_REVEAL_PACKET:-}"
+          umask 077
+          printf '%s' "$G2_SECRET_REVEAL_PACKET" > "$RUNNER_TEMP/v2-secret-reveal.json"
+      - name: Run secret-bound reveal preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          node script/recovery_policy_v2_reveal_canary_preflight.mjs             https://rpc.mainnet.arc.io             "$RUNNER_TEMP/v2-secret-reveal.json"             out/AssuranceVault.sol/AssuranceVault.json
+      - name: Destroy protected reveal material
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/v2-secret-reveal.json"

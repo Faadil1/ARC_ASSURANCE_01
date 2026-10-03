@@ -1,0 +1,33 @@
+{
+  "schema": "ARC_ASSURANCE_RECOVERY_POLICY_V2_CREATE_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "transaction_hash": "0x0bb6e1ef61504f8f1ea4f899c88cccc9a65c10ea0646867e9ebac87a57341fd4",
+  "contract_address": "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4",
+  "expected_authority": "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb",
+  "expected_nonce": 10,
+  "expected_tx_value_wei": "0",
+  "expected_calldata_keccak256": "0x98718c6fab13f2fca8b94c91d1744c7a1d6c853c9ff1df2f6409e208b354fb66",
+  "v1": {
+    "policy_id": "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30",
+    "batch_id": "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7",
+    "commitment": "0x73a186a5be26811d7802c28a6feb6d509d26ca6a0bea44166f8206634e27fce9"
+  },
+  "v2": {
+    "policy_id": "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8",
+    "funder": "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb",
+    "provider": "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe",
+    "payout_recipient": "0x6B8ad09233dF44eD57B99aF8839129303955590C",
+    "scorer_id_hash": "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45",
+    "max_failures": 2,
+    "max_spend_cap_wei": "20000000000000000",
+    "unit_payout_wei": "2000000000000000",
+    "expiry_unix": "1792465200"
+  },
+  "expected_vault_post_state": {
+    "policy_count": "2",
+    "total_liability_wei": "10000000000000000",
+    "total_custody_received_wei": "10000000000000000",
+    "total_value_released_wei": "0",
+    "contract_balance_wei": "10000000000000000"
+  }
+}

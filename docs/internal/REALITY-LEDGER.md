@@ -523,3 +523,351 @@ The hidden reveal packet remains human-local and was not stored in the repositor
 - external user/operator adoption.
 
 No downstream transaction is authorized by this evidence.
+
+
+## Recovery Policy v2 preflight — 2026-10-03
+
+### OBSERVED / PROVEN READ-ONLY
+
+GitHub Actions workflow `37122442113` on exact head `7ffccd7497add9a5636e4ff64057cdb93592ef7c` queried Arc Mainnet without a signer.
+
+It confirmed:
+- the stranded v1 policy still has the exact proven active batch and commitment;
+- batch state remains `Committed`;
+- protected liability and vault balance remain 0.010 native USDC;
+- total custody received remains 0.010;
+- total value released remains 0;
+- deployment spend cap remains 0.050.
+
+The proposed independent v2 policy is:
+`0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`.
+
+Its exact createPolicy call passed `eth_estimateGas` at 255200 gas. Observed gas price was 20 gwei and the estimated fee was 0.005104 native USDC.
+
+### NOT PROVEN / NOT AUTHORIZED
+
+No v2 policy exists yet. No transaction was signed or broadcast. No funds moved.
+
+Funding, canary generation, commitBatch, provider signing, lock, reveal, resolve, and v1 expiry recovery all remain separately gated.
+
+Artifact digest:
+`sha256:7a540ab48b4b12432349c6e9ea5aad6cd0e088be2514a850a2919563e4b057b1`.
+
+
+## Recovery Policy v2 createPolicy live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x0bb6e1ef61504f8f1ea4f899c88cccc9a65c10ea0646867e9ebac87a57341fd4` succeeded on Arc Mainnet.
+
+Observed:
+- block `24052629`;
+- sender `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`;
+- target `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- nonce `10`;
+- value `0`;
+- policyCount is now `2`;
+- v2 exists, remains unfunded, and has no active batch;
+- v1 remains Committed and unchanged;
+- vault still holds `0.010 native USDC`.
+
+### NOT PROVEN
+
+Funding, canary generation, commitBatch, provider signing, output lock, reveal, resolve, and v1 expiry recovery remain separately gated.
+
+
+## Recovery Policy v2 funding read-only preflight — 2026-10-03
+
+### OBSERVED / PROVEN READ-ONLY
+
+Workflow `37124943731` queried Arc Mainnet without a signer.
+
+It confirmed:
+- v1 remains Committed and unchanged;
+- v2 exists, is unfunded, and has no active batch;
+- vault pre-state remains 0.010 native USDC liability / custody / balance, with 0 released;
+- exact proposed funding value is 0.010 native USDC;
+- pending nonce = 11;
+- exact calldata hash = `0xdc6ad0cd75e1a2b9bebdbc26530f2669a8c6ea25f60d8bb993dfbd3fc6986646`;
+- `eth_estimateGas` passed at 82230 gas;
+- projected custody after funding = 0.020 / 0.050, leaving 0.030 capacity.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+No funding transaction was signed or broadcast and no funds moved.
+
+Canary generation, commitBatch, provider signing, lock, reveal, resolve and v1 expiry recovery remain separately gated.
+
+
+## Recovery Policy v2 funding live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x0135a9f0c0882bd64b8d2c0dd2cb22f79f48fa17aca82cad95153e8efebab348` succeeded on Arc Mainnet in block `24055978`.
+
+Observed:
+- sender `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`;
+- target `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- nonce `11`;
+- value `0.010 native USDC`;
+- gas used `76633`;
+- v2 total funded = `0.010 native USDC`;
+- authority pending nonce = `12`;
+- vault liability/custody/balance = `0.020 native USDC`;
+- total released remains zero;
+- v1 remains Committed and unchanged.
+
+### TRUTH BOUNDARY
+
+This proves v2 funding only. Hidden canary generation, commitBatch, provider signature, output lock, reveal, resolve, and v1 expiry recovery remain separately gated.
+
+
+## Recovery Policy v2 precommit read-only preflight — 2026-10-03
+
+### OBSERVED / PROVEN READ-ONLY
+
+Workflow `37126625964` validated the exact public v2 precommit on Arc Mainnet without reading the hidden reveal packet.
+
+Public binding:
+- policy `0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8`;
+- batch `0x73bb1d0c80952e5b5c90c1621c729953bd39b11e286d53601ee14c44c0e27e19`;
+- commitment `0x156d26a85f7ff103de7a362e594d5411d7e8bfd702097d2e2b4a16b115185d17`.
+
+Observed:
+- pending nonce `12`;
+- v2 funded at 0.010 native USDC and active batch zero;
+- v1 unchanged;
+- vault liability/custody/balance = 0.020 native USDC;
+- exact commitBatch `eth_call` and `eth_estimateGas` both passed;
+- gas estimate `137470`;
+- tx value `0`;
+- no secret, signer, broadcast, or value movement was used.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+The commitBatch transaction has not been broadcast. Provider signing, output lock, reveal and resolve remain separately gated.
+
+
+## Recovery Policy v2 commitBatch live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07` succeeded on Arc Mainnet in block `24060767`.
+
+Observed:
+- sender `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`;
+- target `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- nonce `12`;
+- value `0`;
+- calldata hash `0xbb2035436436b15588fe49896ce036d68b271f41d5499fb7297c371642e23b95`;
+- gas used `132014`;
+- exact `BatchCommitted` event for the v2 policy/batch/commitment;
+- v2 active batch equals the committed batch;
+- v2 batch state is `Committed`;
+- authority pending nonce is now `13`;
+- v1 remains Committed and unchanged;
+- vault liability/custody/balance remains `0.020 native USDC`;
+- total value released remains zero.
+
+### TRUTH BOUNDARY
+
+This proves the v2 public precommit edge only. Provider execution, provider signature, output lock, reveal, deterministic resolve and financial consequence are not yet proven and remain separately gated.
+
+
+## Recovery Policy v2 provider real work — 2026-10-03
+
+### PROVEN READ-ONLY
+
+GitHub Actions run `37128770177` on exact head `5a19875e223d465a17e532f65b4082aeb3f915fe` consumed the protected v2 reveal packet only ephemerally, verified the live committed binding, ran the provider's real compute path, observed fault mode NONE, confirmed the hidden workId is unused, and confirmed the provider output matches the hidden expected result.
+
+No signature was created, no transaction was broadcast, and sensitive temp material was deleted.
+
+### NOT PROVEN / NOT AUTHORIZED
+
+Provider EIP-712 signature, output lock, reveal, resolve, and financial consequence remain separately gated.
+
+
+## Recovery Policy v2 provider signature readiness — 2026-10-03
+
+### PROVEN READ-ONLY
+
+The exact ProviderOutput EIP-712 request was built from a fresh rerun of the protected real-work compute.
+
+Public binding includes workId, inputHash, actual provider outputHash, scorerIdHash, signed nonce 1, and deadline equal to policy expiry.
+
+Local EIP-712 digest and live contract `providerOutputDigest(...)` both equal:
+`0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1`.
+
+The digest is not consumed. No signature was created and no transaction was sent.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+Provider wallet signature, output lock, reveal, resolve, and financial consequence remain separately gated.
+
+
+## Recovery Policy v2 provider signature + lock preflight — 2026-10-03
+
+### PROVEN
+
+The provider signature for digest `0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1` was captured and recovers to `0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe`.
+
+Live contract read-only verification independently recovered the same provider and confirmed the digest is unconsumed.
+
+Exact `lockProviderOutput` eth_call passed while the batch remained Committed and the workId remained unused. No transaction was broadcast.
+
+### READY BUT NOT AUTHORIZED
+
+The exact `lockProviderOutput` candidate is technically ready, with calldata hash `0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b`.
+
+Broadcast remains blocked pending a separate explicit human authorization. Reveal and resolve remain NOT AUTHORIZED.
+
+
+## Recovery Policy v2 lockProviderOutput live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x7de28364a63875b38f58649d8b85629422e8c5f2cebb29626e39ad157611ae78` succeeded canonically on Arc Mainnet in block `24099169`.
+
+Observed and independently verified:
+- sender/funder exact;
+- nonce 13;
+- value zero;
+- selector `0xaeca0071`;
+- exact authorized calldata hash;
+- exact `ProviderOutputConsumed` event;
+- exact `ProviderOutputLocked` event;
+- v2 batch state transitioned from Committed to OutputLocked;
+- workId is now consumed;
+- provider digest is now consumed;
+- authority pending nonce is 14;
+- v1 remains Committed and unchanged;
+- vault liability/custody/balance remains 0.020 native USDC;
+- total value released remains zero.
+
+### TRUTH BOUNDARY
+
+The live provider-output lock is proven. Canary reveal, deterministic resolution, settlement directive, and financial consequence are not yet proven and remain separately gated.
+
+
+## Recovery Policy v2 revealCanary preflight — 2026-10-03
+
+### PROVEN READ-ONLY / SECRET-SAFE
+
+The protected reveal packet reconstructs the exact live commitment for the OutputLocked batch.
+
+The exact `revealCanary` call succeeds under `eth_call`, with canary key `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`, calldata hash `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`, and gas estimate 124601.
+
+The salt, raw calldata, and reveal packet were not published. Temporary secret material was destroyed.
+
+### NOT AUTHORIZED / NOT PROVEN
+
+The reveal transaction has not been broadcast. Resolution and financial consequence remain unproven and separately gated.
+
+
+## Recovery Policy v2 reveal bridge local precheck — 2026-10-03
+
+### PROVEN LOCAL / SECRET-SAFE
+
+The RSA-OAEP ciphertext was decrypted only in the browser holding the ephemeral private key. The resulting hidden reveal values reconstructed the exact live commitment and exact expected reveal calldata hash without being printed.
+
+Publicly observed binding:
+- sender funder exact;
+- pending nonce 14;
+- batch OutputLocked;
+- canary key `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`;
+- canary key unused;
+- calldata hash `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`;
+- gas estimate 124601;
+- transaction sent = false.
+
+### READY BUT NOT AUTHORIZED
+
+The exact reveal transaction is technically ready. Broadcast remains separately human-authorization gated. Resolve remains NOT AUTHORIZED.
+
+
+## Recovery Policy v2 revealCanary live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0xddbeb788ab6e643523f8a7ea3d456c35309cfaf9638ccf1e5d9ea044a2c054b2` succeeded canonically on Arc Mainnet in block `24104229`.
+
+Observed and independently verified:
+- funder sender exact;
+- nonce 14;
+- value zero;
+- exact authorized calldata hash;
+- exact `CanaryRevealed` event;
+- reveal preimage reconstructs the committed canary;
+- batch state transitioned to Revealed;
+- canary key is consumed;
+- locked provider output equals expected output;
+- authority pending nonce is 15;
+- vault principal and liability are unchanged before settlement.
+
+### TRUTH BOUNDARY
+
+The live reveal and deterministic PASS comparison are proven. Settlement and payout have not yet occurred and remain separately gated.
+
+
+## Recovery Policy v2 resolveBatch preflight — 2026-10-03
+
+### PROVEN READ-ONLY
+
+The revealed batch deterministically matches the locked provider output.
+
+Exact `resolveBatch` simulation returned `PAY`, with expected payout 0.002 native USDC to `0x6B8ad09233dF44eD57B99aF8839129303955590C`.
+
+The exact calldata hash is `0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320`; gas estimate 178343; pending funder nonce 15.
+
+### READY BUT NOT AUTHORIZED
+
+No settlement or payout has occurred. The live resolve transaction remains separately human-authorization gated.
+
+
+## Recovery Policy v2 resolveBatch live settlement — 2026-10-03
+
+### PROVEN LIVE FINANCIAL CONSEQUENCE
+
+Transaction `0x43c2d82be1016f9783ff14def12e01e7f6900051051c7aed8ec04ea033a765a5` succeeded canonically on Arc Mainnet in block `24106680`.
+
+Independent verification proved:
+- exact authorized calldata hash;
+- nonce 15 and zero msg.value;
+- `BatchResolved(passed=true, directive=PAY)`;
+- `PaymentReleased` for exactly 0.002 native USDC;
+- recipient exact;
+- recipient historical balance delta exactly +0.002 native USDC;
+- v2 batch transitioned to Resolved;
+- v2 active batch cleared;
+- v2 protected remainder = 0.008 native USDC;
+- total liability = 0.018 native USDC;
+- total value released = 0.002 native USDC;
+- vault balance = 0.018 native USDC;
+- v1 remained unchanged.
+
+### END-TO-END V2 VERDICT
+
+The full v2 live success path is PROVEN end-to-end, including real provider work, cryptographic binding, hidden-canary reveal, deterministic resolution, and actual payout consequence.
+
+No v2 settlement claim remains simulated or pending.
+
+The original v1 lost-secret recovery remains a separate future expiry-bound obligation.
+
+
+## Recovery Policy v2 post-live audit — 2026-10-03
+
+### PROVEN END-TO-END
+
+Consolidated audit run `37152400894` re-read the complete live v2 transaction sequence from Arc and proved the exact nonce progression 10 → 15, decoded action bindings, consumed cryptographic identifiers, final `Resolved/PAY` state, vault accounting and exact recipient balance delta.
+
+The final v2 claim is no longer merely a collection of step receipts: the complete live chain is independently reconciled as one coherent execution.
+
+### AUDIT INCIDENT CLASSIFICATION
+
+Run `37152302353` stopped on Arc RPC rate limiting (`-32005`). This was an audit transport failure, not a product/state failure. The verifier was hardened and the exact audit passed on run `37152400894`.
+
+### REMAINING BOUNDARIES
+
+- v2 protected live actions remaining: none.
+- PR #47 merge: not authorized.
+- v1 lost-secret expiry recovery: separate and still active.

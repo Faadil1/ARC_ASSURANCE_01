@@ -1,0 +1,3 @@
+request: recovery-policy-v2-read-only-preflight
+protected_actions: none
+freshness: verify-no-broadcast-after-remix-timeout

@@ -1,0 +1,77 @@
+name: Recovery Policy V2 Read-Only Preflight
+
+on:
+  push:
+    branches:
+      - ops/recovery-policy-v2-readiness
+    paths:
+      - ".github/recovery-policy-v2-preflight-request"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Use exact Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install pinned Solidity libraries
+        run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+
+      - name: Build exact AssuranceVault artifact
+        run: forge build
+
+      - name: Run v2 read-only Arc preflight
+        run: |
+          mkdir -p build
+          node script/recovery_policy_v2_preflight.mjs \
+            "$ARC_MAINNET_RPC_URL" \
+            ops/recovery-policy-v2.json \
+            out/AssuranceVault.sol/AssuranceVault.json \
+            | tee build/recovery-policy-v2-preflight.json
+
+      - name: Assert no protected action occurred
+        run: |
+          node - <<'NODE'
+          const fs = require("fs");
+          const x = JSON.parse(fs.readFileSync("build/recovery-policy-v2-preflight.json","utf8"));
+          if (x.result !== "PASS") throw new Error("PREFLIGHT_NOT_PASS");
+          if (!x.create_policy_preflight.eth_estimateGas_passed) throw new Error("ESTIMATE_NOT_PASS");
+          for (const [k,v] of Object.entries(x.safety)) {
+            if (v !== false) throw new Error("SAFETY_BOUNDARY_FAILED:" + k);
+          }
+          console.log("READ_ONLY_SAFETY_BOUNDARY: PASS");
+          NODE
+
+      - name: Upload public read-only evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: recovery-policy-v2-preflight-${{ github.sha }}
+          path: build/recovery-policy-v2-preflight.json
+          if-no-files-found: error
+          retention-days: 90
