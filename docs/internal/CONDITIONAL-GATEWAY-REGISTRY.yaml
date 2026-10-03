@@ -779,3 +779,27 @@ g2_precommit_live_gate_2026_10_02:
     Load_Bearing_Integration: BLOCKED
     Real_Consequence: BLOCKED
     rationale: "A live precommit edge is proven, but the end-to-end provider/reveal/resolve/financial consequence loop is not."
+
+
+recovery_policy_v2_create_gate_2026_10_03:
+  status: ACTIVE
+  parent_incident: G3_SECRET_PREIMAGE_LOST
+  read_only_preflight: PROVEN
+  workflow_run: 37122442113
+  evidence: docs/evidence/RECOVERY-POLICY-V2-PREFLIGHT.md
+  exact_policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  preflight_calldata_hash: "0x98718c6fab13f2fca8b94c91d1744c7a1d6c853c9ff1df2f6409e208b354fb66"
+  required_before_proven:
+    - "fresh chain/sender/nonce/calldata/gas recheck immediately before broadcast"
+    - "explicit one-shot human authorization"
+    - "successful Arc receipt"
+    - "exact receipt/event/post-state verification"
+  protected_actions:
+    createPolicy: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    fund: BLOCKED
+    commitBatch: BLOCKED
+    provider_signature: BLOCKED
+    lockProviderOutput: BLOCKED
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  rule: "A green read-only preflight never authorizes createPolicy or any later action."
