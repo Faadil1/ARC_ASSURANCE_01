@@ -45,8 +45,9 @@ The project must never present a local stub, simulated payment, testnet-only flo
 - Integrated AssuranceVault deployment: **PROVEN** on Arc Mainnet at `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`
 - Current PRD product gate: **G2 PRECOMMIT — DEPLOYMENT PROVEN / LIVE PRECOMMIT NOT PROVEN**
 - G2 policy creation: **PROVEN** on Arc Mainnet
-- G2 funding preflight: **PROVEN READ-ONLY** for exactly **0.010 native USDC**
-- Next protected gate: **G2_FUNDING_AUTHORIZATION — NOT GRANTED**
+- G2 live funding: **PROVEN** for exactly **0.010 native USDC**
+- Current vault liability/custody/balance: **0.010 / 0.010 / 0.010 native USDC**
+- Next protected gate: **G2_PRECOMMIT_AUTHORIZATION — NOT GRANTED**
 - Integrated Live Core Loop / DELIVER: **BLOCKED**
 
 The default branch `main` now contains the merged G0 governance baseline. The
