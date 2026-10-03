@@ -1385,3 +1385,24 @@ Public binding:
 The salt and raw reveal calldata were not logged or retained, and runner temp secret material was destroyed.
 
 Next gate remains the actual reveal transaction. Before it can be signed with MetaMask, establish a secure one-time reveal bridge so the hidden salt can reach the browser without appearing in GitHub, chat, logs, or repo. The reveal transaction itself and resolve remain NOT AUTHORIZED.
+
+
+## Recovery Policy v2 reveal bridge local precheck — 2026-10-03
+
+The encrypted reveal bridge was successfully decrypted in the same browser that generated the ephemeral private key.
+
+The local browser independently confirmed:
+- funder sender exact;
+- pending nonce = 14;
+- v2 batch = OutputLocked;
+- reveal preimage reconstructs the committed canary;
+- canary key = `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`;
+- canary key remains unused;
+- exact reveal calldata hash = `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`;
+- gas estimate = 124601;
+- secret values were not printed;
+- no transaction was sent.
+
+The secure reveal bridge requirement is now satisfied.
+
+Next gate: exact `revealCanary` transaction, pending separate explicit human authorization. `resolveBatch` remains NOT AUTHORIZED.
