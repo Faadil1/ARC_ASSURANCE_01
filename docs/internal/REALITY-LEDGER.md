@@ -642,3 +642,29 @@ Policy creation is technically ready but **not authorized**.
 
 No downstream funding or batch action is implied by a future policy-creation
 authorization.
+
+
+## G2 policy creation receipt + funding boundary — 2026-10-02
+
+### POLICY CREATION — OBSERVED
+
+Transaction
+`0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162`
+succeeded on Arc mainnet and independently verifies as the exact authorized
+`createPolicy` call.
+
+The resulting policy exists with the locked role topology and economic limits.
+No value has entered the vault yet.
+
+### FUNDING PREFLIGHT — OBSERVED
+
+Read-only run `37084047411` proves the first funding call is currently viable
+for **0.010 native USDC**, with estimated gas **116,049** and estimated fee
+**~0.00232098116049 USDC**. No funds moved during the preflight.
+
+### CURRENT PROTECTED BOUNDARY
+
+`G2_FUNDING_AUTHORIZATION = ACTIVE / HUMAN / NOT GRANTED`.
+
+A future funding authorization covers one exact 0.010-USDC `fund(policyId)`
+call only. It does not authorize `commitBatch` or any later lifecycle action.
