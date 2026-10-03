@@ -1,0 +1,4 @@
+request: v2-live-depth-fail-breaker-readiness
+broadcast: disabled
+protected_actions: none
+parent_merge_commit: 41b704176a608dd47790e46c4de4098b9adaeb7f

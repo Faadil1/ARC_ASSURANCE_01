@@ -112,13 +112,15 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_PR_REVIEW
-  status: READY_PENDING_HUMAN_MERGE_DECISION
-  vehicle: PR_47
+  id: V2_LIVE_DEPTH_FAIL_BREAKER_READINESS
+  status: ACTIVE_READ_ONLY
+  vehicle: AssuranceVault
   required_proof:
-    - "post-live audit remains PASS"
-    - "PR diff/review is acceptable"
-    - "no merge without explicit human decision"
+    - "live v2 policy remains reusable with activeBatchId zero"
+    - "0.008 native USDC protected remainder remains"
+    - "failureCount = 0 and maxFailures = 2"
+    - "exact source tests prove WITHHOLD -> BREAKER -> refund semantics"
+    - "no protected transaction before fresh preflight and explicit authorization"
   protected_live_actions_authorized: false
 
 g3_secret_loss_incident_2026_10_03:
@@ -188,11 +190,11 @@ product_depth_live_reality:
   status: ACTIVE
   vertical_slice_is_definition_of_done: false
   technical_proof_equals_live_product_integration: false
-  current_live_core_loop: BLOCKED
-  current_load_bearing_integration: BLOCKED
-  current_real_consequence: BLOCKED
+  current_live_core_loop: PROVEN
+  current_load_bearing_integration: PROVEN
+  current_real_consequence: PROVEN
   current_external_user_operator_evidence: BLOCKED
-  current_post_vertical_slice_depth_review: BLOCKED
+  current_post_vertical_slice_depth_review: ACTIVE
 
 prebuild_reality_gap:
   status: BLOCKED
@@ -1342,7 +1344,29 @@ recovery_policy_v2_post_live_audit_2026_10_03:
 
 recovery_policy_v2_final_verdict_2026_10_03:
   status: PROVEN_END_TO_END
-  merge_status: NOT_AUTHORIZED
+  merge_status: MERGED
   pr: 47
-  pr_mode: DRAFT
-  next_human_decision: PR_REVIEW_OR_MERGE
+  pr_mode: MERGED
+  next_human_decision: LIVE_DEPTH_NEGATIVE_PATH
+
+
+recovery_policy_v2_merge_2026_10_03:
+  status: PROVEN
+  pr: 47
+  head_sha: "bf4b7967a262eb6bef4a2703e8d12b4fc2f8385d"
+  base: "ops/g3-real-work-readiness"
+  merge_commit: "41b704176a608dd47790e46c4de4098b9adaeb7f"
+  merged_at: "2026-10-03T20:48:24Z"
+  no_arc_write_in_merge: true
+
+v2_live_depth_fail_breaker_2026_10_03:
+  status: ACTIVE_READ_ONLY
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  current_protected_remainder_wei: "8000000000000000"
+  intended_sequence:
+    - FAIL_1_WITHHOLD
+    - FAIL_2_BREAKER
+    - REFUND_PROTECTED_REMAINDER
+  controlled_fault_disclosure_required: true
+  v1_scope: SEPARATE
+  evidence_plan: docs/internal/V2-LIVE-DEPTH-FAIL-BREAKER-READINESS.md

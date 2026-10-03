@@ -871,3 +871,25 @@ Run `37152302353` stopped on Arc RPC rate limiting (`-32005`). This was an audit
 - v2 protected live actions remaining: none.
 - PR #47 merge: not authorized.
 - v1 lost-secret expiry recovery: separate and still active.
+
+
+## PR #47 merge and v2 Live Depth continuation — 2026-10-03
+
+### OBSERVED / PROVEN
+
+PR #47 merged at `41b704176a608dd47790e46c4de4098b9adaeb7f`. No Arc write was part of the merge.
+
+The prior v2 success path remains PROVEN: real work -> signed output -> hidden reveal -> deterministic PAY -> exact 0.002 native USDC payout.
+
+### REMAINING PRODUCT DEPTH
+
+The vault still protects 0.008 native USDC under the v2 policy. This is not an unresolved success-path claim; it is available policy liability.
+
+The exact contract semantics support a higher-value live-depth continuation:
+- first deterministic FAIL -> WITHHOLD, no provider payout;
+- second deterministic FAIL -> BREAKER, policy paused;
+- protected remainder then becomes refundable to the immutable funder.
+
+Any such failures will be controlled fault injections and must be disclosed. They are evidence of negative-path mechanics, not evidence of an organically failing third-party provider.
+
+The v1 lost-secret recovery remains separate and expiry-bound.

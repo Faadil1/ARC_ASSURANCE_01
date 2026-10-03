@@ -1101,8 +1101,31 @@ recovery_policy_v2_post_live_audit_gate_2026_10_03:
   evidence: docs/evidence/RECOVERY-POLICY-V2-POST-LIVE-AUDIT.md
 
 recovery_policy_v2_pr_review_gate_2026_10_03:
-  status: ACTIVE
+  status: PROVEN
   pr: 47
-  draft: true
-  merge: BLOCKED_PENDING_EXPLICIT_HUMAN_DECISION
+  draft: false
+  merge: PROVEN
+  merge_commit: "41b704176a608dd47790e46c4de4098b9adaeb7f"
   v1_cleanup: SEPARATE_FUTURE_GATE
+
+
+v2_live_depth_fail_breaker_gate_2026_10_03:
+  status: ACTIVE
+  parent_success_path: PROVEN
+  representative_negative_scenario: ACTIVE
+  breaker_scenario: ACTIVE
+  recovery_scenario: ACTIVE
+  controlled_fault_disclosure: REQUIRED
+  protected_actions:
+    fail_1_commitBatch: BLOCKED_PENDING_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
+    fail_1_provider_signature: BLOCKED
+    fail_1_lockProviderOutput: BLOCKED
+    fail_1_revealCanary: BLOCKED
+    fail_1_resolveBatch: BLOCKED
+    fail_2_commitBatch: BLOCKED
+    fail_2_provider_signature: BLOCKED
+    fail_2_lockProviderOutput: BLOCKED
+    fail_2_revealCanary: BLOCKED
+    fail_2_resolveBatch: BLOCKED
+    refundProtectedRemainder: BLOCKED
+  v1_recovery: SEPARATE_BLOCKED_UNTIL_EXPIRY

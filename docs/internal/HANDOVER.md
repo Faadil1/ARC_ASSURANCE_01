@@ -1506,3 +1506,21 @@ There are no remaining protected live actions in the v2 cycle.
 PR #47 remains draft and unmerged. Merge is a separate human decision.
 
 The original v1 lost-secret batch remains a separate expiry-bound recovery obligation.
+
+
+## PR #47 merge + next live-depth gate — 2026-10-03
+
+PR #47 was merged into `ops/g3-real-work-readiness` at merge commit `41b704176a608dd47790e46c4de4098b9adaeb7f`.
+
+The v2 PAY success path remains PROVEN end-to-end.
+
+The next highest-value product gate is not waiting for v1 expiry. The existing v2 policy retains 0.008 native USDC, activeBatch is zero, failureCount is 0, maxFailures is 2, and the policy remains usable before its 2026-10-20 expiry.
+
+Planned live-depth sequence, subject to separate protected-action gates:
+1. controlled valid-but-wrong provider output -> WITHHOLD;
+2. second controlled valid-but-wrong output -> BREAKER;
+3. refund the protected 0.008 remainder after breaker.
+
+This is controlled fault injection and must be disclosed as such. It is intended to prove representative negative, breaker, and recovery scenarios, not simulate organic adoption.
+
+The v1 lost-secret batch remains separate and must not be touched before its own expiry gate.
