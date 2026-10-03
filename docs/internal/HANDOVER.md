@@ -1434,3 +1434,27 @@ Vault principal remains unchanged before settlement:
 The one-shot reveal authorization is consumed.
 
 Next gate: read-only `resolveBatch` preflight. The settlement transaction remains NOT AUTHORIZED.
+
+
+## Recovery Policy v2 resolveBatch preflight — 2026-10-03
+
+Read-only resolve preflight run `37150934605` succeeded on exact head `abf027239cfca539a9aa297cfb2a65db772aeeab`.
+
+The batch remains Revealed and the deterministic comparison is true. Exact `eth_call` returned `PAY`.
+
+Expected live consequence if separately authorized and successfully broadcast:
+- payout recipient `0x6B8ad09233dF44eD57B99aF8839129303955590C`;
+- release exactly 0.002 native USDC;
+- v2 protected remainder 0.008 native USDC;
+- v2 batch -> Resolved;
+- active batch -> zero;
+- global liability -> 0.018 native USDC;
+- total value released -> 0.002 native USDC;
+- vault balance -> 0.018 native USDC.
+
+Exact candidate calldata hash:
+`0xa9a24d6d773108b8f41112f2cc51cab3359460a1c2018e2c44af5669ecb63320`.
+
+Pending funder nonce = 15. Gas estimate = 178343.
+
+The settlement transaction remains NOT AUTHORIZED pending a separate explicit human authorization.
