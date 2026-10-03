@@ -1367,3 +1367,21 @@ Post-state:
 The one-shot `lockProviderOutput` authorization is consumed.
 
 Next gate: secret-bound `revealCanary` read-only preflight. The reveal transaction itself and `resolveBatch` remain NOT AUTHORIZED.
+
+
+## Recovery Policy v2 revealCanary preflight — 2026-10-03
+
+Secret-bound read-only reveal preflight run `37148410230` succeeded on exact head `e6416429ed4d5630f36fcf88d519a3d6b0c7cd49`.
+
+The protected reveal packet reconstructed the committed canary exactly while the live batch remained OutputLocked. The canary key is unused. Exact reveal `eth_call` and gas estimation passed.
+
+Public binding:
+- pending funder nonce = 14;
+- calldata hash = `0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031`;
+- returned canary key = `0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574`;
+- gas estimate = 124601;
+- tx value = 0.
+
+The salt and raw reveal calldata were not logged or retained, and runner temp secret material was destroyed.
+
+Next gate remains the actual reveal transaction. Before it can be signed with MetaMask, establish a secure one-time reveal bridge so the hidden salt can reach the browser without appearing in GitHub, chat, logs, or repo. The reveal transaction itself and resolve remain NOT AUTHORIZED.
