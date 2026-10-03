@@ -1072,3 +1072,45 @@ Next gate:
 Do **not** run `lockProviderOutput`, `revealCanary`, `resolveBatch`, payout, breaker or refund actions until their own readiness checks and explicit human authorization are complete.
 
 G2 proves only the precommit causal edge. It does not yet prove provider execution, signed-output correctness, reveal, deterministic resolution, financial consequence, breaker/refund, or external adoption.
+
+
+## G3 REAL WORK read-only readiness — 2026-10-02
+
+Branch: `ops/g3-real-work-readiness`
+
+G2 remains PROVEN and the live batch remains the only authorized target.
+
+A secret-safe local preparer now exists:
+
+- `script/g3_prepare_real_work.mjs`
+- `docs/internal/G3-REAL-WORK-READINESS.md`
+- `docs/internal/G3-REAL-WORK-READINESS.yaml`
+
+The preparer is intentionally pre-signature and pre-transaction. It:
+
+- reads the G2 reveal packet only from a human-local file outside Git;
+- reconstructs the exact commitment locally;
+- confirms the current Arc batch is still Committed and workId unused;
+- runs the provider HTTP endpoint over loopback with faults disabled;
+- proves REAL_COMPUTE for the exact input;
+- compares the provider output to the hidden expected output locally;
+- writes a sensitive local compute artifact outside Git;
+- creates no EIP-712 signature;
+- sends no transaction.
+
+The existing raw PROVIDER_SIGNING_KEY runtime path is not required for this preparation. Preferred next signing path is wallet-based typed-data signing by the exact policy-bound provider EOA, without exporting its private key.
+
+Current gate:
+
+`G3_REAL_WORK = BLOCKED`
+
+Still required:
+
+1. successful local read-only preparer result;
+2. provider EIP-712 signature;
+3. independent signature verification;
+4. exact `lockProviderOutput` eth_call/gas preflight;
+5. separate human authorization;
+6. successful Arc receipt.
+
+Do not run `lockProviderOutput`, `revealCanary` or `resolveBatch` from this readiness branch without the corresponding gate and authorization.
