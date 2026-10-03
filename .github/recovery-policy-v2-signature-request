@@ -2,3 +2,4 @@ request: v2-provider-signature-readiness
 protected_actions: none
 signature: disabled
 transaction: disabled
+freshness: final-before-authorized-provider-signature
