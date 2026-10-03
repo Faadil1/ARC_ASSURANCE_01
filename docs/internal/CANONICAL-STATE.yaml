@@ -112,13 +112,13 @@ prior_product_gate:
   evidence_surface: "PR #44 / live Arc T0 receipt chain"
 
 next_gate:
-  id: RECOVERY_POLICY_V2_POST_LIVE_AUDIT
-  status: READY
-  vehicle: AssuranceVault
+  id: RECOVERY_POLICY_V2_PR_REVIEW
+  status: READY_PENDING_HUMAN_MERGE_DECISION
+  vehicle: PR_47
   required_proof:
-    - "final v2 evidence reconciliation"
-    - "no unresolved v2 protected action"
-    - "v1 lost-secret recovery remains separately tracked until expiry"
+    - "post-live audit remains PASS"
+    - "PR diff/review is acceptable"
+    - "no merge without explicit human decision"
   protected_live_actions_authorized: false
 
 g3_secret_loss_incident_2026_10_03:
@@ -1315,3 +1315,34 @@ recovery_policy_v2_live_cycle_2026_10_03:
   exact_payout_native_usdc: "0.002"
   unresolved_v2_protected_actions: false
   v1_recovery_obligation_remains: true
+
+
+recovery_policy_v2_post_live_audit_2026_10_03:
+  status: PROVEN
+  workflow_run: 37152400894
+  exact_head: "c816117db3cde27df84d6d2be778e80ed5735241"
+  result: PASS
+  transaction_sequence:
+    createPolicy_nonce: 10
+    fund_nonce: 11
+    commitBatch_nonce: 12
+    lockProviderOutput_nonce: 13
+    revealCanary_nonce: 14
+    resolveBatch_nonce: 15
+  live_core_loop: PROVEN
+  real_provider_work: PROVEN
+  cryptographic_binding: PROVEN
+  hidden_canary_binding: PROVEN
+  deterministic_match: PROVEN
+  financial_consequence: PROVEN
+  exact_payout_wei: "2000000000000000"
+  v2_protected_actions_remaining: 0
+  v1_recovery_obligation: ACTIVE_SEPARATE
+  evidence: docs/evidence/RECOVERY-POLICY-V2-POST-LIVE-AUDIT.md
+
+recovery_policy_v2_final_verdict_2026_10_03:
+  status: PROVEN_END_TO_END
+  merge_status: NOT_AUTHORIZED
+  pr: 47
+  pr_mode: DRAFT
+  next_human_decision: PR_REVIEW_OR_MERGE

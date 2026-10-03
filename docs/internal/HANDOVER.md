@@ -1489,3 +1489,20 @@ Observed live consequence:
 The v2 success path is now proven end-to-end, including the real financial consequence. There are no remaining protected v2 actions in this cycle.
 
 Remaining separate obligation: recover the original v1 lost-secret batch only after its expiry path becomes valid.
+
+
+## Recovery Policy v2 post-live audit — 2026-10-03
+
+Consolidated Arc audit run `37152400894` passed on exact head `c816117db3cde27df84d6d2be778e80ed5735241`.
+
+The audit independently re-read and decoded the complete v2 live sequence with funder nonces 10 through 15 and confirmed all final v2/vault invariants.
+
+Final verdict: **PROVEN_END_TO_END**, including real provider work, EIP-712 binding, hidden-canary commitment/reveal, deterministic PAY resolution and the exact +0.002 native USDC recipient balance delta.
+
+The first audit run `37152302353` failed only because the public Arc RPC returned rate-limit code `-32005`; retry/backoff hardening resolved this and the audit passed without any product/state correction.
+
+There are no remaining protected live actions in the v2 cycle.
+
+PR #47 remains draft and unmerged. Merge is a separate human decision.
+
+The original v1 lost-secret batch remains a separate expiry-bound recovery obligation.

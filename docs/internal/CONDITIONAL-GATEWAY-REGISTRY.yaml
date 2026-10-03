@@ -1085,3 +1085,24 @@ recovery_policy_v2_end_to_end_live_gate_2026_10_03:
   v2_protected_actions_remaining: NONE
   next_gate: RECOVERY_POLICY_V2_POST_LIVE_AUDIT
   separate_v1_recovery_obligation: ACTIVE
+
+
+recovery_policy_v2_post_live_audit_gate_2026_10_03:
+  status: PROVEN
+  workflow_run: 37152400894
+  exact_head: "c816117db3cde27df84d6d2be778e80ed5735241"
+  chain_replay_and_decode: PROVEN
+  transaction_nonce_sequence_10_15: PROVEN
+  final_state_invariants: PROVEN
+  exact_recipient_balance_delta: PROVEN
+  live_core_loop: PROVEN
+  real_consequence: PROVEN
+  v2_protected_actions_remaining: NONE
+  evidence: docs/evidence/RECOVERY-POLICY-V2-POST-LIVE-AUDIT.md
+
+recovery_policy_v2_pr_review_gate_2026_10_03:
+  status: ACTIVE
+  pr: 47
+  draft: true
+  merge: BLOCKED_PENDING_EXPLICIT_HUMAN_DECISION
+  v1_cleanup: SEPARATE_FUTURE_GATE

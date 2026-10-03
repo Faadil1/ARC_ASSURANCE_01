@@ -852,3 +852,22 @@ The full v2 live success path is PROVEN end-to-end, including real provider work
 No v2 settlement claim remains simulated or pending.
 
 The original v1 lost-secret recovery remains a separate future expiry-bound obligation.
+
+
+## Recovery Policy v2 post-live audit — 2026-10-03
+
+### PROVEN END-TO-END
+
+Consolidated audit run `37152400894` re-read the complete live v2 transaction sequence from Arc and proved the exact nonce progression 10 → 15, decoded action bindings, consumed cryptographic identifiers, final `Resolved/PAY` state, vault accounting and exact recipient balance delta.
+
+The final v2 claim is no longer merely a collection of step receipts: the complete live chain is independently reconciled as one coherent execution.
+
+### AUDIT INCIDENT CLASSIFICATION
+
+Run `37152302353` stopped on Arc RPC rate limiting (`-32005`). This was an audit transport failure, not a product/state failure. The verifier was hardened and the exact audit passed on run `37152400894`.
+
+### REMAINING BOUNDARIES
+
+- v2 protected live actions remaining: none.
+- PR #47 merge: not authorized.
+- v1 lost-secret expiry recovery: separate and still active.
