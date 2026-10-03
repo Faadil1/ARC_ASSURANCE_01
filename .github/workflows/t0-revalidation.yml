@@ -121,6 +121,32 @@ jobs:
           cd ../..
           echo "forge-std commit: $ACTUAL_FORGE_STD_COMMIT"
 
+      - name: Engineering quality preflight
+        run: |
+          set -euo pipefail
+
+          set +e
+          arc-forge fmt --check > fmt.log 2>&1
+          FMT_STATUS=$?
+          set -e
+
+          if [ "$FMT_STATUS" -eq 0 ]; then
+            echo "### Formatting signal: PASS" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Formatting signal: ACCEPTED_DEBT" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          bash -n script/t0-mainnet-proof.sh
+
+          python3 -m py_compile \
+            script/parse_t0_gas_report.py \
+            script/t0_readonly_fee_budget.py \
+            script/validate_t0_funding_envelope.py \
+            script/t0_public_wallet_readiness.py \
+            script/t0_post_funding_wallet_receipt.py
+
+          echo "### Engineering quality preflight passed" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Build
         run: |
           set -o pipefail
@@ -146,6 +172,32 @@ jobs:
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             exit 1
           }
+
+
+      - name: Verify post-funding wallet receipt on Arc
+        env:
+          ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+          T0_PUBLIC_WALLET_ADDRESS: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+        run: |
+          python3 script/t0_post_funding_wallet_receipt.py \
+            "$ARC_MAINNET_RPC_URL" \
+            "$T0_PUBLIC_WALLET_ADDRESS" \
+            "0.50" \
+            "5.00" \
+            | tee t0-post-funding-wallet-receipt.json
+
+      - name: Refresh read-only T0 fee budget
+        env:
+          ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+        run: |
+          python3 script/t0_readonly_fee_budget.py \
+            ops/t0-fee-budget-input.json \
+            t0-fee-budget-snapshot.json
+
+          python3 script/validate_t0_funding_envelope.py \
+            ops/t0-funding-envelope.json \
+            t0-fee-budget-snapshot.json \
+            t0-funding-envelope-validation.json
 
       - name: Gas evidence parser tests
         run: python3 test/test_t0_gas_evidence.py
@@ -192,10 +244,14 @@ jobs:
         with:
           name: t0-build-test-logs
           path: |
+            fmt.log
             build.log
             test.log
             gas-report.log
             t0-gas-unit-evidence.json
+            t0-post-funding-wallet-receipt.json
+            t0-fee-budget-snapshot.json
+            t0-funding-envelope-validation.json
             /tmp/arcforge-version.txt
           if-no-files-found: warn
           retention-days: 90

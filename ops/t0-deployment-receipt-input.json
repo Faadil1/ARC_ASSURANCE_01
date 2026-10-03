@@ -1,0 +1,13 @@
+{
+  "schema": "ARC_ASSURANCE_T0_DEPLOYMENT_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "deployment_tx_hash": "0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24",
+  "contract_address": "0x0377D371d6981c98CE9C650338D7E1E80819B572",
+  "expected_deployer": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_authority": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_usdc_interface": "0x3600000000000000000000000000000000000000",
+  "expected_deployment_spend_cap_wei": "50000000000000000",
+  "expected_policy_count_before_registration": "0",
+  "expected_tx_value_wei": "0",
+  "expected_nonce": 0
+}

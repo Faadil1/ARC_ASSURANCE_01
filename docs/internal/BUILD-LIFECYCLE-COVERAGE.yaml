@@ -1,0 +1,126 @@
+version: 0.1.2
+manifest: BUILD_LIFECYCLE_COVERAGE
+status: ACTIVE_RECONCILED_POST_REVALIDATION
+project: ARC_ASSURANCE_01
+project_type: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
+repository: Faadil1/ARC_ASSURANCE_01
+current_stage: DESIGN__G2_FUNDED__PRECOMMIT_AUTH_BOUNDARY
+exact_next_gate: G2_PRECOMMIT_AUTHORIZATION
+exact_next_action: "G2 live funding is PROVEN. Generate one-time hidden canary material locally, preserve the preimage off-repo, then request separate explicit authorization for the opaque commitBatch transaction."
+last_updated: "2026-10-02T08:20:00-04:00"
+bootstrap:
+  faadil_system_router_activated: true
+  project_profile_resolved: true
+  lifecycle_manifest_created_at_first_material_build_touch: false
+  chat_memory_used_as_only_gate_source: false
+capabilities:
+  - capability: faadil_system_router
+    owner: faadil-agent-system
+    status: RECONSTRUCTED_FROM_CANONICAL_EVIDENCE
+    evidence_pointer: "Faadil1/faadil-agent-system@main"
+  - capability: problem_worthiness_or_problem_reality
+    owner: project
+    status: SATISFIED
+    evidence_pointer: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+  - capability: negative_event_gate
+    owner: project
+    status: SATISFIED
+    evidence_pointer: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+  - capability: living_PRD
+    owner: Faadil
+    status: SATISFIED
+    evidence_pointer: product/PRD.md
+  - capability: evidence_and_evaluation
+    owner: project
+    status: SATISFIED
+    evidence_pointer: docs/internal/REALITY-LEDGER.md
+  - capability: engineering_quality_assurance
+    owner: project
+    status: SATISFIED
+    evidence_pointer: "T0 revalidation workflow 36891632445 on execution head 4f7f3b254a29e6023d539a85e5b126a7f21e1955"
+  - capability: design_experience_assurance
+    owner: trace
+    status: NOT_APPLICABLE_WITH_REASON
+    not_applicable_reason: "No evaluator-facing product UI in current T0 transition."
+  - capability: competitive_collision
+    owner: hackathon_opportunity_intelligence
+    status: SATISFIED
+    evidence_pointer: "Competitive_Novelty_Kill = PROVEN"
+  - capability: terminal_assurance
+    owner: project_finisher
+    status: NOT_APPLICABLE_WITH_REASON
+    not_applicable_reason: "Not at terminal readiness."
+product_depth_and_live_reality:
+  applicable: true
+  live_core_loop: MISSING
+  load_bearing_integration: PARTIAL_LIVE_DEPLOYED_CORE
+  real_consequence: PARTIAL_T0_LIVE_PAYMENT_PRIMITIVE
+  real_user_surface: MISSING
+  external_user_or_operator_evidence: MISSING
+  reality_ledger: SATISFIED
+  post_vertical_slice_depth_gap_review: NOT_APPLICABLE_WITH_REASON
+missing:
+  - "External user/operator PRODUCT evidence (problem reality is already proven)."
+state_resolution:
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  default_branch_role: G0_GOVERNANCE_BASELINE__NOT_LATEST_OPERATIONAL_STATE
+  execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  final_pre_transfer_revalidation: PROVEN
+  operational_next_gate: T0_CYCLE_CLOSED
+  deployment_authorization: PROVEN_CONSUMED
+  deployment_execution: PROVEN
+  policy_registration: PROVEN
+  contract_funding_authorization: PROVEN_CONSUMED
+  contract_funding_execution: PROVEN
+  payout_authorization: PROVEN_CONSUMED
+  payout_execution: PROVEN
+  refund_authorization: PROVEN_CONSUMED
+  refund_execution: PROVEN
+  completion_authorization: PROVEN_CONSUMED
+  completion_execution: PROVEN
+  wallet_topup: PROVEN_EXECUTED_WITH_VARIANCE
+  post_funding_wallet_receipt: PROVEN
+  funding_transaction_reference: PROVEN
+  deployment_authorization_legacy_duplicate: SUPERSEDED_BY_PROVEN_CONSUMED
+  macro_product_gate: G2_PRECOMMIT__DEPLOYMENT_PROVEN__POLICY_AUTH_BLOCKED
+  prebuild_reality: PROVEN
+  external_user_operator_product_evidence: MISSING
+  branch_head_rule: "Resolve PR #44 head dynamically; documentation commits do not change the execution evidence head unless executable T0 inputs change."
+
+terminal_completeness_allowed: false
+
+
+g2_integrated_deployment:
+  status: PROVEN
+  tx_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  verification_run: 37036958146
+  exact_init_code_match: true
+  next_protected_gate: G2_POLICY_CREATION_AUTHORIZATION
+
+
+g2_policy_creation:
+  status: PROVEN
+  tx_hash: "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162"
+  verification_run: 37083767443
+  policy_count_after: 1
+
+g2_funding_preflight:
+  status: PROVEN_READ_ONLY
+  run: 37084047411
+  amount_wei: "10000000000000000"
+  amount_usdc: "0.010"
+  estimate_gas_units: 116049
+  next_protected_gate: G2_FUNDING_AUTHORIZATION
+
+
+g2_funding:
+  status: PROVEN
+  tx_hash: "0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf"
+  amount_wei: "10000000000000000"
+  amount_usdc: "0.010"
+  total_liability_wei: "10000000000000000"
+  contract_balance_wei: "10000000000000000"
+  verification_run: 37085950306
+  next_protected_gate: G2_PRECOMMIT_AUTHORIZATION

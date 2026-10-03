@@ -1,5 +1,5 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-29T01:30:00-04:00"
+updated_at: "2026-10-02T04:40:43-04:00"
 source_of_truth: true
 
 status_vocabulary:
@@ -27,13 +27,13 @@ macro_lifecycle:
     evidence: "Five-model council + competitive/technical analysis produced the locked continuous-assurance concept."
   DESIGN:
     status: ACTIVE
-    evidence: "PRD v0.1 and demo-first architecture are under review in PR #1."
+    evidence: "G0 PRD_READY is PROVEN on main; G1 T0 custody is PROVEN; G2 PRECOMMIT readiness is active on the integrated AssuranceVault line."
   DELIVER:
     status: BLOCKED
-    blocker: "G0 PRD_READY (PR #1 unmerged), Pre-Build Reality external evidence gap, and T0 mainnet custody proof remain open."
+    blocker: "Integrated live product-depth/runtime gates and external product evidence remain open. G0 and G1 are PROVEN."
   AUDIT:
-    status: BLOCKED
-    blocker: "No live runtime/canonical mainnet run yet."
+    status: ACTIVE
+    evidence: "A complete live Arc T0 custody lifecycle is proven. Full integrated-product audit remains pending."
   EXPAND:
     status: N/A
     rationale: "No expansion before the core live proof is promoted."
@@ -43,26 +43,26 @@ judged_build_cycle:
     status: PROVEN
     evidence: "Arc Microgrants requirements and submission constraints are captured."
   PAIN:
-    status: ACTIVE
-    gap: "Need external operator/user evidence beyond council/market reasoning."
+    status: PROVEN
+    evidence: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md documents external operator incidents and observable impact."
   PROBLEM:
     status: PROVEN
     evidence: "Autonomous paid work can continue paying after provider quality degradation; product scope is narrowly defined."
   NEGATIVE_EVENT:
-    status: ACTIVE
-    gap: "Need at least one concrete external negative event / operator failure pattern with observable impact."
+    status: PROVEN
+    evidence: "PR #8 documents concrete paid-service failure, autonomous spend overrun, and production quality drift with observable impact."
   DIFFERENTIATOR:
     status: PROVEN
     evidence: "Precommitted hidden canary + deterministic financial consequence survived novelty review better than generic policy/payment/procurement layers."
   EXECUTION:
     status: ACTIVE
-    evidence: "T0 and canonical scorer workstreams defined; consequential build waits on G0."
+    evidence: "G0 is merged; T0/G1 is proven; G2 readiness uses the integrated AssuranceVault product core. Protected live actions remain separately authorized."
   LIVE_DEPTH:
     status: BLOCKED
-    blocker: "No live core loop, real consequence, or external operator loop yet."
+    blocker: "T0 proves a real live payment/custody consequence, but the hidden-canary assurance core loop and external operator loop are not live yet."
   EVIDENCE:
     status: ACTIVE
-    evidence: "Evidence model and promotion gates defined; live evidence pending."
+    evidence: "T0 live deployment/custody/payout/refund/completion receipts are proven; integrated assurance evidence remains pending."
   STORY:
     status: BLOCKED
     blocker: "Hero narrative cannot be finalized until live proof exists."
@@ -75,11 +75,12 @@ judged_build_cycle:
 
 core_gates:
   Pre_Build_Reality:
-    status: BLOCKED
+    status: PROVEN
     activation: "All concepts before promotion."
     condition: "Real problem, real user/operator, concrete negative event, observable impact."
-    gap: "Real user/operator and external negative-event evidence are not yet proven."
-    rule: "T0 may proceed as DESIGN technical spike, but DELIVER promotion is blocked until this closes."
+    evidence: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+    boundary: "Problem reality is proven. Product demand, provider acceptance, adoption, willingness to pay, and external-user product validation remain unproven."
+    separation_rule: "Do not reuse this gate to represent External User/Operator Product Evidence."
   Competitive_Novelty_Kill:
     status: PROVEN
     activation: "Before Concept Lock and when nearby products materially change."
@@ -103,9 +104,11 @@ core_gates:
     labels: [LIVE, LOCAL, LOCAL_STUB, PRESEEDED, SIMULATED, PARTIAL, NOT_IMPLEMENTED]
     condition: "Every proof artifact is labeled by actual evidence class."
   Runtime_Commit_Binding:
-    status: BLOCKED
-    blocker: "No canonical runtime or deployed commit exists yet."
-    condition: "Runtime evidence must bind to the exact demonstrated commit."
+    status: PROVEN
+    scope: T0_MAINNET_CUSTODY__PLUS_INTEGRATED_ASSURANCEVAULT_DEPLOYMENT
+    evidence: "T0 lifecycle is receipt-bound; integrated AssuranceVault deployment is exact-init-code bound on Arc mainnet via G2 Deployment Receipt run 37036958146."
+    reopen_when: "Integrated executable source/constructor inputs change or later live runtime evidence diverges."
+    condition: "Runtime evidence must bind to the exact demonstrated commit/init code."
   Deterministic_Demo:
     status: BLOCKED
     blocker: "No canonical run yet."
@@ -246,11 +249,11 @@ payment_and_platform_gateways:
   Wallets:
     status: ACTIVE
     condition: "Network, address, signer, chain ID, environment, and balance evidence must be coherent."
-    current: "Human-controlled mainnet signer/funding still pending protected execution. Arc mainnet chain id 5042 and USDC interface confirmed read-only via public RPC."
+    current: "Dedicated Arc authority wallet is live-proven and has executed both T0 and the integrated AssuranceVault deployment. Further protected actions still require separate authorization."
   Contracts:
     status: ACTIVE
     condition: "Deployment network, address, calls, state transitions, and receipts must be verifiable."
-    current: "PolicyCustody source produced and locally verified (35/35 under arc-forge 1.7.1-dev); compilation on generic CI not available; no deployment, address, call, or receipt evidence yet."
+    current: "PolicyCustody T0 lifecycle is PROVEN. Integrated AssuranceVault is now live-deployed on Arc at 0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4 with exact init-code/constructor binding; policy/batch lifecycle remains unproven."
   App_Kit_External_Platform_Integration:
     status: N/A
     rationale: "No sponsor App Kit is currently required."
@@ -313,11 +316,12 @@ product_depth_live_reality_v1_2_1:
     Setup_Reproducibility:
       status: ACTIVE
     Clean_Room_External_Dependency_Failure:
-      status: BLOCKED
-      blocker: "No build exists to clean-room reproduce or failure-test yet."
+      status: ACTIVE
+      blocker: "Clean-room build paths exist, but external-dependency failure behavior is not yet fully proven on the live integrated product."
     Post_Vertical_Slice_Depth_Gap_Review:
-      status: BLOCKED
-      blocker: "No vertical slice exists yet."
+      status: N/A
+      rationale: "No first live integrated vertical slice exists yet."
+      reactivate_when: "Immediately after the first live integrated vertical slice."
     One_External_Trial_Not_Adoption:
       status: ACTIVE
     Organic_Usage_Integrity:
@@ -343,7 +347,7 @@ post_vertical_slice_question:
   rule: "Close material depth gaps before heavy polish."
 
 promotion_rule:
-  - "No DELIVER promotion while Pre-Build Reality remains BLOCKED."
+  - "No DELIVER promotion while required integrated live product-depth/runtime gates or external product evidence remain BLOCKED."
   - "No LIVE claim while LIVE_GATEWAY, Live Core Loop, Load-Bearing Integration, and Real Consequence remain unproven."
   - "No submission-ready claim while Judge Performance Assurance, Deterministic Demo, Runtime/Commit Binding, and Submission Integrity are unresolved."
   - "Any ACTIVE/BLOCKED gate carried forward must remain visible in CURRENT/HANDOVER."
@@ -351,30 +355,519 @@ promotion_rule:
 
 t0_gate_detail:
   status: ACTIVE
-  substate: CODE_READY_CANDIDATE
+  substate: DEPLOYED__POLICY_REGISTERED__AWAITING_CONTRACT_FUNDING_AUTHORIZATION
   evidence_class: NOT_IMPLEMENTED
   source_produced: true
   tests_executed_with_arc_foundry: true
-  tests_passed: 35
+  tests_passed: 40
   tests_failed: 0
-  mainnet_deployed: false
-  real_funding: false
+  mainnet_deployed: true
+  wallet_funding: true
+  contract_funding: false
   real_payout: false
   real_refund: false
-  runtime_commit_bound: false
+  deployment_runtime_source_bound: true
+  full_lifecycle_runtime_commit_bound: false
   promotion_condition: "All above execution/evidence fields true with receipts bound to exact commit."
   boundary: >-
-    tests_executed_with_arc_foundry is true but mainnet_deployed through
-    runtime_commit_bound are all false. LOCAL test evidence is explicitly NOT
-    promoted to LIVE_GATEWAY. G1 remains ACTIVE and NOT PROVEN.
+    Mainnet deployment and one policy registration are now live and independently
+    verified. Contract custody, payout, refund and completion remain unproven, so
+    G1 remains ACTIVE / PARTIAL / NOT PROVEN and cannot be promoted to LIVE_GATEWAY.
 
 
 t0_post_audit_revalidation:
-  status: BLOCKED
-  blocker: "Current T0 head changed after the 35/35 Arc Foundry run."
-  required:
-    - "Arc Foundry compile/test exact current head"
-    - "confirm protected deploy script signer path"
-    - "confirm expiry recovery tests"
-    - "confirm shell driver preflight/deploy/execute path"
-  rule: "Do not fund or broadcast mainnet until this becomes PROVEN."
+  status: PROVEN
+  evidence:
+    exact_contract_source_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    tests: "40/40 Arc Foundry"
+    later_operational_revalidation_run: 36889901531
+  note: "Historical 35/35 evidence remains bound to 18bf5d6; later exact-source 40/40 evidence supersedes the old blocker."
+  rule: "This subgate is closed; G1 itself remains NOT PROVEN until real Arc receipts exist."
+
+
+t0_funding_readiness_gate:
+  status: PROVEN
+  current_state: WALLET_FUNDED__TX_REFERENCE_PENDING
+  source_revalidation:
+    status: PROVEN
+    exact_contract_source_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    tests: "40/40"
+  gas_rehearsal:
+    status: PROVEN
+    planning_floor_gas: 2925559
+    recovery_extra_max_gas: 85230
+  public_wallet:
+    status: PROVEN
+    address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    is_eoa: true
+    pending_nonce: 0
+    balance_wei: "0"
+  human_funding_authorization:
+    status: PROVEN
+    amount_usdc: "0.50"
+    scope: INITIAL_WALLET_TOPUP_ONLY
+  final_pre_transfer_gate:
+    status: PROVEN
+    execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+    t0_workflow: 36891632445
+    fee_workflow: 36891632622
+    tests: "40/40"
+    last_contingency_peak_usdc: "0.16158948022738422"
+    requirement: "Satisfied on the exact execution evidence head. Documentation commits after this point do not invalidate the execution receipt unless they alter executable T0 inputs."
+  protected_actions:
+    wallet_funding: HUMAN_EXECUTED_WITH_VARIANCE
+    observed_ui_balance_usdc: "0.51"
+    authorized_amount_usdc: "0.50"
+    authorization_variance_usdc: "+0.01"
+    private_key_handling: HUMAN_LOCAL_ONLY
+    mainnet_deploy: PROVEN
+    contract_execution: PARTIAL_AUTHORIZED_FUND_ONLY
+  rule: "Readiness plus human approval authorizes only the bounded wallet top-up after fresh final validation."
+
+t0_g1_mainnet_custody_gate:
+  status: ACTIVE
+  source_ready: true
+  funding_ready_candidate: true
+  live_deployment: true
+  real_custody: false
+  real_payout: false
+  real_refund: false
+  real_completion: false
+  deployment_runtime_source_binding: true
+  full_lifecycle_runtime_commit_binding: false
+  promotion_condition: "Real Arc receipts for deploy/fund/payout/refund/complete bound to the approved exact commit."
+
+
+t0_public_wallet_readiness_gate:
+  status: PROVEN
+  proof:
+    wallet_address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    chain_id: 5042
+    is_eoa: true
+    pending_nonce: 0
+    balance_wei: "0"
+    bytecode: "0x"
+    prefunding_ready: true
+  latest_readonly_revalidation:
+    workflow_run: 36891632445
+    execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+    contingency_peak_required_usdc: "0.16158948022738422"
+    five_usdc_ceiling_sufficient: true
+  next_gate:
+    status: ACTIVE
+    name: POST_FUNDING_WALLET_RECEIPT
+    owner: ASSISTANT_READ_ONLY_PLUS_HUMAN_TX_REFERENCE
+    protected_action: false
+  rule: "Wallet readiness does not authorize deployment."
+
+t0_human_funding_authorization_gate:
+  status: PROVEN
+  authorized_amount_usdc: "0.50"
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  scope: INITIAL_WALLET_TOPUP_ONLY
+  does_not_authorize:
+    - mainnet_contract_deploy
+    - contract_funding
+    - payout
+    - refund
+    - complete
+  final_pre_transfer_gate:
+    status: PROVEN
+    requirements:
+      - "Fresh public-wallet readiness remained true before transfer."
+      - "Fresh contingency peak <= 0.25 USDC."
+      - "Destination address exact match."
+
+
+system_control_plane_v1:
+  status: PROVEN
+  adoption: "2026-10-01 next material touch"
+  evidence: docs/internal/SYSTEM-RECONCILIATION-2026-10-01.md
+  history_backdated: false
+
+lifecycle_coverage_manifest_gate:
+  status: PROVEN
+  evidence: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
+  terminal_completeness_allowed: false
+
+integration_first_product_exploitation_v1_3:
+  status: ACTIVE
+  adoption: "Prospective from 2026-10-01"
+  product_exploitation_loop:
+    status: N/A
+    rationale: "No first live integrated product vertical slice yet; T0 is a DESIGN technical spike."
+    reactivate_when: "First live integrated product vertical slice is observed."
+
+claim_runtime_evidence_graph_gate:
+  status: ACTIVE
+  graph: docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml
+  T0_MAINNET_CUSTODY: PROVEN
+  INTEGRATED_MAINNET_DEPLOYMENT: PROVEN
+  INTEGRATED_LIVE_FINANCIAL_CAUSALITY: BLOCKED
+  rule: "Integrated deployment/source binding is live-proven. Policy, precommit, provider, reveal, resolve and financial-causality edges remain missing."
+
+reference_intelligence_gate:
+  status: ACTIVE
+  packet: docs/internal/REFERENCE-INTELLIGENCE-PACKET.yaml
+  current_match: ai_abc_production_ai_architecture_guide_v2
+  source_pipeline_status: CLASSIFIED
+  project_decision: REFERENCE_ONLY_NO_ADOPTION
+  authority: NONE
+
+engineering_quality_assurance_gate:
+  status: ACTIVE
+  T0_scope:
+    status: PROVEN
+    receipt: docs/internal/ENGINEERING-QUALITY-RECEIPT-T0.json
+    verdict: PASS_WITH_ACCEPTED_DEBT
+  integrated_assurance_vault_scope:
+    status: BLOCKED
+    blocker: "No current Engineering Quality receipt covers the latest integrated material code state."
+
+rule_lifecycle_project_decision:
+  status: PROVEN
+  decision: NO_CHANGE
+  rationale: "No new project or global rule is justified by this reconciliation."
+
+cross_project_learning_project_gate:
+  status: N/A
+  rationale: "No multi-project evidence supports a system-rule promotion."
+
+project_branch_reconciliation:
+  status: ACTIVE
+  T0_line: "PR #6 -> #38 -> #40 -> #42 -> #44"
+  integrated_line: "PR #20 -> #24 -> #30 -> #34 -> #36"
+  invariant: "Evidence from one line cannot promote the other line's live claims."
+
+
+state_resolution_2026_10_01:
+  status: PROVEN
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  default_branch_role: G0_GOVERNANCE_BASELINE__NOT_LATEST_OPERATIONAL_STATE
+  execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  current_branch_head_rule: "Resolve PR #44 head dynamically."
+  operational_next_gate: T0_CYCLE_CLOSED
+  macro_product_gate: G1_T0_MAINNET_CUSTODY__PROVEN
+  prebuild_reality: PROVEN
+  external_user_operator_product_evidence: BLOCKED
+  historical_conflict_rule: "Current-state entries in this registry supersede older contradictory prose without rewriting historical receipts."
+
+
+t0_wallet_topup_execution_gate:
+  status: PROVEN
+  execution_class: HUMAN_PROTECTED_ACTION
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  network: ARC_MAINNET
+  chain_id: 5042
+  authorized_amount_usdc: "0.50"
+  ui_observed_post_topup_balance_usdc: "0.51"
+  authorization_variance_usdc: "+0.01"
+  truth_boundary: "The +0.01 USDC excess is an observed execution variance, not retroactive authorization."
+  live_readonly_verification:
+    status: PROVEN
+    workflow_head: 220a61576cab23665483d67ebca25e44590b35ac
+    t0_revalidation_run: 36938183550
+    readonly_fee_budget_run: 36938183671
+    verified:
+      - EOA
+      - pending_nonce_0
+      - balance_at_least_0_50_usdc
+      - balance_below_5_00_usdc_hard_ceiling
+
+post_funding_wallet_receipt_gate:
+  status: PROVEN
+  live_wallet_state: PROVEN
+  transaction_reference: "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d"
+  verification_run: 36938737314
+  verification_head: 4a81dd80edb9e4408b04f70d73ebe43163f34d5f
+  completion_rule: "Top-up transaction is bound to funded wallet state."
+  does_not_authorize:
+    - mainnet_contract_deploy
+    - createPolicy
+    - contract_funding
+    - payout
+    - refund
+    - complete
+
+
+t0_deployment_authorization_gate:
+  status: PROVEN
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: true
+  scope:
+    - mainnet_contract_deploy
+    - one_policy_registration
+  execution_method_note: "Under the no-admin browser fallback, deployment and policy registration were executed as two separate MetaMask-signed transactions; both are now PROVEN."
+  does_not_authorize:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+  prerequisite: "POST_FUNDING_WALLET_RECEIPT = PROVEN"
+  rule: "Authorization is narrow and consumed by one deploy + policy-registration broadcast."
+
+
+t0_deployment_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  method: "Remix + MetaMask browser extension fallback"
+  deployment_tx_hash: "0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  verification_run: 36975671614
+  runtime_source_binding: PROVEN
+  rule: "Deployment proof does not authorize contract funding."
+
+
+t0_policy_registration_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  authorization: PROVEN_CONSUMED
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_config: ops/t0-deployment-config.json
+  transaction_hash: "0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7"
+  verification_run: 36976421698
+  verification_head: c4c923455ba2caf9a04a372c213f3339dfcbbfe8
+  artifact_digest: "sha256:8f2c2c5b954d8062b133a9e0adbeb168c702dd8171cc8f7b4f5413bafcd491fa"
+  proven:
+    - "createPolicy receipt successful"
+    - "selector and calldata match locked config"
+    - "PolicyCreated event matches locked config"
+    - "policyCount == 1"
+    - "policyExists == true"
+    - "state == Created"
+    - "no custody/value movement occurred"
+  does_not_authorize:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+
+
+t0_contract_funding_authorization_gate:
+  status: PROVEN
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: true
+  authorized_function: "fund(bytes32)"
+  authorized_amount_wei: "10000000000000000"
+  authorized_amount_usdc: "0.010"
+  occurrence_limit: 1
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  does_not_authorize:
+    - payout
+    - refund
+    - cancelExpiredAndRefund
+    - complete
+    - additional_funding
+
+t0_contract_funding_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  exact_value_wei: "10000000000000000"
+  exact_value_usdc: "0.010"
+  transaction_hash: "0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1"
+  verification_run: 36982128480
+  verification_head: 593acc5b016a0fccfadc2f012a7e787dbd4256f8
+  artifact_digest: "sha256:d3540a85355c5d30c16bcc6b4c76761e758d704d05d4b2d21d4a994f8cb80ae2"
+  proven:
+    - "fund receipt successful"
+    - "selector and policy id match"
+    - "msg.value == 0.010 native USDC"
+    - "PolicyFunded event matches exact amount"
+    - "post-funding state observed as Funded"
+    - "0.010 native USDC liability/custody observed immediately after funding"
+
+
+t0_payout_authorization_gate:
+  status: PROVEN
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: true
+  authorized_function: "releaseConfiguredPayout(bytes32)"
+  configured_amount_wei: "1000000000000000"
+  configured_amount_usdc: "0.001"
+  occurrence_limit: 1
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  does_not_authorize:
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
+    - additional_payout
+
+t0_payout_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  function: "releaseConfiguredPayout(bytes32)"
+  configured_amount_wei: "1000000000000000"
+  configured_amount_usdc: "0.001"
+  transaction_hash: "0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34"
+  verification_run: 36983144079
+  verification_head: 6e136f670b69a7a1248fff92af4e13c5185e2fac
+  artifact_digest: "sha256:e24d3ca86d484e406c30b98c6966c8ed95438ea7099d244609e40ba3f346b690"
+  proven:
+    - "payout receipt successful"
+    - "selector and policy id match"
+    - "transaction msg.value == 0"
+    - "PaymentReleased amount == 0.001 native USDC"
+    - "post-payout state observed as PaidOut"
+    - "0.009 native USDC remains in policy custody immediately after payout"
+
+
+t0_refund_authorization_gate:
+  status: PROVEN
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: true
+  authorized_function: "refundRemaining(bytes32)"
+  expected_refund_wei: "9000000000000000"
+  expected_refund_usdc: "0.009"
+  occurrence_limit: 1
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  does_not_authorize:
+    - complete
+    - cancelExpiredAndRefund
+    - additional_refund
+
+t0_refund_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  function: "refundRemaining(bytes32)"
+  expected_refund_wei: "9000000000000000"
+  expected_refund_usdc: "0.009"
+  transaction_hash: "0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024"
+  verification_run: 36984307453
+  verification_head: 0ca236dc7826481b3f8ecbcf4d2f06852d30c24a
+  artifact_digest: "sha256:ba4dca004eddb026b3689e217f507af91629d5803f8f07710ec5e406f0e4bb85"
+  proven:
+    - "refund receipt successful"
+    - "selector and policy id match"
+    - "transaction msg.value == 0"
+    - "RemainingFundsRefunded amount == 0.009 native USDC"
+    - "post-refund custody balance == 0"
+    - "post-refund state observed as Refunded"
+    - "post-refund totalLiability == 0"
+
+
+t0_completion_authorization_gate:
+  status: PROVEN
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: true
+  authorized_function: "complete(bytes32)"
+  required_tx_value_wei: "0"
+  occurrence_limit: 1
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+
+t0_completion_execution_gate:
+  status: PROVEN
+  owner: HUMAN_SIGNER
+  protected_action: true
+  function: "complete(bytes32)"
+  required_tx_value_wei: "0"
+  transaction_hash: "0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
+  verification_run: 36985388199
+  verification_head: 6cae32c7b891bb0db296f37020343e6afccda692
+  artifact_digest: "sha256:bbb7061ba2a8b7f67efa6128a07edff14655e4951e186bce1df6ad40f79fad81"
+  proven:
+    - "completion receipt successful"
+    - "selector and policy id match"
+    - "transaction msg.value == 0"
+    - "PolicyCompleted finalBalance == 0"
+    - "PolicyStateChanged Refunded -> Completed"
+    - "final state == Completed"
+    - "final remaining/liability/contract balance == 0"
+
+g1_t0_mainnet_custody_gate:
+  status: PROVEN
+  evidence:
+    - "deployment tx 0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24"
+    - "policy registration tx 0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7"
+    - "funding tx 0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1"
+    - "payout tx 0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34"
+    - "refund tx 0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024"
+    - "completion tx 0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
+  boundary: "G1 proves only the Arc-native custody lifecycle primitive. G2+ hidden-canary assurance behavior remains unproven."
+
+
+g2_integrated_deployment_gate:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+  contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  deployment_nonce: 6
+  exact_init_code_match: true
+  verification_run: 37036958146
+  verification_head: 84efcb9d67085f12f171988fa21e5ebff7c79b76
+  artifact_digest: "sha256:a502c42de338950a9f526c8ca1aeb37935a8d47ee7d7bfa8566fb99f316922d4"
+  authorization_status: PROVEN_CONSUMED
+  next_gate: G2_POLICY_CREATION_AUTHORIZATION
+  truth_boundary: "Deployment proof alone does not prove G2 PRECOMMIT or any financial causality."
+
+g2_policy_creation_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  rule: "No createPolicy transaction may be signed or broadcast without separate explicit human authorization."
+
+
+g2_policy_creation_gate:
+  status: PROVEN
+  transaction_hash: "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162"
+  verification_run: 37083767443
+  authorization_status: PROVEN_CONSUMED
+  truth_boundary: "Policy exists live on Arc; no funding or precommit claim follows from creation alone."
+
+g2_funding_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  amount_wei: "10000000000000000"
+  amount_usdc: "0.010"
+  preflight_run: 37084047411
+  rule: "No fund(policyId) transaction may be signed or broadcast without separate explicit human authorization."
+  downstream_not_authorized:
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+
+
+g2_funding_gate:
+  status: PROVEN
+  transaction_hash: "0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf"
+  amount_wei: "10000000000000000"
+  verification_run: 37085950306
+  authorization_status: PROVEN_CONSUMED
+  live_custody_after_wei: "10000000000000000"
+  truth_boundary: "Live custody is proven; no batch precommit or financial-causality claim follows from funding alone."
+
+g2_precommit_authorization_gate:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  invariant: "A one-time hidden canary commitment must exist on Arc before provider output lock."
+  secrecy_rule: "The canary preimage/salt must remain off-repo/off-chain and undisclosed to the provider until reveal."
+  rule: "No commitBatch transaction may be signed or broadcast without separate explicit human authorization."
+  downstream_not_authorized:
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder

@@ -1,7 +1,8 @@
 project: ARC_ASSURANCE_01
-updated_at: "2026-09-29T01:30:00-04:00"
+updated_at: "2026-10-02T08:20:00-04:00"
 source_of_truth: true
-phase: DESIGN_T0_CODE_READY_CANDIDATE
+project_status: ACTIVE
+phase: ACTIVE_DESIGN_POST_T0_G1_PROVEN
 product_name:
   status: OPEN
   internal_identifier: ARC_ASSURANCE_01
@@ -13,6 +14,10 @@ repository:
   default_branch: main
   bootstrap_main_sha: b874462d3dac4970e5149198a631d9b4c034f7c7
   prd_branch: docs/prd-v0.1
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  g0_merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  default_branch_note: "main now contains the PROVEN G0 governance baseline. Later operational state remains ahead on stacked branches until reconciled/merged."
 
 program:
   name: Arc Microgrants
@@ -29,8 +34,8 @@ concept_lock:
   core_flow: "PRECOMMIT TEST -> REAL WORK -> HIDDEN CANARY -> DETERMINISTIC VERIFY -> PAY / BLOCK / CIRCUIT BREAKER"
   vertical: "structured document extraction"
   original_prooftender_procurement_layer: DEAD
-  revalidation_required_before_deliver: true
-  revalidation_reason: "Pre-Build Reality still lacks external user/operator + concrete negative-event evidence."
+  revalidation_required_before_deliver: false
+  revalidation_reason: "Pre-Build Reality is PROVEN and G0 is now PROVEN. DELIVER remains blocked only by integrated live product-depth/runtime gates and external product evidence."
 
 promoted_invariants:
   - id: INV-01
@@ -94,30 +99,38 @@ scope:
 
 current_gate:
   id: G0_PRD_READY
-  status: IN_PROGRESS
-  exit_criteria:
-    - "PRD merged"
-    - "canonical state merged"
-    - "handover merged"
-    - "work split merged"
-    - "Opeyemi reviews PR #1 and PRD governance is merged"
-  note: >-
-    PR #1 is still open and main is still at the bootstrap commit. No branch has
-    been merged, so the whole PR stack is unmerged.
+  status: PROVEN
+  proven_by:
+    owner_signoff: Faadil
+    collaborator_review_policy: RECOMMENDED_NON_BLOCKING
+    collaborator_access: "opeblow = write"
+    merged_pr: 1
+    merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  truth_boundary: "G0 proves governance readiness only; it does not prove any downstream live product gate."
 
 next_gate:
-  id: G1_T0_MAINNET_CUSTODY
-  owner: opeblow
-  required_proof:
-    - "real Arc mainnet USDC enters contract custody"
-    - "configured payout succeeds"
-    - "remaining balance refund succeeds"
-    - "transaction references captured"
-  blocked_by_human_action: >-
-    Mainnet funding and signing are protected human actions requiring a funded
-    Arc wallet controlled by Faadil. Code readiness does not advance this gate.
+  scope: PRODUCT_GATE
+  id: G2_PRECOMMIT
+  status: CONTENT_RECONCILED__READINESS_GREEN__LIVE_PROOF_NOT_PROVEN
+  blocked_by:
+    - PUBLIC_ROLE_ADDRESSES_NOT_FINALIZED
+    - INTEGRATED_ASSURANCE_VAULT_MAINNET_DEPLOYMENT_NOT_PROVEN
+    - LIVE_BATCH_COMMIT_NOT_EXECUTED
+  owner: project
+  note: >-
+    G0 and G1 are PROVEN. PR #45 is content-reconciled with merged G0 and
+    post-reconciliation clean-room is green. Live promotion still requires
+    finalized public role addresses, protected deployment/policy/funding actions,
+    and an onchain opaque commitment before provider output lock.
   review_queue_for_opeblow:
     - "PR #7 canonical scorer: hash/commit interface review and byte-for-byte encoding compatibility"
+
+operational_next_gate:
+  id: T0_CYCLE_CLOSED
+  status: PROVEN
+  owner: PROJECT
+  protected_action: false
+  machine_boundary: "The bounded T0 mainnet lifecycle is complete. No additional T0 financial action is authorized or required."
 
 collaboration:
   faadil:
@@ -171,12 +184,19 @@ product_depth_live_reality:
   current_external_user_operator_evidence: BLOCKED
   current_post_vertical_slice_depth_review: BLOCKED
 
-prebuild_reality_gap:
-  status: BLOCKED
-  missing:
-    - "external real user/operator evidence"
-    - "concrete real negative event with observable impact"
-  promotion_rule: "T0 technical spike may proceed in DESIGN; DELIVER promotion may not."
+prebuild_reality:
+  status: PROVEN
+  evidence: "PR #8 / docs/research/PRE-BUILD-REALITY-EVIDENCE.md"
+  proves:
+    - "real external operator problem"
+    - "concrete external negative events"
+    - "observable financial/operational impact"
+  does_not_prove:
+    - "product demand"
+    - "external-user product validation"
+    - "provider acceptance"
+    - "adoption or willingness to pay"
+  separation_rule: "Pre-Build Reality must not be conflated with External User/Operator Product Evidence, which remains BLOCKED."
 
 
 t0_mainnet_custody:
@@ -210,14 +230,14 @@ t0_mainnet_custody:
     tests_passed: 35
     tests_failed: 0
     note: "LOCAL evidence only. Arc Foundry is not present on generic CI; forge-std is not vendored (lib/ is gitignored)."
-  unverified:
+  historical_unverified_at_that_checkpoint:
     - "Arc mainnet deployment"
     - "real mainnet funding"
     - "real payout"
     - "real refund"
     - "mainnet gas cost"
     - "runtime/commit binding"
-  gate_status: "G1 T0_MAINNET_CUSTODY is ACTIVE and NOT PROVEN. Local test success does not satisfy the gate."
+  historical_gate_status: "At this checkpoint G1 T0_MAINNET_CUSTODY was ACTIVE / NOT PROVEN. Superseded by g1_t0_mainnet_custody.status = PROVEN."
   protected_action: "Human-controlled mainnet signing/funding required."
 
 
@@ -229,7 +249,7 @@ t0_post_opeyemi_audit:
     tests_passed: 35
     tests_failed: 0
     applies_to_commit: "18bf5d6"
-  current_head_status: REVALIDATION_REQUIRED
+  current_head_status: SUPERSEDED_BY_LATER_40_OF_40_REVALIDATION
   audit_fixes:
     - "explicit private-key signer binding in DeployT0"
     - "remove unsafe verify-or-redeploy path"
@@ -240,4 +260,1407 @@ t0_post_opeyemi_audit:
     - "unknown-policy state/remaining reads revert"
     - "policy cap no longer reserves deployment lifetime capacity"
     - "broken tiny-value shell guard removed"
-  promotion_rule: "No mainnet action until Arc Foundry revalidation of exact current head."
+  promotion_rule: "Historical exact-head revalidation blocker is closed; protected operational gates still govern any future mainnet action."
+
+
+t0_funding_readiness_2026_09_30:
+  branch: ops/t0-funding-readiness
+  status: READY_FOR_HUMAN_REVIEW
+  contract_source:
+    exact_head: f7fdf4e1b592c9122d4680d5272635baa2afff3f
+    arc_foundry_revalidation: PROVEN
+    tests: "40 passed / 0 failed / 0 skipped"
+  gas_evidence:
+    exact_head: 46cd44ef0cc11e84bfed97900180318dc7342349
+    workflow_run: 36681323838
+    evidence_class: LOCAL_EXACT_HEAD_REHEARSAL
+    deployment_gas: 2160427
+    execution_function_max_sum_gas: 639132
+    transaction_intrinsic_floor_gas: 126000
+    planning_floor_before_safety_gas: 2925559
+    recovery_cancel_expired_max_gas: 85230
+  fee_snapshot:
+    exact_head: f8367f42e6ea6152c7f2ccec0244bc68f993b86c
+    workflow_run: 36682054936
+    chain_id: 5042
+    block_number: 23501187
+    observed_gas_price_wei: "20000000000"
+    gas_unit_safety_bps: 12500
+    gas_price_safety_bps: 20000
+    happy_peak_required_usdc: "0.15627796"
+    contingency_peak_required_usdc: "0.16158948"
+    five_usdc_ceiling_sufficient: true
+  funding_envelope:
+    status: CANDIDATE_PENDING_HUMAN_APPROVAL
+    candidate_topup_usdc: "0.50"
+    hard_ceiling_usdc: "5.00"
+    fresh_snapshot_rule_max_contingency_usdc: "0.25"
+    validation_status: CANDIDATE_ENVELOPE_READY_FOR_HUMAN_REVIEW
+    funding_authorized: false
+  public_wallet_gate:
+    status: BLOCKED_PENDING_PUBLIC_ADDRESS
+    requirements:
+      - "dedicated EOA"
+      - "pending nonce 0 before first deploy"
+      - "public address only"
+      - "private key/seed never repo, CI, issue, PR, artifact or chat"
+  protected_human_action:
+    next: "Create dedicated Arc mainnet EOA and provide only its public address for read-only readiness inspection."
+    wallet_funding: BLOCKED_PENDING_EXPLICIT_APPROVAL
+    deploy: BLOCKED
+    execute: BLOCKED
+  truth_boundary:
+    - "Fee snapshot is time-bound and must be refreshed before funding/deploy."
+    - "0.50 USDC is a candidate envelope, not an authorization."
+    - "G1 remains ACTIVE / NOT PROVEN until real Arc receipts exist."
+
+
+t0_public_wallet_readiness_2026_10_01:
+  wallet_address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  exact_head: 9b773f21163f5e6e85060b340a068dedcc551dcd
+  workflow_run: 36845314961
+  chain_id: 5042
+  code: "0x"
+  is_eoa: true
+  pending_nonce: 0
+  is_fresh_nonce: true
+  balance_wei: "0"
+  is_zero_balance_before_funding: true
+  prefunding_ready: true
+  verdict: PUBLIC_WALLET_READY_FOR_FUNDING_REVIEW
+  fresh_fee_snapshot:
+    block_number: 23690527
+    observed_gas_price_wei: "20000000570"
+    safe_gas_price_wei: "40000001140"
+    happy_peak_required_usdc: "0.15627796416892186"
+    contingency_peak_required_usdc: "0.16158948432030018"
+    within_5_usdc_ceiling: true
+  funding_envelope:
+    candidate_topup_usdc: "0.50"
+    validation_status: CANDIDATE_ENVELOPE_READY_FOR_HUMAN_REVIEW
+    funding_authorized: false
+  protected_next_action:
+    - "Explicit human approval required before sending 0.50 native USDC to the dedicated wallet."
+    - "Private key / seed phrase must remain local to the human wallet."
+
+
+t0_human_funding_authorization_2026_10_01:
+  status: PROVEN
+  authorized_by: human_repo_owner
+  authorized_amount_usdc: "0.50"
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  hard_ceiling_usdc: "5.00"
+  authorization_scope:
+    - "Fund dedicated T0 Arc wallet with 0.50 native USDC only."
+    - "Does not authorize contract deployment."
+    - "Does not authorize execution/payout/refund transactions."
+  pre_transfer_conditions:
+    - "Fresh read-only Arc wallet readiness must still be green."
+    - "Fresh contingency peak must remain <= 0.25 USDC."
+    - "Destination address must match exactly."
+  private_key_boundary: "Never shared; human-local only."
+
+
+system_control_plane_reconciliation_2026_10_01:
+  status: PROVEN
+  central_source:
+    repository: Faadil1/faadil-agent-system
+    branch: main
+    system_version: 0.1.48-system-control-plane-v1-active
+  adoption_timing: "Applied prospectively at this ACTIVE project's next material touch; no history backdated."
+  project_profile: JUDGED_BUILD__ARC_MICROGRANT__PAYMENT_ASSURANCE_PRODUCT
+  current_macro_stage: DESIGN
+  historical_operational_track: T0_MAINNET_CUSTODY
+  historical_exact_next_gate: T0_COMPLETION_EXECUTION
+  historical_exact_next_action: >-
+    At that checkpoint, the next action was complete(policyId). This snapshot is
+    superseded by T0_CYCLE_CLOSED / G1_T0_MAINNET_CUSTODY = PROVEN.
+  lifecycle_coverage:
+    status: PROVEN
+    artifact: docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
+    terminal_completeness_allowed: false
+  evidence_graph:
+    status: ACTIVE
+    artifact: docs/internal/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml
+    T0_MAINNET_CUSTODY: MISSING
+    INTEGRATED_LIVE_FINANCIAL_CAUSALITY: MISSING
+  product_reality_v1_3:
+    status: ACTIVE
+    prd_change_required: false
+    product_exploitation_loop: NOT_YET_TRIGGERED
+    reason: "T0 is a DESIGN technical spike; no first live integrated product vertical slice exists."
+  reference_intelligence:
+    status: ACTIVE_REFERENCE_ONLY
+    artifact: docs/internal/REFERENCE-INTELLIGENCE-PACKET.yaml
+    durable_adoption: false
+    rule_lifecycle_decision: NO_CHANGE
+  engineering_quality:
+    T0_scope:
+      status: PROVEN
+      receipt: docs/internal/ENGINEERING-QUALITY-RECEIPT-T0.json
+      verdict: PASS_WITH_ACCEPTED_DEBT
+    integrated_assurance_vault_scope:
+      status: BLOCKED
+      blocker: "Current Engineering Quality receipt required before next integrated deployment/terminal-sensitive transition."
+  cross_project_learning:
+    status: N/A
+    promotion: NONE
+    reason: "No multi-project signal; one project does not create a universal rule."
+  branch_reality:
+    T0_line: "PR #6 -> #38 -> #40 -> #42 -> #44"
+    integrated_line: "PR #20 -> #24 -> #30 -> #34 -> #36"
+    invariant: "Evidence from one line cannot promote the other line's live claims."
+  unresolved_upstream:
+    G0_PRD_READY: "PROVEN; PR #1 merged to main at 1220fc5d39b2262f0b66d0ae4713629b10f3ca29."
+    Pre_Build_Reality: "PROVEN in PR #8 for problem reality."
+    External_User_Operator_Product_Evidence: "BLOCKED; no external product trial/evidence yet."
+    DELIVER: "BLOCKED by integrated live product-depth/runtime gates and external product evidence; G0 is cleared."
+  protected_action:
+    wallet_topup_authorized_usdc: "0.50"
+    wallet_topup_observed_ui_usdc: "0.51"
+    authorization_variance_usdc: "+0.01"
+    variance_rule: "Observed execution exceeded the preauthorized amount by 0.01 USDC; record truthfully and do not retroactively describe the excess as preauthorized."
+    authorization_scope: INITIAL_WALLET_TOPUP_ONLY
+    deployment_authorized: false
+    contract_execution_authorized: false
+
+
+state_precedence_2026_10_01:
+  status: PROVEN
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  default_branch_role: G0_GOVERNANCE_BASELINE__NOT_LATEST_OPERATIONAL_STATE
+  reading_order:
+    - docs/internal/CANONICAL-STATE.yaml
+    - docs/internal/BUILD-LIFECYCLE-COVERAGE.yaml
+    - docs/internal/CONDITIONAL-GATEWAY-REGISTRY.yaml
+    - docs/internal/HANDOVER.md
+    - docs/internal/REALITY-LEDGER.md
+  execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  first_state_recording_commit_after_execution: 90d79ee7d2f891366a9962af90f440768b4347e3
+  current_branch_head_rule: "Resolve PR #44 head dynamically; do not treat the execution evidence head as the branch head."
+  historical_status_rule: "Older contradictory gate text remains historical only when explicitly timestamped; current-state sections above take precedence."
+  prebuild_reality_rule: "Problem reality is PROVEN; external product evidence is a separate BLOCKED gate."
+  next_gate_rule: "T0_COMPLETION_AUTHORIZATION is PROVEN for exactly one complete(policyId) transaction with msg.value = 0. Operational next gate is T0_COMPLETION_EXECUTION."
+
+
+t0_final_pre_transfer_revalidation_2026_10_01:
+  status: PROVEN
+  exact_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  workflows:
+    t0_revalidation:
+      run: 36891632445
+      result: SUCCESS
+      tests: "40 passed / 0 failed / 0 skipped"
+    readonly_fee_budget:
+      run: 36891632622
+      result: SUCCESS
+  public_wallet:
+    address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    is_eoa: true
+    pending_nonce: 0
+    balance_wei: "0"
+    prefunding_ready: true
+  fresh_fee_state:
+    readonly_block: 23737015
+    t0_revalidation_block: 23737026
+    observed_gas_price_wei: "20000000000-20000000030"
+    contingency_peak_required_usdc: "0.16158948-0.16158948022738422"
+    threshold_usdc: "0.25"
+    threshold_pass: true
+  destination_exact_match: true
+  human_topup_authorization:
+    status: PROVEN
+    amount_usdc: "0.50"
+    scope: INITIAL_WALLET_TOPUP_ONLY
+  next_gate:
+    name: T0_WALLET_TOPUP
+    status: ACTIVE
+    owner: HUMAN
+  still_not_authorized:
+    - contract_deploy
+    - createPolicy
+    - contract_fund
+    - payout
+    - refund
+    - complete
+
+
+t0_post_funding_wallet_receipt_2026_10_01:
+  status: PROVEN
+  transaction_hash: "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d"
+  user_wallet_ui:
+    status: CONFIRMED
+    network: ARC
+    sent_amount_usdc: "0.51"
+    destination: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  rpc_verification:
+    workflow_head: 4a81dd80edb9e4408b04f70d73ebe43163f34d5f
+    post_funding_receipt_run: 36938737314
+    readonly_fee_budget_run: 36938737292
+    t0_revalidation_run: 36938737258
+    result: SUCCESS
+    artifact_digest: "sha256:151cc1fb42ef22613c18b203cdf0a9dc48797d78b09b3afaacafd2753d7d146e"
+    verified:
+      - "transaction exists on Arc mainnet"
+      - "receipt status successful"
+      - "destination matches dedicated T0 wallet"
+      - "native USDC value matches 0.51"
+      - "wallet remains EOA"
+      - "wallet balance remains within hard ceiling"
+  historical_next_gate:
+    id: T0_DEPLOYMENT_AUTHORIZATION
+    status_at_that_time: ACTIVE
+    owner: HUMAN
+    authorization_granted_at_that_time: false
+  historical_truth_boundary:
+    - "At that checkpoint T0_FINAL_PRE_TRANSFER_REVALIDATION proved readiness only."
+    - "At that checkpoint G1 T0_MAINNET_CUSTODY was ACTIVE / NOT PROVEN; this is superseded by the completed live lifecycle."
+
+
+t0_wallet_topup_execution_2026_10_01:
+  status: PROVEN_EXECUTED_WITH_VARIANCE
+  destination_public_wallet: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  network: ARC_MAINNET
+  chain_id: 5042
+  authorized_amount_usdc: "0.50"
+  ui_observed_balance_after_topup_usdc: "0.51"
+  authorization_variance_usdc: "+0.01"
+  variance_interpretation: "The actual observed funded balance is 0.01 USDC above the preauthorized amount. This is recorded as an execution variance, not retroactive authorization."
+  live_readonly_proof:
+    workflow_head: 220a61576cab23665483d67ebca25e44590b35ac
+    t0_revalidation_run: 36938183550
+    readonly_fee_budget_run: 36938183671
+    result: SUCCESS
+    proves:
+      - "Arc chain 5042 reachable"
+      - "wallet is EOA"
+      - "pending nonce is 0"
+      - "native USDC balance >= 0.50"
+      - "native USDC balance <= 5.00 hard ceiling"
+    does_not_yet_prove:
+      - "top-up transaction hash / source transaction"
+      - "contract deployment"
+      - "contract custody"
+      - "payout / refund / complete"
+  post_funding_wallet_receipt:
+    status: PROVEN
+    live_wallet_state: PROVEN
+    transaction_reference: "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d"
+    verification_head: 4a81dd80edb9e4408b04f70d73ebe43163f34d5f
+    verification_run: 36938737314
+    artifact_digest: "sha256:151cc1fb42ef22613c18b203cdf0a9dc48797d78b09b3afaacafd2753d7d146e"
+  still_not_authorized:
+    - contract_deploy
+    - createPolicy
+    - contract_fund
+    - payout
+    - refund
+    - complete
+
+
+t0_deployment_authorization_2026_10_01:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorization_interpretation: "User explicitly said 'Ok allons y' at the deployment-authorization checkpoint."
+  authorized_scope:
+    - "Deploy PolicyCustody on Arc mainnet."
+    - "Register exactly one T0 policy in the deployment broadcast."
+  not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+    - any additional deployment
+  deployment_config:
+    artifact: ops/t0-deployment-config.json
+    public_env: ops/t0-deployment-public.env
+    authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    payout_recipient: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    fund_amount_usdc: "0.010"
+    unit_payout_usdc: "0.001"
+    expected_refund_usdc: "0.009"
+    expiry_utc: "2026-10-15T04:00:00Z"
+    truth_boundary: "Same-wallet payout proves configured payout mechanics, not payment to an independent external provider."
+  private_key_boundary: "Private key remains human-local and must never enter repo, CI, issue, PR, artifact, or chat."
+  next_gate:
+    id: T0_DEPLOYMENT_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
+
+
+t0_deployment_readiness_2026_10_01:
+  status: PROVEN
+  exact_head: bface52ed8611ebc9e4e09f09613230985086d00
+  workflows:
+    deployment_readiness:
+      run: 36939576285
+      result: SUCCESS
+    t0_revalidation:
+      run: 36939576194
+      result: SUCCESS
+    readonly_fee_budget:
+      run: 36939576189
+      result: SUCCESS
+    post_funding_receipt:
+      run: 36939576310
+      result: SUCCESS
+  verified:
+    - "public deployment config is internally coherent"
+    - "public env contains no PRIVATE_KEY and defaults T0_CONFIRM_MAINNET=0"
+    - "Arc wallet remains funded and within the 5 USDC hard ceiling"
+    - "original top-up receipt still verifies on Arc"
+    - "fresh fee envelope remains valid"
+    - "PolicyCustody build/test revalidation remains green on the exact head"
+  next_action:
+    gate: T0_DEPLOYMENT_EXECUTION
+    owner: HUMAN_SIGNER
+    command: "./script/t0-mainnet-proof.sh deploy --confirm"
+    scope: "deploy PolicyCustody + register the single configured policy only"
+  stop_after:
+    - "capture deployment transaction hash"
+    - "capture deployed contract address"
+    - "read back code/authority/chain/USDC/policy"
+  still_not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+
+
+t0_deployment_execution_method_delta_2026_10_01:
+  status: ACTIVE
+  reason: "Human workstation lacks admin rights; WSL/Arc Foundry local setup is unavailable."
+  canonical_source_unchanged: true
+  prior_method: "Foundry deploy script deploy + policy registration in one broadcast."
+  fallback_method: "Remix web IDE + MetaMask browser extension."
+  compiler_required: "solc 0.8.24 exact"
+  execution_sequence:
+    - "Deploy PolicyCustody constructor on Arc mainnet."
+    - "Verify deployment receipt and runtime bindings."
+    - "Call createPolicy once with the locked T0 configuration."
+    - "Verify policy registration receipt."
+    - "STOP before any contract funding."
+  authorization_scope_unchanged: true
+  protected_transactions:
+    deployment: AUTHORIZED
+    createPolicy: AUTHORIZED
+    contract_funding: NOT_AUTHORIZED
+    payout: NOT_AUTHORIZED
+    refund: NOT_AUTHORIZED
+    complete: NOT_AUTHORIZED
+  truth_boundary: "Two separate MetaMask-signed transactions replace the single Foundry broadcast, but no contract source or policy parameters change."
+
+
+t0_deployment_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  deployment_tx_hash: "0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  deployer: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  tx_value_wei: "0"
+  nonce: 0
+  verification:
+    head: 872975bc1c5428222d063a0ac9f5dc9b7d327c33
+    workflow_run: 36975671614
+    result: SUCCESS
+    artifact_digest: "sha256:dafa534dbfd6ff73e6bad22b88a79ccab72089019cc30395081646ff99db02d2"
+    proven:
+      - "deployment transaction succeeded on Arc"
+      - "receipt contractAddress matches expected contract"
+      - "runtime code exists"
+      - "authority matches dedicated T0 wallet"
+      - "expectedChainId == 5042"
+      - "usdcErc20Interface matches Arc canonical interface"
+      - "deploymentSpendCap == 0.05 native USDC"
+      - "policyCount == 0 before registration"
+      - "totalLiability == 0"
+      - "totalCustodyReceived == 0"
+      - "deployed executable runtime matches canonical compiled executable runtime after stripping Solidity CBOR metadata"
+  next_gate:
+    id: T0_POLICY_REGISTRATION_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
+    authorization: ALREADY_GRANTED_LIMITED_SCOPE
+  still_not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+
+
+t0_policy_registration_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 1
+  tx_value_wei: "0"
+  policy:
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    payout_recipient: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    max_spend_cap_wei: "10000000000000000"
+    max_spend_cap_usdc: "0.010"
+    unit_payout_wei: "1000000000000000"
+    unit_payout_usdc: "0.001"
+    expected_refund_usdc: "0.009"
+    expiry_unix: 1792036800
+    expiry_utc: "2026-10-15T04:00:00Z"
+  verification:
+    head: c4c923455ba2caf9a04a372c213f3339dfcbbfe8
+    workflow_run: 36976421698
+    result: SUCCESS
+    artifact_digest: "sha256:8f2c2c5b954d8062b133a9e0adbeb168c702dd8171cc8f7b4f5413bafcd491fa"
+    proven:
+      - "successful createPolicy transaction on Arc"
+      - "function selector matches createPolicy(bytes32,address,address,uint256,uint256,uint64)"
+      - "transaction calldata matches locked policy config"
+      - "PolicyCreated event matches locked policy config"
+      - "policyCount == 1"
+      - "policyExists == true"
+      - "state == Created"
+      - "remaining == 0"
+      - "totalLiability == 0"
+      - "totalCustodyReceived == 0"
+      - "totalValueReleased == 0"
+  next_gate:
+    id: T0_CONTRACT_FUNDING_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+  still_not_authorized:
+    - contract_funding
+    - payout
+    - refund
+    - complete
+
+
+t0_contract_funding_authorization_2026_10_02:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorization_interpretation: "User explicitly authorized the next contract-funding checkpoint."
+  authorized_scope:
+    contract: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    function: "fund(bytes32)"
+    value_wei: "10000000000000000"
+    value_usdc: "0.010"
+    occurrence_limit: 1
+  not_authorized:
+    - releaseConfiguredPayout
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
+    - any second/additional funding transaction
+  next_gate:
+    id: T0_CONTRACT_FUNDING_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
+
+
+t0_contract_funding_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 2
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "10000000000000000"
+  tx_value_usdc: "0.010"
+  verification:
+    head: 593acc5b016a0fccfadc2f012a7e787dbd4256f8
+    workflow_run: 36982128480
+    result: SUCCESS
+    artifact_digest: "sha256:d3540a85355c5d30c16bcc6b4c76761e758d704d05d4b2d21d4a994f8cb80ae2"
+    proven:
+      - "successful fund(policyId) transaction on Arc"
+      - "function selector matches fund(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "msg.value == 0.010 native USDC"
+      - "PolicyFunded event matches exact amount"
+      - "state == Funded immediately after funding verification"
+      - "remaining == 0.010 native USDC immediately after funding verification"
+      - "totalLiability == 0.010 native USDC immediately after funding verification"
+      - "totalCustodyReceived == 0.010 native USDC immediately after funding verification"
+      - "contract native balance == 0.010 native USDC immediately after funding verification"
+      - "totalValueReleased == 0 immediately after funding verification"
+  authorization_consumed:
+    id: T0_CONTRACT_FUNDING_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  next_gate:
+    id: T0_PAYOUT_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+  still_not_authorized:
+    - releaseConfiguredPayout
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
+
+
+t0_payout_authorization_2026_10_02:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorization_interpretation: "User explicitly authorized the next configured payout checkpoint."
+  authorized_scope:
+    contract: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    function: "releaseConfiguredPayout(bytes32)"
+    configured_value_wei: "1000000000000000"
+    configured_value_usdc: "0.001"
+    occurrence_limit: 1
+  not_authorized:
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
+    - any second payout transaction
+  next_gate:
+    id: T0_PAYOUT_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
+
+
+t0_payout_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 3
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "0"
+  payout_wei: "1000000000000000"
+  payout_usdc: "0.001"
+  remaining_wei: "9000000000000000"
+  remaining_usdc: "0.009"
+  verification:
+    head: 6e136f670b69a7a1248fff92af4e13c5185e2fac
+    workflow_run: 36983144079
+    result: SUCCESS
+    artifact_digest: "sha256:e24d3ca86d484e406c30b98c6966c8ed95438ea7099d244609e40ba3f346b690"
+    proven:
+      - "successful releaseConfiguredPayout(policyId) transaction on Arc"
+      - "function selector matches releaseConfiguredPayout(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "transaction msg.value == 0"
+      - "PaymentReleased event amount == configured 0.001 native USDC"
+      - "PaymentReleased unitPayout == 0.001 native USDC"
+      - "state == PaidOut immediately after payout verification"
+      - "remaining == 0.009 native USDC immediately after payout verification"
+      - "totalLiability == 0.009 native USDC immediately after payout verification"
+      - "totalCustodyReceived remains 0.010 native USDC"
+      - "totalValueReleased == 0.001 native USDC immediately after payout verification"
+      - "contract native balance == 0.009 native USDC immediately after payout verification"
+  authorization_consumed:
+    id: T0_PAYOUT_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  next_gate:
+    id: T0_REFUND_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+  still_not_authorized:
+    - refundRemaining
+    - cancelExpiredAndRefund
+    - complete
+
+
+t0_refund_authorization_2026_10_02:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorized_scope:
+    contract: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    function: "refundRemaining(bytes32)"
+    expected_refund_wei: "9000000000000000"
+    expected_refund_usdc: "0.009"
+    occurrence_limit: 1
+  not_authorized:
+    - complete
+    - cancelExpiredAndRefund
+    - any second refund transaction
+  next_gate:
+    id: T0_REFUND_EXECUTION
+    status: ACTIVE
+    owner: HUMAN_SIGNER
+
+
+t0_refund_preflight_2026_10_02:
+  status: PROVEN
+  head: f2e4a42949b877dfc83061ed396129cdd719b9c1
+  workflow_run: 36983766447
+  result: SUCCESS
+  verified:
+    - "Arc chain 5042"
+    - "authority matches dedicated T0 wallet"
+    - "policy exists"
+    - "state == PaidOut"
+    - "remaining == 0.009 native USDC"
+    - "totalLiability == 0.009 native USDC"
+    - "totalCustodyReceived == 0.010 native USDC"
+    - "totalValueReleased == 0.001 native USDC"
+    - "contract balance == 0.009 native USDC"
+  next_action:
+    function: "refundRemaining(bytes32)"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    expected_refund_wei: "9000000000000000"
+    expected_refund_usdc: "0.009"
+    occurrence_limit: 1
+  stop_after: "Capture and verify refund receipt; complete remains separately unauthorized."
+
+
+t0_refund_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 4
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "0"
+  refund_wei: "9000000000000000"
+  refund_usdc: "0.009"
+  verification:
+    head: 0ca236dc7826481b3f8ecbcf4d2f06852d30c24a
+    workflow_run: 36984307453
+    result: SUCCESS
+    artifact_digest: "sha256:ba4dca004eddb026b3689e217f507af91629d5803f8f07710ec5e406f0e4bb85"
+    proven:
+      - "successful refundRemaining(policyId) transaction on Arc"
+      - "function selector matches refundRemaining(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "transaction msg.value == 0"
+      - "RemainingFundsRefunded amount == 0.009 native USDC"
+      - "post-refund custody balance == 0"
+      - "post-refund totalRefunded == 0.009 native USDC"
+      - "state == Refunded immediately after refund verification"
+      - "remaining == 0"
+      - "totalLiability == 0"
+      - "totalCustodyReceived remains 0.010 native USDC"
+      - "totalValueReleased remains 0.001 native USDC"
+      - "contract native balance == 0"
+  authorization_consumed:
+    id: T0_REFUND_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  historical_next_gate:
+    id: T0_COMPLETION_AUTHORIZATION
+    status_at_that_time: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted_at_that_time: false
+  historical_still_not_authorized_at_that_time:
+    - complete
+
+
+t0_completion_authorization_2026_10_02:
+  status: PROVEN
+  authorized_by: HUMAN_REPO_OWNER
+  authorized_scope:
+    contract: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    function: "complete(bytes32)"
+    tx_value_wei: "0"
+    occurrence_limit: 1
+  not_authorized:
+    - any additional completion transaction
+    - any new policy
+    - any new funding/payout/refund action
+  historical_next_gate:
+    id: T0_COMPLETION_EXECUTION
+    status_at_that_time: ACTIVE
+    owner: HUMAN_SIGNER
+
+
+t0_completion_preflight_2026_10_02:
+  status: PROVEN
+  head: 5959a7002766677d78d071205d2e0b5607f92d20
+  workflow_run: 36984921552
+  result: SUCCESS
+  verified:
+    - "Arc chain 5042"
+    - "authority matches dedicated T0 wallet"
+    - "policy exists"
+    - "state == Refunded"
+    - "remaining == 0"
+    - "totalLiability == 0"
+    - "totalCustodyReceived == 0.010 native USDC"
+    - "totalValueReleased == 0.001 native USDC"
+    - "contract balance == 0"
+  historical_next_action:
+    function: "complete(bytes32)"
+    policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+    tx_value_wei: "0"
+    occurrence_limit: 1
+  stop_after: "Capture and verify completion receipt and final Completed state."
+
+
+t0_completion_execution_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932"
+  contract_address: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  sender: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 5
+  policy_id: "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000"
+  tx_value_wei: "0"
+  verification:
+    head: 6cae32c7b891bb0db296f37020343e6afccda692
+    workflow_run: 36985388199
+    result: SUCCESS
+    artifact_digest: "sha256:bbb7061ba2a8b7f67efa6128a07edff14655e4951e186bce1df6ad40f79fad81"
+    proven:
+      - "successful complete(policyId) transaction on Arc"
+      - "function selector matches complete(bytes32)"
+      - "policy id matches locked T0 policy"
+      - "transaction msg.value == 0"
+      - "PolicyCompleted event finalBalance == 0"
+      - "PolicyStateChanged proves Refunded -> Completed"
+      - "state == Completed"
+      - "remaining == 0"
+      - "totalLiability == 0"
+      - "totalCustodyReceived == 0.010 native USDC"
+      - "totalValueReleased == 0.001 native USDC"
+      - "contract native balance == 0"
+  authorization_consumed:
+    id: T0_COMPLETION_AUTHORIZATION
+    occurrence_limit: 1
+    remaining_occurrences: 0
+
+g1_t0_mainnet_custody:
+  status: PROVEN
+  proof_scope:
+    - mainnet_deployment
+    - policy_registration
+    - real_native_usdc_custody
+    - configured_payout
+    - remaining_funds_refund
+    - completion
+    - transaction_references
+    - runtime_source_binding
+  truth_boundary: >-
+    G1 proves the Arc-native custody/payout/refund lifecycle for PolicyCustody.
+    It does not prove the hidden-canary precommit, provider work/signing,
+    deterministic scoring, fail->no-pay causality, circuit breaker, or full
+    integrated live product loop.
+
+
+g0_resolution_2026_10_02:
+  status: PROVEN
+  policy_correction:
+    owner_signoff_sufficient_for_g0: true
+    collaborator_review: RECOMMENDED_NON_BLOCKING
+    mandatory_technical_owner_review: "Only when a later gate/change materially affects that owner's explicit technical surface."
+  pr: 1
+  pr_url: "https://github.com/Faadil1/ARC_ASSURANCE_01/pull/1"
+  merge_sha: 1220fc5d39b2262f0b66d0ae4713629b10f3ca29
+  opeblow_permission: write
+  next: "G2 readiness is content-reconciled and green; finalize public role addresses, then run exact read-only Arc predeploy checks."
+
+g2_precommit_readiness_2026_10_02:
+  status: CONTENT_RECONCILED__READINESS_GREEN__PROMOTION_BLOCKED
+  promotion_blockers:
+    - PUBLIC_ROLE_ADDRESSES_NOT_FINALIZED
+    - INTEGRATED_ASSURANCE_VAULT_NOT_LIVE_DEPLOYED
+    - LIVE_BATCH_COMMIT_NOT_EXECUTED
+  implementation_vehicle:
+    contract: AssuranceVault
+    rationale: "Use the integrated load-bearing product core; do not create a separate proof-only AssuranceCoreV1 mainnet deployment."
+    source_base_branch: ops/exact-predeploy-gas-snapshot
+    source_base_sha: c3aaa11bf7454e1f3afe0fb740c8c0ccd7fedd5c
+    clean_room_run: 36680776957
+    javascript_tests: "72 passed / 0 failed"
+    solidity_tests: "29 passed / 0 failed"
+    creation_bytecode_hash: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+  readiness_branch: ops/g2-precommit-readiness
+  readiness_pr: 45
+  readiness_verification:
+    content_reconciled_head: 21ff1ac9b138e2271018bae696de744268bfc223
+    clean_room_verified_parent: ccbf1aa522e2ef6716130466b25ce57a96a0a0d4
+    clean_room_run: 37006382193
+    result: SUCCESS
+    clean_room_parent_artifact: "post-G0 content reconciliation verified green"
+    parent_to_head_delta: "one machine-readable readiness YAML file only"
+    executable_delta_from_source_base: "NONE; compare from c3aaa11 touches governance/readiness docs only"
+    repository_graph_note: "Stack predates G0 merge commit; relevant G0 content is synchronized. Graph ancestry is accepted integration-history debt, not a live-evidence claim."
+  readiness_artifacts:
+    - docs/internal/G2-PRECOMMIT-READINESS.md
+    - docs/internal/G2-PRECOMMIT-READINESS.yaml
+  hidden_preimage_rule: >-
+    Before provider output lock, public surfaces may contain only the opaque
+    commitment. Commitment preimage material must remain private until reveal
+    and must not be placed in GitHub, Actions logs/artifacts, PR comments, chat,
+    or screenshots.
+  protected_actions:
+    integrated_deployment: NOT_AUTHORIZED
+    policy_creation: NOT_AUTHORIZED
+    policy_funding: NOT_AUTHORIZED
+    commit_batch: NOT_AUTHORIZED
+    provider_output_lock: NOT_AUTHORIZED
+    reveal: NOT_AUTHORIZED
+    resolve: NOT_AUTHORIZED
+  exact_g2_live_claim: >-
+    A real opaque hidden-test commitment exists on Arc mainnet before provider
+    execution/output lock for the same batch.
+  truth_boundary: >-
+    G2 does not itself prove provider execution, output correctness,
+    deterministic resolution, fail->no-pay, breaker behavior, or adoption.
+
+
+g2_readonly_predeploy_2026_10_02:
+  status: PROVEN
+  evidence_head: "1933b9d5bfd9722450b099f7e054fe610ab017dc"
+  workflows:
+    reproducible_build:
+      run: 37022813711
+      result: SUCCESS
+    readonly_predeploy:
+      run: 37022813189
+      result: SUCCESS
+      artifact_id: 11234067687
+      artifact_digest: "sha256:7b83be30ab648cb78cff2d82c00d1d9029b63e82292333ebec1ba006a8ea614d"
+  role_topology:
+    authority_funder:
+      address: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      eoa: true
+      observed_nonce: 6
+      observed_balance_wei: "450904799000000000"
+      observed_balance_usdc: "0.450904799"
+    provider_signer:
+      address: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+      eoa: true
+      observed_nonce: 0
+      observed_balance_wei: "0"
+    payout_recipient:
+      address: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+      eoa: true
+      observed_nonce: 0
+      observed_balance_wei: "0"
+    all_distinct: true
+  deployment_manifest:
+    chain_id: 5042
+    deployment_spend_cap_wei: "50000000000000000"
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+    policy_max_failures: 2
+    policy_max_spend_cap_wei: "20000000000000000"
+    policy_unit_payout_wei: "2000000000000000"
+    policy_expiry_unix: "1792033200"
+    policy_expiry_note: "2026-10-14 23:00 America/Toronto; refresh if execution is delayed"
+    creation_bytecode_keccak256: "0xac69dd96b86b9083bf08c6ef904df7bf9ee602addaccc1938357f9cb9c75ff57"
+    init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  arc_snapshot:
+    block_number: "23896460"
+    gas_price_wei: "20000000000"
+    deployer_pending_nonce: 6
+    predicted_contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    eth_estimateGas_units: "3493605"
+    estimated_deployment_cost_wei_at_observed_gas_price: "69872100000000000"
+    estimated_deployment_cost_usdc: "0.0698721"
+  conservative_full_hero_budget:
+    exact_head_execution_gas_units: "2426871"
+    safe_total_gas_units: "7400595"
+    safe_gas_price_wei: "40000000000"
+    gas_reserve_wei: "296023800000000000"
+    principal_outflow_wei: "10000000000000000"
+    peak_required_wei: "306023800000000000"
+    peak_required_usdc: "0.3060238"
+    observed_wallet_balance_usdc: "0.450904799"
+    observed_balance_headroom_usdc: "0.144880999"
+    wallet_ceiling_usdc: "5.00"
+    verdict: READ_ONLY_GAS_BUDGET_WITHIN_CEILING
+  safety:
+    private_key_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+  invalidation:
+    - "deployer nonce changes from 6"
+    - "init-code or constructor args change"
+    - "creation bytecode changes"
+    - "gas snapshot becomes stale for approval"
+  next_gate:
+    id: G2_INTEGRATED_DEPLOYMENT
+    status: PROVEN
+    owner: HUMAN_SIGNER
+    protected_action: true
+    authorization_consumed: true
+    next_protected_gate: G2_POLICY_CREATION_AUTHORIZATION
+
+
+g2_integrated_deployment_authorization_2026_10_02:
+  status: GRANTED
+  granted_by: HUMAN_OWNER
+  exact_user_authorization: "J’autorise uniquement le déploiement de l’AssuranceVault intégré sur Arc Mainnet."
+  scope:
+    allowed:
+      - "Deploy the integrated AssuranceVault on Arc Mainnet only"
+    not_allowed:
+      - "createPolicy"
+      - "fund"
+      - "commitBatch"
+      - "lockProviderOutput"
+      - "revealCanary"
+      - "resolveBatch"
+      - "refundProtectedRemainder"
+      - "any additional wallet top-up"
+  bound_evidence_head: "1933b9d5bfd9722450b099f7e054fe610ab017dc"
+  bound_init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  required_pre_broadcast_revalidation:
+    status: ACTIVE
+    must_confirm:
+      - "Arc chain id == 5042"
+      - "deployer == 0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      - "pending nonce still == 6"
+      - "predicted contract address still == 0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+      - "exact init-code hash unchanged"
+      - "wallet balance remains sufficient"
+      - "fresh gas estimate remains acceptable"
+  broadcast_execution:
+    signer: HUMAN_METAMASK_ONLY
+    assistant_private_key_access: FORBIDDEN
+    status: NOT_YET_BROADCAST
+
+
+g2_final_prebroadcast_revalidation_2026_10_02:
+  status: PROVEN
+  exact_head: "3cd45b6d687a00f423cf76ae5e8690b70fce54aa"
+  reproducible_build:
+    run: 37024125860
+    result: SUCCESS
+  readonly_predeploy:
+    run: 37024125628
+    result: SUCCESS
+    artifact_id: 11234575822
+    artifact_digest: "sha256:4caab15b9b6457350d10c73fc555419d1f1e43c33fcfca432762f143f0706ddd"
+  chain_id: 5042
+  block_number: "23897749"
+  gas_price_wei: "20000000000"
+  deployer:
+    address: "0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb"
+    pending_nonce: 6
+    balance_wei: "450904799000000000"
+  init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  predicted_contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  eth_estimateGas_units: "3493605"
+  estimated_deploy_cost_wei: "69872100000000000"
+  conservative_full_hero_peak_wei: "306023800000000000"
+  wallet_budget_verdict: READ_ONLY_GAS_BUDGET_WITHIN_CEILING
+  deployment_helper:
+    filename: "g2_assurancevault_deploy_exact.js"
+    sha256: "a5f0809ad9c4741c569d4adf8b51d87a31d5c44d0e09ecb7d0affb2a5b4c4b32"
+    behavior: "local Remix script; verifies chain/account/nonce/init hash/predicted address/gas before requesting MetaMask contract-creation transaction"
+  protected_action:
+    authorization: GRANTED_DEPLOYMENT_ONLY
+    ready_for_human_wallet_confirmation: true
+    downstream_actions_authorized: false
+
+
+g2_integrated_deployment_2026_10_02:
+  status: PROVEN
+  network: ARC_MAINNET
+  chain_id: 5042
+  transaction_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+  block_number: 23909824
+  deployer: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  deployment_nonce: 6
+  pending_nonce_after: 7
+  tx_value_wei: "0"
+  contract_address: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  runtime_code_bytes: 15618
+  init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+  exact_init_code_match: true
+  gas:
+    gas_used: 3464938
+    effective_gas_price_wei: "21500000000"
+    effective_cost_wei: "74496167000000000"
+    effective_cost_usdc: "0.074496167"
+  constructor_bindings:
+    authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    expected_chain_id: 5042
+    usdc_erc20_interface: "0x3600000000000000000000000000000000000000"
+    deployment_spend_cap_wei: "50000000000000000"
+  initial_state:
+    policy_count: 0
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+  verification:
+    workflow: G2_DEPLOYMENT_RECEIPT
+    run: 37036958146
+    result: SUCCESS
+    verification_head: "84efcb9d67085f12f171988fa21e5ebff7c79b76"
+    artifact_id: 11241455626
+    artifact_digest: "sha256:a502c42de338950a9f526c8ca1aeb37935a8d47ee7d7bfa8566fb99f316922d4"
+    reproducible_build_run: 37036958053
+    source_continuity: "No Solidity/product JS/build-input changes from deployment helper head 3cd45b6..."
+  deployment_authorization:
+    status: PROVEN_CONSUMED
+    occurrence_limit: 1
+    remaining_occurrences: 0
+  truth_boundary: >-
+    Integrated AssuranceVault deployment is live and exact-source/init-code bound.
+    No policy, custody, batch commitment, provider output, reveal, resolve, payout
+    or breaker claim is implied.
+
+g2_policy_creation_authorization:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  locked_policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  rule: "STOP. No createPolicy transaction may be signed or broadcast until separate explicit human authorization."
+  downstream_still_unauthorized:
+    - fund
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+
+
+g2_policy_creation_preflight_2026_10_02:
+  status: PROVEN
+  workflow_run: 37038419742
+  evidence_head: "de510d74098314befaf5c9ddd7e518f0c4025153"
+  artifact_id: 11240893301
+  artifact_digest: "sha256:a560205397e6605073420dd13dcfdd107ba3a2d60f78e3dfda252fb4c19401a5"
+  observed:
+    chain_id: 5042
+    block_number: 23912425
+    contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    authority_pending_nonce: 7
+    authority_balance_wei: "376408632000000000"
+    authority_balance_usdc: "0.376408632"
+    policy_count: 0
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+  locked_policy:
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+    payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+    scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+    max_failures: 2
+    max_spend_cap_wei: "20000000000000000"
+    unit_payout_wei: "2000000000000000"
+    expiry_unix: "1792033200"
+  transaction_preflight:
+    function: "createPolicy(bytes32,address,address,address,bytes32,uint32,uint256,uint256,uint64)"
+    tx_value_wei: "0"
+    calldata_keccak256: "0x407d54a1632fa2d5cfc0231cc2eb3300c36d86ba6d97d312f7d4e5bb14b9c5b2"
+    estimate_gas_units: "272515"
+    gas_price_wei: "20000000036"
+    estimated_fee_wei: "5450300009810540"
+    estimated_fee_usdc: "0.00545030000981054"
+  safety:
+    private_key_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+  next_gate:
+    id: G2_POLICY_CREATION_AUTHORIZATION
+    status: ACTIVE
+    owner: HUMAN
+    protected_action: true
+    authorization_granted: false
+
+
+g2_policy_creation_authorization_2026_10_02:
+  status: GRANTED
+  granted_by: HUMAN_OWNER
+  exact_user_authorization: "J’autorise uniquement la création de la policy G2 ci-dessus via createPolicy sur l’AssuranceVault déployé"
+  scope:
+    contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    function: "createPolicy(bytes32,address,address,address,bytes32,uint32,uint256,uint256,uint64)"
+    occurrence_limit: 1
+    allowed: "Create exactly the previously locked G2 policy"
+  downstream_still_unauthorized:
+    - fund
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+    - additional_wallet_topup
+    - second_policy_creation
+  required_pre_broadcast_revalidation:
+    status: ACTIVE
+  execution:
+    signer: HUMAN_METAMASK_ONLY
+    status: NOT_YET_BROADCAST
+
+
+g2_policy_creation_preflight_refresh_2026_10_02_2040_et:
+  status: PROVEN
+  workflow_run: 37083047653
+  evidence_head: "a833a071e7b64fd9aa7f3dc5d76e2e796778824d"
+  artifact_id: 11258409343
+  artifact_digest: "sha256:fc7f9eb290e9b7de6ab3bba7d1df85056807683775dd23c8530ebd9a83d99ca2"
+  observed:
+    chain_id: 5042
+    block_number: 23966103
+    authority_pending_nonce: 7
+    authority_balance_wei: "376408632000000000"
+    policy_count: 0
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+    expiry_is_future: true
+  locked_transaction:
+    calldata_keccak256: "0x407d54a1632fa2d5cfc0231cc2eb3300c36d86ba6d97d312f7d4e5bb14b9c5b2"
+    estimate_gas_units: "272515"
+    gas_price_wei: "20000010000"
+    estimated_fee_wei: "5450302725150000"
+  next_gate:
+    id: G2_POLICY_CREATION_EXECUTION
+    status: ACTIVE
+    authorization: GRANTED_ONCE
+    signer: HUMAN_METAMASK_ONLY
+
+
+g2_policy_creation_2026_10_02:
+  status: PROVEN
+  transaction_hash: "0x5713b214d517b681f7d266ed8eb7173611acf4833c71940932003d2e0c93c162"
+  block_number: 23966937
+  authority: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 7
+  pending_nonce_after: 8
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  function: createPolicy
+  tx_value_wei: "0"
+  calldata_keccak256: "0x407d54a1632fa2d5cfc0231cc2eb3300c36d86ba6d97d312f7d4e5bb14b9c5b2"
+  gas_used: 265470
+  effective_gas_price_wei: "21500000000"
+  effective_fee_wei: "5707605000000000"
+  effective_fee_usdc: "0.005707605"
+  policy:
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+    provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+    payout_recipient: "0x6B8ad09233dF44eD57B99aF8839129303955590C"
+    scorer_id_hash: "0xd84be785f67677ef9712c83075e3141b2adf48eb7aa861397a224dff85627b45"
+    max_failures: 2
+    failure_count: 0
+    max_spend_cap_wei: "20000000000000000"
+    unit_payout_wei: "2000000000000000"
+    expiry_unix: "1792033200"
+    created_at_unix: "1790988482"
+    funded_at_unix: "0"
+    total_funded_wei: "0"
+    total_paid_out_wei: "0"
+    total_refunded_wei: "0"
+    paused: false
+    closed: false
+    refund_issued: false
+    exists: true
+    active_batch_id: "0x0000000000000000000000000000000000000000000000000000000000000000"
+  vault_after:
+    policy_count: 1
+    total_liability_wei: "0"
+    total_custody_received_wei: "0"
+    total_value_released_wei: "0"
+    contract_balance_wei: "0"
+  verification:
+    workflow_run: 37083767443
+    result: SUCCESS
+    verification_head: "4338c116e57bcc7a6b71b12a59abf63fd0419e23"
+    artifact_id: 11260325097
+    artifact_digest: "sha256:0f9dcd57c9c13505ecdfaaf00e010a14914d8b811a15c3c35c36add232e20f33"
+  authorization:
+    status: PROVEN_CONSUMED
+    occurrence_limit: 1
+    remaining_occurrences: 0
+
+g2_funding_preflight_2026_10_02:
+  status: PROVEN
+  workflow_run: 37084047411
+  evidence_head: "7e9f1d0f40638fbd19996c3310c3145a0b6ecb0e"
+  artifact_id: 11260370910
+  artifact_digest: "sha256:8834db90aeb9df780ca941b778d9754911506be54a8b124b61b0353f0f76aebc"
+  observed:
+    chain_id: 5042
+    block_number: 23967855
+    authority_pending_nonce: 8
+    authority_balance_wei: "370701027000000000"
+    authority_balance_usdc: "0.370701027"
+    policy_exists: true
+    policy_funded_at_unix: "0"
+    policy_total_funded_wei: "0"
+    contract_balance_wei: "0"
+    total_liability_wei: "0"
+  locked_transaction:
+    function: "fund(bytes32)"
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    tx_value_wei: "10000000000000000"
+    tx_value_usdc: "0.010"
+    calldata: "0xbf14c119d29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    calldata_keccak256: "0x326ce8c37cbc14991d1b739a96839f12ac3b9b9857dd2608831ceeb3dfd5d16a"
+    estimate_gas_units: "116049"
+    gas_price_wei: "20000010000"
+    estimated_fee_wei: "2320981160490000"
+    estimated_fee_usdc: "0.00232098116049"
+    estimated_total_wallet_outflow_wei: "12320981160490000"
+    estimated_total_wallet_outflow_usdc: "0.01232098116049"
+  expected_post_state_if_success:
+    policy_total_funded_wei: "10000000000000000"
+    total_liability_wei: "10000000000000000"
+    total_custody_received_wei: "10000000000000000"
+    contract_balance_wei: "10000000000000000"
+    funded_at_becomes_nonzero: true
+  safety:
+    private_key_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+
+g2_funding_authorization:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  exact_scope_if_granted: "One fund(policyId) call with exactly 0.010 native USDC to the locked G2 policy on the deployed AssuranceVault."
+  downstream_still_unauthorized:
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+    - additional_funding
+
+
+g2_funding_authorization_2026_10_02:
+  status: GRANTED
+  granted_by: HUMAN_OWNER
+  exact_user_authorization: "J’autorise uniquement le funding de 0.010 native USDC via fund(policyId) pour la policy G2 sur l’AssuranceVault déployé."
+  scope:
+    contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    function: "fund(bytes32)"
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    tx_value_wei: "10000000000000000"
+    tx_value_usdc: "0.010"
+    occurrence_limit: 1
+  downstream_still_unauthorized:
+    - commitBatch
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder
+    - additional_funding
+    - additional_wallet_topup
+  required_pre_broadcast_revalidation:
+    status: ACTIVE
+  execution:
+    signer: HUMAN_METAMASK_ONLY
+    assistant_private_key_access: FORBIDDEN
+    status: NOT_YET_BROADCAST
+
+
+g2_funding_preflight_refresh_after_authorization_2026_10_02:
+  status: PROVEN
+  workflow_run: 37084801020
+  evidence_head: "c065cda32402ae32beb06a8824e06fb18b2b877f"
+  artifact_id: 11260566119
+  artifact_digest: "sha256:d5d01158e5ab9f6cb6a972d0b9cca42fe3edda58fb0257b014ffe4603dc86b4b"
+  observed:
+    chain_id: 5042
+    block_number: 23969167
+    authority_pending_nonce: 8
+    authority_balance_wei: "370701027000000000"
+    policy_funded_at_unix: "0"
+    policy_total_funded_wei: "0"
+    contract_balance_wei: "0"
+    total_liability_wei: "0"
+    expiry_is_future: true
+  locked_transaction:
+    function: "fund(bytes32)"
+    tx_value_wei: "10000000000000000"
+    calldata_keccak256: "0x326ce8c37cbc14991d1b739a96839f12ac3b9b9857dd2608831ceeb3dfd5d16a"
+    estimate_gas_units: "116049"
+    gas_price_wei: "20000010000"
+    estimated_fee_wei: "2320981160490000"
+    estimated_total_wallet_outflow_wei: "12320981160490000"
+  next_gate:
+    id: G2_FUNDING_EXECUTION
+    status: ACTIVE
+    authorization: GRANTED_ONCE
+    signer: HUMAN_METAMASK_ONLY
+
+
+g2_funding_2026_10_02:
+  status: PROVEN
+  transaction_hash: "0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf"
+  block_number: 23970786
+  authority_funder: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+  nonce: 8
+  pending_nonce_after: 9
+  contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  function: fund
+  policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+  tx_value_wei: "10000000000000000"
+  tx_value_usdc: "0.010"
+  calldata_keccak256: "0x326ce8c37cbc14991d1b739a96839f12ac3b9b9857dd2608831ceeb3dfd5d16a"
+  gas_used: 110845
+  effective_gas_price_wei: "21500000000"
+  effective_fee_wei: "2383167500000000"
+  effective_fee_usdc: "0.0023831675"
+  policy_after:
+    funded_at_unix: "1790990435"
+    total_funded_wei: "10000000000000000"
+    total_paid_out_wei: "0"
+    total_refunded_wei: "0"
+    active_batch_id: "0x0000000000000000000000000000000000000000000000000000000000000000"
+    paused: false
+    closed: false
+    refund_issued: false
+  vault_after:
+    policy_count: 1
+    total_liability_wei: "10000000000000000"
+    total_custody_received_wei: "10000000000000000"
+    total_value_released_wei: "0"
+    contract_balance_wei: "10000000000000000"
+  verification:
+    workflow_run: 37085950306
+    result: SUCCESS
+    verification_head: "610f413e9f18a4f6d85b6383bc06ffa2f8e862be"
+    artifact_id: 11259859534
+    artifact_digest: "sha256:dadf74866716607c17ffd3665ea92ab6048cb6be9967a544146e329556da8864"
+  authorization:
+    status: PROVEN_CONSUMED
+    occurrence_limit: 1
+    remaining_occurrences: 0
+
+g2_precommit_authorization:
+  status: ACTIVE
+  owner: HUMAN
+  protected_action: true
+  authorization_granted: false
+  prerequisite: "Generate and locally preserve a one-time hidden canary preimage; only the opaque commitment may be submitted onchain."
+  downstream_still_unauthorized:
+    - lockProviderOutput
+    - revealCanary
+    - resolveBatch
+    - refundProtectedRemainder

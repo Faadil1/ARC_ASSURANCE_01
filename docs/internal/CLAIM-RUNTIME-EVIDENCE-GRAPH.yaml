@@ -1,0 +1,385 @@
+version: 1.0.1
+template: CLAIM_RUNTIME_EVIDENCE_GRAPH
+policy: EVIDENCE-GRAPH-POLICY.yaml
+project: ARC_ASSURANCE_01
+updated_at: "2026-10-02T04:40:43-04:00"
+
+claims:
+  - claim_id: T0_LOCAL_REVALIDATED
+    statement: "The T0 PolicyCustody path is locally build/test verified under the pinned Arc Foundry workflow."
+    evidence_class: LOCAL
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_LOCAL_REVALIDATION]
+  - claim_id: T0_READONLY_PREFUNDING_STATE
+    statement: "The dedicated Arc wallet and fee envelope passed the latest read-only pre-funding checks."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_READONLY_PREFUNDING]
+  - claim_id: T0_POST_FUNDING_WALLET_STATE
+    statement: "The dedicated Arc wallet is live-funded after the protected human top-up."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_POST_FUNDING]
+    proven_edges:
+      - "live wallet state"
+      - "EOA"
+      - "pending nonce 0"
+      - "balance >= 0.50 USDC"
+      - "balance <= 5.00 USDC hard ceiling"
+    receipt_binding:
+      transaction_hash: "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d"
+      verification_run: 36938737314
+  - claim_id: T0_MAINNET_DEPLOYMENT
+    statement: "PolicyCustody is deployed on Arc mainnet and its executable runtime is bound to the canonical source build."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_DEPLOYMENT]
+  - claim_id: T0_MAINNET_POLICY_REGISTRATION
+    statement: "Exactly one T0 policy is registered on the deployed Arc mainnet PolicyCustody contract with the locked configuration."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_POLICY_REGISTRATION]
+  - claim_id: T0_MAINNET_CONTRACT_FUNDING
+    statement: "The registered T0 policy received exactly 0.010 native USDC in real Arc mainnet contract custody."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_CONTRACT_FUNDING]
+  - claim_id: T0_MAINNET_CONFIGURED_PAYOUT
+    statement: "The registered T0 policy released exactly 0.001 native USDC through its configured payout path on Arc mainnet."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_CONFIGURED_PAYOUT]
+  - claim_id: T0_MAINNET_REMAINING_REFUND
+    statement: "The registered T0 policy returned exactly 0.009 native USDC of remaining custody to its immutable funder on Arc mainnet."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_REMAINING_REFUND]
+  - claim_id: T0_MAINNET_COMPLETION
+    statement: "The registered T0 policy completed on Arc mainnet after its custody liability was fully drained."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_COMPLETION]
+  - claim_id: T0_MAINNET_CUSTODY
+    statement: "Real Arc deployment and deploy→fund→payout→refund→complete receipts are bound to the approved T0 source."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_T0_MAINNET_SUCCESS]
+    proven_edges:
+      - "mainnet deployment"
+      - "runtime/source binding"
+      - "policy registration"
+      - "contract funding"
+      - "configured payout"
+      - "remaining-funds refund"
+      - "completion"
+  - claim_id: INTEGRATED_MAINNET_DEPLOYMENT
+    statement: "The integrated AssuranceVault exact init code is deployed on Arc mainnet with constructor/runtime bindings verified."
+    evidence_class: LIVE
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_INTEGRATED_MAINNET_DEPLOYMENT]
+  - claim_id: INTEGRATED_LOCAL_LOAD_BEARING
+    statement: "The separate integrated AssuranceVault line locally demonstrates load-bearing PASS/FAIL/breaker behavior."
+    evidence_class: LOCAL
+    truth_state: OBSERVED
+    graph_status: COMPLETE
+    scenario_ids: [SC_INTEGRATED_LOCAL]
+  - claim_id: INTEGRATED_LIVE_FINANCIAL_CAUSALITY
+    statement: "The integrated vault is live on Arc and PASS→pay, FAIL→no-pay, breaker→refund are proven by live receipts."
+    evidence_class: PARTIAL
+    truth_state: UNKNOWN
+    graph_status: PARTIAL
+    scenario_ids: [SC_INTEGRATED_LIVE]
+    proven_edges:
+      - "integrated mainnet deployment"
+      - "exact init-code binding"
+      - "constructor binding"
+    missing_edges:
+      - "policy creation"
+      - "real policy funding"
+      - "hidden precommit"
+      - "provider output lock"
+      - "canary reveal"
+      - "deterministic resolve"
+      - "PASS -> pay"
+      - "FAIL -> no-pay"
+      - "breaker -> refund"
+
+scenarios:
+  - scenario_id: SC_T0_LOCAL_REVALIDATION
+    scenario_type: SUCCESS
+    preconditions: ["Pinned Arc Foundry", "No broadcast"]
+    expected_consequence: "Build and 40/40 tests pass."
+    runtime_execution_ids: [RUN_T0_LOCAL]
+  - scenario_id: SC_T0_READONLY_PREFUNDING
+    scenario_type: BOUNDARY
+    preconditions: ["Arc chain 5042", "Read-only public chain checks"]
+    expected_consequence: "Wallet state and contingency fee budget remain within configured boundary."
+    runtime_execution_ids: [RUN_T0_READONLY]
+  - scenario_id: SC_T0_POST_FUNDING
+    scenario_type: BOUNDARY
+    preconditions: ["Human wallet top-up executed", "Arc chain 5042", "Read-only verification only"]
+    expected_consequence: "Funded wallet is independently observable without any signature or value movement."
+    runtime_execution_ids: [RUN_T0_POST_FUNDING]
+  - scenario_id: SC_T0_MAINNET_DEPLOYMENT
+    scenario_type: SUCCESS
+    preconditions: ["Arc chain 5042", "Human-authorized deployment", "Exact locked constructor config"]
+    expected_consequence: "Successful zero-value contract creation with canonical runtime bindings."
+    runtime_execution_ids: [RUN_T0_MAINNET_DEPLOYMENT]
+  - scenario_id: SC_T0_MAINNET_POLICY_REGISTRATION
+    scenario_type: SUCCESS
+    preconditions: ["PolicyCustody deployed on Arc", "Human-authorized one-policy registration", "Locked T0 policy config"]
+    expected_consequence: "PolicyCreated receipt and on-chain Created state match the locked configuration with zero custody."
+    runtime_execution_ids: [RUN_T0_MAINNET_POLICY_REGISTRATION]
+  - scenario_id: SC_T0_MAINNET_CONTRACT_FUNDING
+    scenario_type: SUCCESS
+    preconditions: ["Policy exists in Created state", "Human-authorized exact 0.010 native-USDC funding", "Arc chain 5042"]
+    expected_consequence: "Policy transitions to Funded and exact 0.010 native USDC becomes policy liability/custody."
+    runtime_execution_ids: [RUN_T0_MAINNET_CONTRACT_FUNDING]
+  - scenario_id: SC_T0_MAINNET_CONFIGURED_PAYOUT
+    scenario_type: SUCCESS
+    preconditions: ["Policy in Funded state", "Human-authorized configured payout", "Arc chain 5042"]
+    expected_consequence: "Exactly 0.001 native USDC is released to the locked payout recipient and 0.009 remains in policy custody."
+    runtime_execution_ids: [RUN_T0_MAINNET_CONFIGURED_PAYOUT]
+  - scenario_id: SC_T0_MAINNET_REMAINING_REFUND
+    scenario_type: RECOVERY
+    preconditions: ["Policy in PaidOut state", "Human-authorized refundRemaining", "0.009 native USDC remaining custody"]
+    expected_consequence: "Exactly 0.009 native USDC is returned to the immutable funder and policy liability/custody falls to zero."
+    runtime_execution_ids: [RUN_T0_MAINNET_REMAINING_REFUND]
+  - scenario_id: SC_T0_MAINNET_COMPLETION
+    scenario_type: SUCCESS
+    preconditions: ["Policy in Refunded state", "Zero remaining custody/liability", "Human-authorized complete(policyId)"]
+    expected_consequence: "Policy transitions Refunded -> Completed with no value movement and final contract balance zero."
+    runtime_execution_ids: [RUN_T0_MAINNET_COMPLETION]
+  - scenario_id: SC_T0_MAINNET_SUCCESS
+    scenario_type: SUCCESS
+    preconditions: ["Wallet funded", "Protected human authorizations at each consequential step"]
+    expected_consequence: "Real Arc deploy/register/fund/payout/refund/complete receipts reconstruct a balanced custody lifecycle."
+    runtime_execution_ids:
+      - RUN_T0_MAINNET_DEPLOYMENT
+      - RUN_T0_MAINNET_POLICY_REGISTRATION
+      - RUN_T0_MAINNET_CONTRACT_FUNDING
+      - RUN_T0_MAINNET_CONFIGURED_PAYOUT
+      - RUN_T0_MAINNET_REMAINING_REFUND
+      - RUN_T0_MAINNET_COMPLETION
+  - scenario_id: SC_INTEGRATED_MAINNET_DEPLOYMENT
+    scenario_type: SUCCESS
+    preconditions: ["Arc chain 5042", "Human-authorized exact integrated deployment", "Bound init code and constructor config"]
+    expected_consequence: "AssuranceVault exists at the predicted Arc address with exact init-code and constructor bindings."
+    runtime_execution_ids: [RUN_INTEGRATED_MAINNET_DEPLOYMENT]
+  - scenario_id: SC_INTEGRATED_LOCAL
+    scenario_type: SUCCESS
+    preconditions: ["Integrated branch clean-room build"]
+    expected_consequence: "Local PASS/FAIL/breaker/recovery tests pass."
+    runtime_execution_ids: [RUN_INTEGRATED_LOCAL]
+  - scenario_id: SC_INTEGRATED_LIVE
+    scenario_type: SUCCESS
+    preconditions: ["Integrated vault deployed on Arc", "Policy exists and is funded", "Opaque precommit precedes provider output"]
+    expected_consequence: "Live financial causality and recovery are independently reconstructed."
+    runtime_execution_ids: [RUN_INTEGRATED_MAINNET_DEPLOYMENT]
+
+runtime_executions:
+  - execution_id: RUN_T0_LOCAL
+    runtime: "GitHub Actions / Arc Foundry local EVM"
+    observed_at: "2026-10-01T16:23:33Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_FOUNDRY_LOCAL]
+    receipt_ids: [RCPT_T0_REVALIDATION]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+    deployment_id: none
+  - execution_id: RUN_T0_READONLY
+    runtime: "Arc mainnet JSON-RPC read-only"
+    observed_at: "2026-10-01T16:23:33Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_READONLY]
+    receipt_ids: [RCPT_T0_REVALIDATION, RCPT_T0_FEE]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+    deployment_id: none
+  - execution_id: RUN_T0_POST_FUNDING
+    runtime: "Arc mainnet JSON-RPC read-only via GitHub Actions"
+    observed_at: "2026-10-01T22:58:26Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_READONLY]
+    receipt_ids: [RCPT_T0_POST_FUNDING_REVALIDATION, RCPT_T0_POST_FUNDING_FEE]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 220a61576cab23665483d67ebca25e44590b35ac
+    deployment_id: none
+  - execution_id: RUN_T0_MAINNET_DEPLOYMENT
+    runtime: "Arc mainnet + GitHub Actions read-only verification"
+    observed_at: "2026-10-02T06:52:55Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_T0_MAINNET_DEPLOYMENT]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 872975bc1c5428222d063a0ac9f5dc9b7d327c33
+    deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_T0_MAINNET_POLICY_REGISTRATION
+    runtime: "Arc mainnet + GitHub Actions read-only verification"
+    observed_at: "2026-10-02T07:01:49Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_T0_MAINNET_POLICY_REGISTRATION]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: c4c923455ba2caf9a04a372c213f3339dfcbbfe8
+    deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_T0_MAINNET_CONTRACT_FUNDING
+    runtime: "Arc mainnet + GitHub Actions read-only verification"
+    observed_at: "2026-10-02T08:06:17Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_T0_MAINNET_CONTRACT_FUNDING]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 593acc5b016a0fccfadc2f012a7e787dbd4256f8
+    deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_T0_MAINNET_CONFIGURED_PAYOUT
+    runtime: "Arc mainnet + GitHub Actions read-only verification"
+    observed_at: "2026-10-02T08:17:08Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_T0_MAINNET_CONFIGURED_PAYOUT]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 6e136f670b69a7a1248fff92af4e13c5185e2fac
+    deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_T0_MAINNET_REMAINING_REFUND
+    runtime: "Arc mainnet + GitHub Actions read-only verification"
+    observed_at: "2026-10-02T08:29:39Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_T0_MAINNET_REMAINING_REFUND]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 0ca236dc7826481b3f8ecbcf4d2f06852d30c24a
+    deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_T0_MAINNET_COMPLETION
+    runtime: "Arc mainnet + GitHub Actions read-only verification"
+    observed_at: "2026-10-02T08:40:43Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_T0_MAINNET_COMPLETION]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 6cae32c7b891bb0db296f37020343e6afccda692
+    deployment_id: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+  - execution_id: RUN_INTEGRATED_MAINNET_DEPLOYMENT
+    runtime: "Arc mainnet + GitHub Actions receipt/source verification"
+    observed_at: "2026-10-02T16:53:49Z"
+    result: PASS
+    dependency_ids: [DEP_ARC_MAINNET_SETTLEMENT]
+    receipt_ids: [RCPT_INTEGRATED_MAINNET_DEPLOYMENT]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: 84efcb9d67085f12f171988fa21e5ebff7c79b76
+    deployment_id: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+  - execution_id: RUN_INTEGRATED_LOCAL
+    runtime: "GitHub Actions clean-room / local EVM"
+    observed_at: "2026-09-30"
+    result: PASS
+    dependency_ids: [DEP_INTEGRATED_LOCAL]
+    receipt_ids: [RCPT_INTEGRATED_AUDIT]
+    repository: Faadil1/ARC_ASSURANCE_01
+    commit_sha: db69aef45af9ef1bf6a1efb90c9f69bc199bd537
+    deployment_id: none
+
+dependencies:
+  - dependency_id: DEP_ARC_FOUNDRY_LOCAL
+    role: "Pinned T0 compile/test runtime"
+    live_or_stub: LOCAL
+    load_bearing: false
+  - dependency_id: DEP_ARC_MAINNET_READONLY
+    role: "Public chain state observation"
+    live_or_stub: LIVE
+    load_bearing: false
+  - dependency_id: DEP_ARC_MAINNET_SETTLEMENT
+    role: "Future live custody and settlement"
+    live_or_stub: LIVE
+    load_bearing: true
+  - dependency_id: DEP_INTEGRATED_LOCAL
+    role: "Integrated local verification"
+    live_or_stub: LOCAL
+    load_bearing: false
+
+receipts:
+  - receipt_id: RCPT_T0_REVALIDATION
+    artifact_pointer: "GitHub Actions run 36891632445"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+  - receipt_id: RCPT_T0_FEE
+    artifact_pointer: "GitHub Actions run 36891632622"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+  - receipt_id: RCPT_T0_POST_FUNDING_REVALIDATION
+    artifact_pointer: "GitHub Actions run 36938183550"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+  - receipt_id: RCPT_T0_POST_FUNDING_FEE
+    artifact_pointer: "GitHub Actions run 36938183671"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+  - receipt_id: RCPT_T0_TOPUP_TRANSACTION
+    artifact_pointer: "Arc tx 0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d / GitHub Actions run 36938737314"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_T0_MAINNET_DEPLOYMENT
+    artifact_pointer: "Arc tx 0x7363a99abfe7293ccd2b47cf6e8df41d135ad0db0a39b6745b753082ead47f24 / GitHub Actions run 36975671614"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_T0_MAINNET_POLICY_REGISTRATION
+    artifact_pointer: "Arc tx 0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7 / GitHub Actions run 36976421698"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_T0_MAINNET_CONTRACT_FUNDING
+    artifact_pointer: "Arc tx 0xa1f49555ec3cf858372e180162e6e151949d17cd196d7f39656a31942baa21f1 / GitHub Actions run 36982128480"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_T0_MAINNET_CONFIGURED_PAYOUT
+    artifact_pointer: "Arc tx 0x9dc11ee465b2c8afc354bdad9e3825e5a0c6a97499bae907e72ea1a677f32d34 / GitHub Actions run 36983144079"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_T0_MAINNET_REMAINING_REFUND
+    artifact_pointer: "Arc tx 0x079ca3985529ac088aa50ba5a3ed4406de3c4667502780b06691ca15b07d4024 / GitHub Actions run 36984307453"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_T0_MAINNET_COMPLETION
+    artifact_pointer: "Arc tx 0xb657c1de8c397d2606cd4f41ccccf556f65f0f12f2ff195f6d5a6fda1e3d1932 / GitHub Actions run 36985388199"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_INTEGRATED_MAINNET_DEPLOYMENT
+    artifact_pointer: "Arc tx 0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272 / GitHub Actions run 37036958146 / artifact 11241455626"
+    observed_or_generated: OBSERVED_AND_RUNTIME_VERIFIED
+    contains_secret: false
+  - receipt_id: RCPT_INTEGRATED_AUDIT
+    artifact_pointer: "PR #30 / GitHub Actions run 36671284825"
+    observed_or_generated: GENERATED_FROM_RUNTIME
+    contains_secret: false
+
+state_binding:
+  active_state_branch: ops/t0-funding-readiness
+  active_state_pr: 44
+  execution_evidence_head: 4f7f3b254a29e6023d539a85e5b126a7f21e1955
+  current_branch_head_rule: "Resolve dynamically from PR #44. Later documentation-only commits are not execution receipts."
+  next_operational_gate: G2_POLICY_CREATION_AUTHORIZATION
+  prebuild_reality: PROVEN
+  external_user_operator_product_evidence: BLOCKED
+
+deployments:
+  - deployment_id: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    runtime: ARC_MAINNET
+    contract: AssuranceVault
+    chain_id: 5042
+    tx_hash: "0x00b06502ac70a1238b1127eab59a59253188d91af32606b701d38cda3a607272"
+    block_number: 23909824
+    init_code_keccak256: "0x40792e0e0b7c8d2d213b318332e7aea59a5e87bed386e76054ee9164d3cd1e93"
+    receipt_id: RCPT_INTEGRATED_MAINNET_DEPLOYMENT
+
+unresolved_edges:
+  - "INTEGRATED_LIVE_FINANCIAL_CAUSALITY: deployment/source binding is proven; policy creation, funding, hidden precommit, provider output, reveal, resolve and financial-consequence edges remain missing."
+terminal_claims_allowed: false

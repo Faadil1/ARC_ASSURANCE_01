@@ -1,0 +1,147 @@
+name: T0 Deployment Receipt
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ARC_MAINNET_RPC_URL: https://rpc.mainnet.arc.io
+      ARC_TESTNET_RPC_URL: https://rpc.testnet.arc.io
+      T0_CONTRACT_ADDRESS: "0x0377D371d6981c98CE9C650338D7E1E80819B572"
+      EXPECTED_AUTHORITY: "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb"
+      EXPECTED_USDC: "0x3600000000000000000000000000000000000000"
+      EXPECTED_CHAIN_ID: "5042"
+      EXPECTED_CAP: "50000000000000000"
+
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Verify deployment transaction receipt
+        run: |
+          python3 -m py_compile script/t0_verify_deployment_receipt.py
+          python3 script/t0_verify_deployment_receipt.py \
+            "$ARC_MAINNET_RPC_URL" \
+            ops/t0-deployment-receipt-input.json \
+            | tee t0-deployment-receipt.json
+
+      - name: Install arc-cast
+        run: |
+          set -euo pipefail
+          ARC_TAG="v0.8.0-2"
+          ARC_VER="${ARC_TAG#v}"
+          ASSET="arc-foundry-v${ARC_VER}-x86_64-unknown-linux-gnu.tar.gz"
+          URL="https://github.com/circlefin/arc-foundry/releases/download/${ARC_TAG}/${ASSET}"
+          EXPECTED_SHA256="088bdb96a84418b757f9825d491e702792f1d1d1e29a9145af305a6600a79556"
+
+          curl -fsSL "$URL" -o /tmp/arc.tar.gz
+          ACTUAL_SHA256="$(sha256sum /tmp/arc.tar.gz | awk '{print $1}')"
+          [ "$ACTUAL_SHA256" = "$EXPECTED_SHA256" ] || {
+            echo "Arc Foundry checksum mismatch" >&2
+            exit 1
+          }
+
+          rm -rf /tmp/arcbin && mkdir -p /tmp/arcbin
+          tar -xzf /tmp/arc.tar.gz -C /tmp/arcbin
+          mapfile -t BINS < <(find /tmp/arcbin -type f -executable | sort)
+          [ "${#BINS[@]}" -gt 0 ] || exit 1
+
+          for b in "${BINS[@]}"; do
+            sudo install -m 0755 "$b" "/usr/local/bin/$(basename "$b")"
+          done
+
+          printf '#!/bin/sh\nexec cast "$@"\n' > /usr/local/bin/arc-cast
+          sudo chmod 0755 /usr/local/bin/arc-cast
+          printf '#!/bin/sh\nexec forge "$@"\n' > /usr/local/bin/arc-forge
+          sudo chmod 0755 /usr/local/bin/arc-forge
+          arc-cast --version
+          arc-forge --version
+
+      - name: Install forge-std and compile canonical runtime
+        run: |
+          set -euo pipefail
+          EXPECTED_FORGE_STD_COMMIT="3b20d60d14b343ee4f908cb8079495c07f5e8981"
+          mkdir -p lib
+          git clone --depth 1 --branch v1.9.6 \
+            https://github.com/foundry-rs/forge-std.git lib/forge-std
+          cd lib/forge-std
+          ACTUAL_FORGE_STD_COMMIT="$(git rev-parse HEAD)"
+          [ "$ACTUAL_FORGE_STD_COMMIT" = "$EXPECTED_FORGE_STD_COMMIT" ]
+          cd ../..
+
+          mkdir -p out cache
+          arc-forge build
+
+      - name: Bind deployed executable runtime to canonical source
+        run: |
+          python3 -m py_compile script/t0_verify_runtime_source_binding.py
+          python3 script/t0_verify_runtime_source_binding.py \
+            "$ARC_MAINNET_RPC_URL" \
+            "$T0_CONTRACT_ADDRESS" \
+            out/PolicyCustody.sol/PolicyCustody.json \
+            | tee t0-runtime-source-binding.json
+
+      - name: Verify deployed runtime bindings
+        run: |
+          set -euo pipefail
+
+          AUTHORITY="$(arc-cast call "$T0_CONTRACT_ADDRESS" "authority()(address)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          CHAIN_ID="$(arc-cast call "$T0_CONTRACT_ADDRESS" "expectedChainId()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          USDC="$(arc-cast call "$T0_CONTRACT_ADDRESS" "usdcErc20Interface()(address)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          CAP="$(arc-cast call "$T0_CONTRACT_ADDRESS" "deploymentSpendCap()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          POLICY_COUNT="$(arc-cast call "$T0_CONTRACT_ADDRESS" "policyCount()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          LIABILITY="$(arc-cast call "$T0_CONTRACT_ADDRESS" "totalLiability()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+          RECEIVED="$(arc-cast call "$T0_CONTRACT_ADDRESS" "totalCustodyReceived()(uint256)" --rpc-url "$ARC_MAINNET_RPC_URL" | awk '{print $1}')"
+
+          [ "${AUTHORITY,,}" = "${EXPECTED_AUTHORITY,,}" ]
+          [ "$CHAIN_ID" = "$EXPECTED_CHAIN_ID" ]
+          [ "${USDC,,}" = "${EXPECTED_USDC,,}" ]
+          [ "$CAP" = "$EXPECTED_CAP" ]
+          # Mutable lifecycle state is recorded but not asserted here. The deployment
+          # receipt is historical proof of contract creation; later authorized
+          # transactions may legitimately change policyCount/liability/custody.
+
+          python3 - <<'PY'
+          import json, os
+          d = {
+              "schema": "ARC_ASSURANCE_T0_DEPLOYED_RUNTIME_BINDINGS_V1",
+              "contract_address": os.environ["T0_CONTRACT_ADDRESS"].lower(),
+              "authority": os.environ["AUTHORITY"].lower() if "AUTHORITY" in os.environ else None
+          }
+          PY
+
+          cat > t0-deployed-runtime-bindings.json <<EOF
+          {
+            "schema": "ARC_ASSURANCE_T0_DEPLOYED_RUNTIME_BINDINGS_V1",
+            "contract_address": "$T0_CONTRACT_ADDRESS",
+            "authority": "$AUTHORITY",
+            "expected_chain_id": "$CHAIN_ID",
+            "usdc_erc20_interface": "$USDC",
+            "deployment_spend_cap_wei": "$CAP",
+            "current_policy_count": "$POLICY_COUNT",
+            "current_total_liability": "$LIABILITY",
+            "current_total_custody_received": "$RECEIVED",
+            "verified": true
+          }
+          EOF
+
+      - name: Upload deployment evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: t0-deployment-receipt-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            t0-deployment-receipt.json
+            t0-deployed-runtime-bindings.json
+            t0-runtime-source-binding.json
+          if-no-files-found: error
+          retention-days: 90

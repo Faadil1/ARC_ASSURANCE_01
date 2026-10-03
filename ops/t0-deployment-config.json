@@ -1,0 +1,28 @@
+{
+  "schema": "ARC_ASSURANCE_T0_DEPLOYMENT_CONFIG_V1",
+  "network": {
+    "name": "Arc Mainnet",
+    "chain_id": 5042,
+    "rpc": "https://rpc.mainnet.arc.io",
+    "usdc_interface": "0x3600000000000000000000000000000000000000"
+  },
+  "authority_address": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "funder_address": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "payout_recipient_address": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "policy_id": "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000",
+  "policy_id_label": "ARC_ASSURANCE_01:T0:POLICY:1",
+  "fund_amount_wei": "10000000000000000",
+  "fund_amount_usdc": "0.010",
+  "unit_payout_wei": "1000000000000000",
+  "unit_payout_usdc": "0.001",
+  "expected_refund_wei": "9000000000000000",
+  "expected_refund_usdc": "0.009",
+  "expiry_unix": 1792036800,
+  "expiry_iso_utc": "2026-10-15T04:00:00Z",
+  "deployment_spend_cap_wei": "50000000000000000",
+  "deployment_spend_cap_usdc": "0.05",
+  "truth_boundary": {
+    "same_wallet_roles": true,
+    "meaning": "T0 proves configured custody/payout/refund mechanics with minimal exposure. It does not prove payment to an independent external provider."
+  }
+}

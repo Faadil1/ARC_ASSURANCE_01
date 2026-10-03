@@ -1,0 +1,11 @@
+{
+  "schema": "ARC_ASSURANCE_T0_TOPUP_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "transaction_hash": "0x022bcfbb11215afdb6226a1b6e5a11b339a23e52e1b29676d6ae932df0d5822d",
+  "destination_public_wallet": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "authorized_amount_usdc": "0.50",
+  "observed_sent_amount_usdc": "0.51",
+  "hard_ceiling_usdc": "5.00",
+  "authorization_variance_usdc": "+0.01",
+  "variance_note": "Observed execution exceeded the preauthorized amount by 0.01 USDC. Record as execution variance, not retroactive authorization."
+}

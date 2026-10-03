@@ -1,0 +1,15 @@
+{
+  "schema": "ARC_ASSURANCE_T0_POLICY_REGISTRATION_RECEIPT_INPUT_V1",
+  "chain_id": 5042,
+  "registration_tx_hash": "0x2ed1083c31dda72dc8b9934c44ab617adebcce1e9223e9d4f4162ff9371db9d7",
+  "contract_address": "0x0377D371d6981c98CE9C650338D7E1E80819B572",
+  "expected_sender": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "expected_nonce": 1,
+  "expected_tx_value_wei": "0",
+  "policy_id": "0x4152435f4153535552414e43455f30313a54303a504f4c4943593a3100000000",
+  "funder": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "payout_recipient": "0x2ca7ba27ab8686f3a073c053fad6258c003a02bb",
+  "max_spend_cap_wei": "10000000000000000",
+  "unit_payout_wei": "1000000000000000",
+  "expiry_unix": 1792036800
+}
