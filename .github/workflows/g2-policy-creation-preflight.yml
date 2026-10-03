@@ -1,7 +1,6 @@
 name: G2 Policy Creation Preflight
 
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
