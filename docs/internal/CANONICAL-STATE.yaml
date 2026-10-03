@@ -772,3 +772,33 @@ g2_precommit_live_proof_2026_10_02:
     lockProviderOutput: NOT_AUTHORIZED
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
+
+
+g3_real_work_readiness_2026_10_02:
+  branch: ops/g3-real-work-readiness
+  status: ACTIVE_READ_ONLY_PREP
+  parent_gate:
+    id: G2_PRECOMMIT
+    status: PROVEN
+  live_binding:
+    contract: "0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4"
+    policy_id: "0xd29987d91c313c30cea5f455634b0aca7b5b83fb82aaf273b7d8edf2dd9dcb30"
+    batch_id: "0x8a230c39bab845408d8ffbd8bfc978a588cab1726347145ad09a0984c27d46b7"
+    provider: "0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe"
+  read_only_preparer:
+    script: script/g3_prepare_real_work.mjs
+    secret_source: HUMAN_LOCAL_OFF_REPO
+    output_artifact: HUMAN_LOCAL_OFF_REPO
+    raw_provider_private_key_requested: false
+    provider_signature_created: false
+    transaction_sent: false
+  preferred_signing_direction: "provider wallet typed-data signing without exporting private key"
+  promotion_boundary:
+    G3_REAL_WORK: BLOCKED
+    ProviderOutputLocked: NOT_PROVEN
+    Live_Core_Loop: BLOCKED
+  protected_actions:
+    provider_signature: NOT_AUTHORIZED_BY_READ_ONLY_PREP
+    lockProviderOutput: NOT_AUTHORIZED
+    revealCanary: NOT_AUTHORIZED
+    resolveBatch: NOT_AUTHORIZED
