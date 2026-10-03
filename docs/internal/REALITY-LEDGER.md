@@ -646,3 +646,29 @@ Observed:
 ### NOT AUTHORIZED / NOT PROVEN
 
 The commitBatch transaction has not been broadcast. Provider signing, output lock, reveal and resolve remain separately gated.
+
+
+## Recovery Policy v2 commitBatch live receipt — 2026-10-03
+
+### PROVEN
+
+Transaction `0x36d8d4dc972a2ef557d2a9eee38a5607e128eef01694d8620fef207befd61c07` succeeded on Arc Mainnet in block `24060767`.
+
+Observed:
+- sender `0x2ca7ba27ab8686F3a073c053FaD6258C003a02bb`;
+- target `0x6f79CDc961e30f2E1FaC0f4EaDa6Ca35e58290E4`;
+- nonce `12`;
+- value `0`;
+- calldata hash `0xbb2035436436b15588fe49896ce036d68b271f41d5499fb7297c371642e23b95`;
+- gas used `132014`;
+- exact `BatchCommitted` event for the v2 policy/batch/commitment;
+- v2 active batch equals the committed batch;
+- v2 batch state is `Committed`;
+- authority pending nonce is now `13`;
+- v1 remains Committed and unchanged;
+- vault liability/custody/balance remains `0.020 native USDC`;
+- total value released remains zero.
+
+### TRUTH BOUNDARY
+
+This proves the v2 public precommit edge only. Provider execution, provider signature, output lock, reveal, deterministic resolve and financial consequence are not yet proven and remain separately gated.
