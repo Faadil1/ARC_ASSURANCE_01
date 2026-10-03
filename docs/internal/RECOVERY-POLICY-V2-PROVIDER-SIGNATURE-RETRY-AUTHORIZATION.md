@@ -1,6 +1,6 @@
 # Recovery Policy v2 — Provider Signature Retry Authorization
 
-**Status:** AUTHORIZED_PENDING_EXECUTION
+**Status:** CONSUMED
 
 ## Exact retry scope
 
@@ -30,3 +30,17 @@ The user explicitly authorized one new request for this same exact provider EIP-
 This authorization does not authorize any blockchain transaction.
 
 In particular, `lockProviderOutput`, `revealCanary`, and `resolveBatch` remain NOT AUTHORIZED.
+
+
+## Execution result — 2026-10-03
+
+The retry returned usable signature bytes.
+
+- digest: `0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1`
+- recovered provider:
+  `0xa58b0e970BCE49BEdf50c0E18B2EEb691b9D35Fe`
+- transaction sent: `false`
+
+The retry authorization is **CONSUMED**.
+
+No authorization is transferred to `lockProviderOutput`, `revealCanary`, or `resolveBatch`.
