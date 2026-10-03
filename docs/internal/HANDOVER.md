@@ -1187,3 +1187,20 @@ Locked funding candidate:
 
 Funding is NOT authorized yet. `commitBatch`, provider output lock, reveal,
 resolve, refund and additional funding remain separately unauthorized.
+
+
+## 57. Protected authorization — G2 funding only
+
+Human owner authorization received verbatim:
+
+> J’autorise uniquement le funding de 0.010 native USDC via `fund(policyId)` pour la policy G2 sur l’AssuranceVault déployé.
+
+Scope is one exact `fund(policyId)` transaction with
+`msg.value = 10000000000000000 wei` (**0.010 native USDC**) on the deployed
+AssuranceVault.
+
+Still unauthorized: additional funding, `commitBatch`, provider output lock,
+reveal, resolve, refund, or any later lifecycle action.
+
+A fresh read-only funding preflight is mandatory immediately before the human
+MetaMask signature.
