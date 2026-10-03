@@ -1336,3 +1336,34 @@ Read-only `lockProviderOutput` preflight run `37142060883` on exact head `54e102
 - no vault principal moved.
 
 Next gate: exact `lockProviderOutput` transaction, pending separate explicit human authorization. Reveal and resolve remain NOT AUTHORIZED.
+
+
+## Recovery Policy v2 lockProviderOutput live receipt — 2026-10-03
+
+The exact authorized output-lock transaction succeeded on Arc Mainnet:
+
+- tx: `0x7de28364a63875b38f58649d8b85629422e8c5f2cebb29626e39ad157611ae78`
+- block: `24099169`
+- nonce: `13`
+- value: `0`
+- calldata hash: `0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b`
+- gas used: `213863`
+- actual fee: `0.0045980545 native USDC`
+
+Independent receipt verification run `37147983918` passed on head `5fbd36138e488cb9460aa80ba9224d7506f8442b`.
+
+Both `ProviderOutputConsumed` and `ProviderOutputLocked` were observed with the exact provider/work/policy/batch/input/output/scorer/digest binding.
+
+Post-state:
+- authority pending nonce = 14;
+- v2 batch = OutputLocked;
+- workId consumed = true;
+- provider digest consumed = true;
+- v2 funding remains 0.010 native USDC;
+- v1 remains Committed and unchanged;
+- vault liability/custody/balance remains 0.020 native USDC;
+- total value released remains zero.
+
+The one-shot `lockProviderOutput` authorization is consumed.
+
+Next gate: secret-bound `revealCanary` read-only preflight. The reveal transaction itself and `resolveBatch` remain NOT AUTHORIZED.
