@@ -686,3 +686,38 @@ canary reveal, resolve, refund, or any later action.
 
 Final signing remains a human MetaMask action. A fresh read-only funding
 preflight must pass immediately before broadcast.
+
+
+## G2 live funding receipt — 2026-10-02
+
+### OBSERVED
+
+Transaction
+`0xf5233124f02d03b5396386a570bd55d4994e36afa8a02e6a56ef0cc0881c8edf`
+succeeded on Arc mainnet.
+
+Post-state:
+- policy total funded = **0.010 native USDC**;
+- vault liability = **0.010 native USDC**;
+- total custody received = **0.010 native USDC**;
+- contract balance = **0.010 native USDC**;
+- value released = 0;
+- no active batch exists.
+
+### CONSEQUENCE
+
+`G2_FUNDING = PROVEN`.
+
+The integrated product now has real Arc custody behind the live G2 policy.
+
+### TRUTH BOUNDARY
+
+Funding does not prove precommitment or financial causality. No batch commitment,
+provider output lock, reveal or resolve has yet occurred.
+
+### CURRENT PROTECTED BOUNDARY
+
+`G2_PRECOMMIT_AUTHORIZATION = ACTIVE / HUMAN / NOT GRANTED`.
+
+The canary preimage must remain hidden from the provider and out of public repo
+history until the reveal stage.
