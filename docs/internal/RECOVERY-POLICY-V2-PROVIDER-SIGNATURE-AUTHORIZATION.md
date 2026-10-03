@@ -1,6 +1,6 @@
 # Recovery Policy v2 — Provider Signature Authorization
 
-**Status:** NOT AUTHORIZED
+**Status:** AUTHORIZED_PENDING_EXECUTION
 
 ## Exact signature request
 
@@ -35,3 +35,18 @@ It does **not** authorize:
 - `revealCanary`;
 - `resolveBatch`;
 - any v1 recovery operation.
+
+
+## Human authorization — 2026-10-03
+
+Received in chat:
+
+> J’autorise la signature EIP-712 provider v2 exacte du digest `0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1`.
+
+This authorization is one-shot and applies only to the exact EIP-712 typed-data payload bound in this document.
+
+Current authorization state: **AUTHORIZED_PENDING_EXECUTION**.
+
+The authorization is consumed only if the provider wallet actually returns a signature over the exact authorized typed data. Cancelling or rejecting the wallet request does not consume the authorization.
+
+A successful signature does not authorize any transaction, including `lockProviderOutput`.
