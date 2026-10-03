@@ -990,3 +990,22 @@ recovery_policy_v2_lock_provider_output_live_gate_2026_10_03:
     revealCanary: BLOCKED_PENDING_SECRET_BOUND_READ_ONLY_PREFLIGHT_AND_HUMAN_AUTHORIZATION
     resolveBatch: BLOCKED
   rule: "A proven output lock does not authorize reveal or resolve."
+
+
+recovery_policy_v2_reveal_canary_gate_2026_10_03:
+  status: ACTIVE
+  secret_bound_read_only_preflight: PROVEN
+  workflow_run: 37148410230
+  exact_head: "e6416429ed4d5630f36fcf88d519a3d6b0c7cd49"
+  commitment_reconstruction: PROVEN
+  canary_key_unused: PROVEN
+  eth_call: PROVEN
+  calldata_keccak256: "0x4f299f4e03bac6f757f2e3569a954ae3ab4093b5ca661d26185c6bcbb5469031"
+  canary_key: "0xcae7f115405cef852e8f83c37d1be794bb3870e64d3543f6c9ba284145b0c574"
+  gas_estimate: 124601
+  secret_boundary: PROVEN
+  authorization: BLOCKED_PENDING_SECURE_REVEAL_BRIDGE_AND_HUMAN_AUTHORIZATION
+  protected_actions:
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-REVEAL-CANARY-PREFLIGHT.md
