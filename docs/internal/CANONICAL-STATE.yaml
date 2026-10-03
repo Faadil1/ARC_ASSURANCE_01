@@ -113,7 +113,7 @@ prior_product_gate:
 
 next_gate:
   id: RECOVERY_POLICY_V2_FUND
-  status: BLOCKED_PENDING_READ_ONLY_PREFLIGHT_AND_SEPARATE_AUTHORIZATION
+  status: READY_PENDING_SEPARATE_HUMAN_AUTHORIZATION
   vehicle: AssuranceVault
   required_proof:
     - "real provider execution against the committed batch"
@@ -908,3 +908,34 @@ recovery_policy_v2_create_live_2026_10_03:
     lockProviderOutput: NOT_AUTHORIZED
     revealCanary: NOT_AUTHORIZED
     resolveBatch: NOT_AUTHORIZED
+
+
+recovery_policy_v2_funding_preflight_2026_10_03:
+  status: PROVEN_READ_ONLY
+  workflow_run: 37124943731
+  exact_head: "d6bdff050a2ca54f785fc19312be6f838a7c210b"
+  artifact_id: 11275290112
+  artifact_digest: "sha256:9560750e70ab7f6513cc12c22c0558c4a6bc108d1b971d9035356b2ebe98baac"
+  evidence: docs/evidence/RECOVERY-POLICY-V2-FUNDING-PREFLIGHT.md
+  policy_id: "0xa32b293688c5710023773987238ad6382aea9962affe510885350c9c12fa7bc8"
+  pending_nonce_observed: 11
+  fund_value_wei: "10000000000000000"
+  calldata_keccak256: "0xdc6ad0cd75e1a2b9bebdbc26530f2669a8c6ea25f60d8bb993dfbd3fc6986646"
+  estimate_gas_units: 82230
+  gas_price_wei: "20000010000"
+  estimated_fee_wei: "1644600822300000"
+  estimated_total_wallet_outflow_wei: "11644600822300000"
+  projected_post_state:
+    total_liability_wei: "20000000000000000"
+    total_custody_received_wei: "20000000000000000"
+    contract_balance_wei: "20000000000000000"
+    remaining_deployment_capacity_wei: "30000000000000000"
+    v1_unchanged: true
+  safety:
+    private_key_consumed: false
+    secret_consumed: false
+    transaction_signed: false
+    transaction_broadcast: false
+    funds_moved: false
+  authorization:
+    fund: NOT_AUTHORIZED
