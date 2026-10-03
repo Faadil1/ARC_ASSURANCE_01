@@ -1,0 +1,53 @@
+name: V2 FAIL1 Provider Signature Readiness
+
+on:
+  push:
+    branches:
+      - ops/v2-live-depth-fail-breaker-readiness
+    paths:
+      - ".github/v2-fail1-provider-signature-readiness-request"
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    environment: g3-live-secret
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+      - run: |
+          forge install foundry-rs/forge-std@v1.16.1 --no-git
+          forge install OpenZeppelin/openzeppelin-contracts@v5.6.1 --no-git
+          forge build
+      - name: Materialize protected FAIL1 reveal packet
+        shell: bash
+        env:
+          SECRET_PACKET: ${{ secrets.V2_FAIL1_SECRET_REVEAL_PACKET }}
+        run: |
+          set -euo pipefail
+          test -n "${SECRET_PACKET:-}"
+          printf '%s' "$SECRET_PACKET" > "$RUNNER_TEMP/v2-fail1-secret.json"
+          chmod 600 "$RUNNER_TEMP/v2-fail1-secret.json"
+      - name: Build and verify exact provider EIP-712 digest without signing
+        run: |
+          node script/v2_fail1_provider_signature_readiness.mjs \
+            https://rpc.mainnet.arc.io \
+            out/AssuranceVault.sol/AssuranceVault.json \
+            "$RUNNER_TEMP/v2-fail1-secret.json"
+      - name: Destroy secret material
+        if: always()
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/v2-fail1-secret.json"
+          test ! -e "$RUNNER_TEMP/v2-fail1-secret.json"
