@@ -954,3 +954,21 @@ recovery_policy_v2_provider_signature_gate_2026_10_03:
     lockProviderOutput: BLOCKED
     revealCanary: BLOCKED
     resolveBatch: BLOCKED
+
+
+recovery_policy_v2_lock_provider_output_gate_2026_10_03:
+  status: ACTIVE
+  provider_signature: PROVEN
+  read_only_preflight: PROVEN
+  workflow_run: 37142060883
+  exact_head: "54e10212859650766d91de01d7571064b47b8ae2"
+  digest: "0xf71aa4c07b5ab0c1f9bc5e88c869fe94ef076ce475eaf74e9bbe33fc9591c7f1"
+  calldata_keccak256: "0x45ba391d40a71610fe1de2743a19836d57134f47f5ced5e13197bdb9ee4c9a1b"
+  eth_call: PROVEN
+  gas_estimate: 220294
+  authorization: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+  protected_actions:
+    lockProviderOutput: BLOCKED_PENDING_HUMAN_AUTHORIZATION
+    revealCanary: BLOCKED
+    resolveBatch: BLOCKED
+  evidence: docs/evidence/RECOVERY-POLICY-V2-LOCK-PROVIDER-OUTPUT-PREFLIGHT.md
