@@ -1,7 +1,7 @@
 schema: ARC_ASSURANCE_G3_REAL_WORK_READINESS_V1
 project: ARC_ASSURANCE_01
 gate: G3_REAL_WORK
-status: ACTIVE_READ_ONLY_PREP
+status: BLOCKED_SECRET_PREIMAGE_LOST
 parent_gate:
   id: G2_PRECOMMIT
   status: PROVEN
@@ -17,8 +17,8 @@ live_binding:
 
 read_only_prep:
   script: script/g3_prepare_real_work.mjs
-  secret_packet_source: HUMAN_LOCAL_OFF_REPO
-  output_artifact: HUMAN_LOCAL_OFF_REPO
+  secret_packet_source: LOST_AFTER_ENDPOINT_SECURITY_INCIDENT
+  output_artifact: NOT_PRODUCED
   private_key_required: false
   provider_signature_created: false
   transaction_sent: false
@@ -42,6 +42,19 @@ protected_actions:
   lockProviderOutput: NOT_AUTHORIZED
   revealCanary: NOT_AUTHORIZED
   resolveBatch: NOT_AUTHORIZED
+
+recovery:
+  incident_date: "2026-10-03"
+  original_secret_preimage_recoverable: false
+  regenerate_for_existing_commitment_allowed: false
+  existing_batch_action: HOLD_UNTIL_POLICY_EXPIRY
+  expiry_unix: 1792033200
+  expiry_utc: "2026-10-15T03:00:00Z"
+  post_expiry_sequence:
+    - cancelExpiredBatch
+    - refundProtectedRemainder
+  continuation_strategy: NEW_POLICY_NEW_BATCH_NEW_CANARY_ON_SAME_DEPLOYMENT
+  note: "Never rerun the old canary generator expecting to recover the committed preimage."
 
 truth_boundary:
   g3_status_after_read_only_prep: BLOCKED
